@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/th.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/th.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="copy from: https:&#x2F;&#x2F;blog.csdn.net&#x2F;fengyuwuzu0519&#x2F;article&#x2F;details&#x2F;100025456">
+<meta property="og:type" content="article">
+<meta property="og:title" content="netfilter1">
+<meta property="og:url" content="https://mrliuliu.github.io/2020/12/12/network/netfilter/netfilter1/index.html">
+<meta property="og:site_name" content="copy dog">
+<meta property="og:description" content="copy from: https:&#x2F;&#x2F;blog.csdn.net&#x2F;fengyuwuzu0519&#x2F;article&#x2F;details&#x2F;100025456">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-12T01:51:52.000Z">
+<meta property="article:modified_time" content="2020-12-12T15:25:04.381Z">
+<meta property="article:author" content="Liu liu">
+<meta property="article:tag" content="network">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://mrliuliu.github.io/2020/12/12/network/netfilter/netfilter1/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>netfilter1 | copy dog</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">copy dog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">和懒惰抗争</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section">首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives" rel="section">归档</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section">标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E8%A1%A8%E4%BA%94%E9%93%BE"><span class="nav-number">1.</span> <span class="nav-text">四表五链</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A8"><span class="nav-number">1.1.</span> <span class="nav-text">表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%93%BE"><span class="nav-number">1.2.</span> <span class="nav-text">链</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-%E4%B8%AD%E8%A1%A8%E5%92%8C%E9%93%BE%E7%9A%84%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB"><span class="nav-number">1.3.</span> <span class="nav-text">iptables 中表和链的对应关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#filter%E8%A1%A8"><span class="nav-number">1.4.</span> <span class="nav-text">filter表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NAT%E8%A1%A8"><span class="nav-number">1.5.</span> <span class="nav-text">NAT表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mangle%E8%A1%A8"><span class="nav-number">1.6.</span> <span class="nav-text">mangle表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#raw%E8%A1%A8"><span class="nav-number">1.7.</span> <span class="nav-text">raw表</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Liu liu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2020/12/12/network/netfilter/netfilter1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          netfilter1
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-12-12 09:51:52 / 修改时间：23:25:04" itemprop="dateCreated datePublished" datetime="2020-12-12T09:51:52+08:00">2020-12-12</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>copy from: <a target="_blank" rel="noopener" href="https://blog.csdn.net/fengyuwuzu0519/article/details/100025456">https://blog.csdn.net/fengyuwuzu0519/article/details/100025456</a></p>
+<a id="more"></a>
+<p>###简介<br><strong>Netfilter</strong> 是Linux2.4.x引入的一个子系统，它作为一个通用的、抽象的框架，提供一整套的hook函数的管理机制，使得诸如数据包过滤、网络地址转换（NAT）和基于协议的连接跟踪成为了可能。 — 百度百科。</p>
+<p>iptables 是使用这个模块的软件，位于应用空间， <strong>Netfilter</strong> 组件位于内核空间，是内核网络的一部分。通过它可以插入、修改、删除一些表，从而h对网络数据包进行有限安全管控。</p>
+<p>!Netfilter hook pint<a href="Netfilter%E7%9A%84hook%E7%82%B9.png"></a></p>
+<h3 id="四表五链"><a href="#四表五链" class="headerlink" title="四表五链"></a>四表五链</h3><p><strong>表是链的容器，链是规则的容器。</strong> 规则就是iptables的过滤信息的具体方法。</p>
+<h4 id="表"><a href="#表" class="headerlink" title="表"></a>表</h4><ul>
+<li>raw: 高级功能， 如过滤。</li>
+<li>mangle： 数据包修改（QOS）,用于实现服务质量</li>
+<li>net： 地址转换，用于网关路由器</li>
+<li>filter：包过滤，用于防火墙规则。</li>
+</ul>
+<h4 id="链"><a href="#链" class="headerlink" title="链"></a>链</h4><ul>
+<li>INPUT： 处理输入数据包</li>
+<li>OUTPUT: 处理输出数据包</li>
+<li>PORWARD：处理转发数据包</li>
+<li>PREROUTING：用于目标地址转换</li>
+<li>POSTOUTING：用于源地址转换</li>
+</ul>
+<hr>
+<table>
+    <tr>
+        <th>表（table）</th>
+        <th colspan="2">链iiii(chain) </th>
+    </tr>
+    <tr>
+        <td rowspan="4" >filter</td>
+        <th colspan="2">默认表，实现防火墙数据过滤共功能</th>
+    </tr>
+    <tr>
+        <td colspan="1">INPUT</td>
+        <td colspan="1">对指定到本地套接字的包，即达到本地防火墙的数据包。</td>
+    </tr>
+    <tr>
+        <td colspan="1">OUTPUT</td>
+        <td colspan="1">本地创建的数据包</td>
+    </tr>
+    <tr>
+        <td colspan="1">FORWARD</td>
+        <td colspan="1">路由穿过的数据包，即经过防火墙的数据包</td>
+    </tr>
+    <tr>
+        <td rowspan="4">NAT</td>
+        <td colspan="2">当遇见新创建的数据包连接时，将参考这个表</td>
+    </tr>
+    <tr>
+        <td>PREROUTING</td>
+        <td>一进来就对数据包进行改变</td>
+    </tr>
+    <tr>
+        <td>OUTPUT</td>
+        <td>本地创建的数据包在路由之前改变</td>
+    </tr>
+    <tr>
+        <td>POSTINGROUTING</td>
+        <td>在数据包即将出去时改变数据包信息</td>
+    </tr>
+    <tr>
+        <td rowspan="6">mangle</td>
+        <td colspan="2">专门用于改变数据包</td>
+    </tr>
+    <tr>
+        <td>INPUT</td>
+        <td>进入到设备本身的包</td>
+    </tr>
+    <tr>
+        <td>FORWARD</td>
+        <td>对路由后的数据包进行修改</td>
+    </tr>
+    <tr>
+        <td>PREROUTING</td>
+        <td>对路由之前的数据包进行修改</td>
+    </tr>
+    <tr>
+        <td>OUTPUT</td>
+        <td>本地创建的数据包在路由之前改变</td>
+    </tr>
+    <tr>
+        <td>POSTINGROUTING</td>
+        <td>在数据包即将出去时改变数据包信息</td>
+    </tr>
+    <tr>
+        <td>raw</td>
+        <td colspan="2">优先级最高，设置raw时一般b是为了不再让iptabless做数据包的链接跟踪处理，提高性能</td>
+    </tr>
+</table>
+
+<hr>
+<h4 id="iptables-中表和链的对应关系"><a href="#iptables-中表和链的对应关系" class="headerlink" title="iptables 中表和链的对应关系"></a>iptables 中表和链的对应关系</h4><table>
+<thead>
+<tr>
+<th></th>
+<th>INPUT</th>
+<th>FORWARD</th>
+<th>PREROUTING</th>
+<th>OUTPUT</th>
+<th>POSTROUTING</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>filter</td>
+<td>YES</td>
+<td>YES</td>
+<td>NO</td>
+<td>YES</td>
+<td>NO</td>
+</tr>
+<tr>
+<td>NAT</td>
+<td>NO</td>
+<td>NO</td>
+<td>YES</td>
+<td>YES</td>
+<td>YES</td>
+</tr>
+<tr>
+<td>mangle</td>
+<td>YES</td>
+<td>YES</td>
+<td>YES</td>
+<td>YES</td>
+<td>YES</td>
+</tr>
+<tr>
+<td>raw</td>
+<td>NO</td>
+<td>NO</td>
+<td>YES</td>
+<td>YES</td>
+<td>NO</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="filter表"><a href="#filter表" class="headerlink" title="filter表"></a>filter表</h4><table>
+<thead>
+<tr>
+<th>filter表</th>
+<th>强调：主要和主机自身相关，真正负责主机防火墙的功能,过滤流入流出主机的数据包<br>filter是iptables使用的默认表，定义了三个链。<br>企业工作场景：主机防火墙</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>INPUT</td>
+<td>负责过滤y所有目标地址是本地地址的数据包</td>
+</tr>
+<tr>
+<td>FORWARD</td>
+<td>负责过滤所有目标地址是本地的数据包</td>
+</tr>
+<tr>
+<td>OUTPUT</td>
+<td>处理所有源地址是本地地址的数据包</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="NAT表"><a href="#NAT表" class="headerlink" title="NAT表"></a>NAT表</h4><table>
+<thead>
+<tr>
+<th>NAT表</th>
+<th>负责网络地址转换，来源和目的IP地址或port的转换  </br>应用：和主机本身无关，一般用于局域网共享上网或者特殊的端口转换服务相关  <br>工作场景  <br>1、用于企业路由zebra或者网关iptables，共享上网POSTROUTING  <br>2、做内部外部IP地址一对一映射dmz，硬件防火墙IP到内部服务器，FTP服务PREROUTING</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OUTPUT</td>
+<td>和主机放出去的数据包有关，改变主机发出数据包的目的地址</td>
+</tr>
+<tr>
+<td>PREROUTING</td>
+<td>在数据包达到防火墙时，进行路由判断之前执行的规则，作用是改变数据包的目的地址，目的端口等</td>
+</tr>
+<tr>
+<td>POSTROUTING</td>
+<td>在数据包离开防火墙时进行路由判断之后执行的规则，作用改变数据包的源地址，源端口等。</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="mangle表"><a href="#mangle表" class="headerlink" title="mangle表"></a>mangle表</h4><table>
+<thead>
+<tr>
+<th>mangle</th>
+<th>主要负责修改数据包中特殊的路由标记，例如TTL，TOS，MARK等</th>
+</tr>
+</thead>
+</table>
+<hr>
+<h4 id="raw表"><a href="#raw表" class="headerlink" title="raw表"></a>raw表</h4><p>优先级最高，设置raw时一般时为了不再让iptables做数据包的链接跟踪处理，提高性能RAW只使用在PREROUTING链和OUTPUT链上，因为优先级最高，从而可以对收到的数据包在连接跟踪进行处理，一旦用户使用了RAW表，RAW表处理完后将跳过NAT表和ip_conntrack处理，即不再做地址转换和数据包的连接跟踪处理了，RAW表y可以用在那些不需要做NAT的情况下，以提高性能。如大量访问的web服务器，可以让80端口不爱让iptables做数据的连接跟踪处理，以提高用户的访问速度。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/network/" rel="tag"># network</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/12/11/design-mode/design-mode-introduction/" rel="prev" title="设计模式design-patterns-introduction">
+                  <i class="fa fa-chevron-left"></i> 设计模式design-patterns-introduction
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>
