@@ -23,21 +23,24 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
-<meta name="description" content="Markdown的标题有两种格式。&#x3D;展示的是一级标题-展示的是二级标题一级标题二级标题三级标题四级标题五级标题六级标题####### 只到六级标题">
+<meta name="description" content="变量与常量">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Markdown 教程1">
-<meta property="og:url" content="https://mrliuliu.github.io/2020/12/10/Markdown/Markdown-%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:title" content="c-basic2">
+<meta property="og:url" content="https://mrliuliu.github.io/2020/12/17/programing-language/Clang/c-basic2/index.html">
 <meta property="og:site_name" content="copy dog">
-<meta property="og:description" content="Markdown的标题有两种格式。&#x3D;展示的是一级标题-展示的是二级标题一级标题二级标题三级标题四级标题五级标题六级标题####### 只到六级标题">
+<meta property="og:description" content="变量与常量">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-12-10T11:14:17.000Z">
-<meta property="article:modified_time" content="2020-12-13T15:50:34.816Z">
+<meta property="og:image" content="https://mrliuliu.github.io/2020/12/17/programing-language/Clang/c-basic2/float.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2020/12/17/programing-language/Clang/c-basic2/double.png">
+<meta property="article:published_time" content="2020-12-17T05:44:07.000Z">
+<meta property="article:modified_time" content="2020-12-17T06:53:38.596Z">
 <meta property="article:author" content="Liu liu">
-<meta property="article:tag" content="Markdown">
+<meta property="article:tag" content="programing-language">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mrliuliu.github.io/2020/12/17/programing-language/Clang/c-basic2/float.png">
 
 
-<link rel="canonical" href="https://mrliuliu.github.io/2020/12/10/Markdown/Markdown-%E6%95%99%E7%A8%8B/">
+<link rel="canonical" href="https://mrliuliu.github.io/2020/12/17/programing-language/Clang/c-basic2/">
 
 
 <script class="page-configurations">
@@ -49,7 +52,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>Markdown 教程1 | copy dog</title>
+<title>c-basic2 | copy dog</title>
   
 
 
@@ -159,7 +162,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Markdown%E7%9A%84%E6%A0%87%E9%A2%98%E6%9C%89%E4%B8%A4%E7%A7%8D%E6%A0%BC%E5%BC%8F%E3%80%82"><span class="nav-number">1.</span> <span class="nav-text">Markdown的标题有两种格式。</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B1%95%E7%A4%BA%E7%9A%84%E6%98%AF%E4%B8%80%E7%BA%A7%E6%A0%87%E9%A2%98"><span class="nav-number"></span> <span class="nav-text">&#x3D;展示的是一级标题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%95%E7%A4%BA%E7%9A%84%E6%98%AF%E4%BA%8C%E7%BA%A7%E6%A0%87%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">-展示的是二级标题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E7%BA%A7%E6%A0%87%E9%A2%98"><span class="nav-number"></span> <span class="nav-text">一级标题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E7%BA%A7%E6%A0%87%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">二级标题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E7%BA%A7%E6%A0%87%E9%A2%98"><span class="nav-number">1.1.</span> <span class="nav-text">三级标题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E7%BA%A7%E6%A0%87%E9%A2%98"><span class="nav-number">1.1.1.</span> <span class="nav-text">四级标题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BA%94%E7%BA%A7%E6%A0%87%E9%A2%98"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">五级标题</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%85%AD%E7%BA%A7%E6%A0%87%E9%A2%98"><span class="nav-number">1.1.1.1.1.</span> <span class="nav-text">六级标题</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">显示代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%87%BD%E6%95%B0-%E4%BD%BF%E7%94%A8%E2%80%9D-%E2%80%9D"><span class="nav-number">2.1.</span> <span class="nav-text">代码函数 使用”&#96;”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%9D%97%E4%BD%BF%E7%94%A8-Tab"><span class="nav-number">2.2.</span> <span class="nav-text">代码块使用 Tab</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E2%80%9D-%E2%80%9D-%E5%8A%A0%E4%B8%8A%E6%8C%87%E5%AE%9A%E8%AF%AD%E8%A8%80%E5%90%8D%E5%AD%97"><span class="nav-number">2.3.</span> <span class="nav-text">使用”&#96;&#96;&#96;” 加上指定语言名字</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87"><span class="nav-number">3.</span> <span class="nav-text">插入图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E5%AD%97%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">文字格式</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%87%8F"><span class="nav-number">1.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%98%E6%94%BE%E6%9C%89%E5%B0%8F%E6%95%B0%E7%82%B9%E7%9A%84%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">存放有小数点的数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B2%BE%E5%BA%A6"><span class="nav-number">1.2.</span> <span class="nav-text">精度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A6%E5%80%BC%E3%80%81%E5%8F%B3%E5%80%BC"><span class="nav-number">1.3.</span> <span class="nav-text">左值、右值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">常量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%B8%B8%E9%87%8F"><span class="nav-number">2.1.</span> <span class="nav-text">定义常量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E7%B1%BB"><span class="nav-number">3.</span> <span class="nav-text">存储类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#auto%E5%AD%98%E5%82%A8%E7%B1%BB"><span class="nav-number">3.1.</span> <span class="nav-text">auto存储类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#register%E5%AD%98%E5%82%A8%E7%B1%BB"><span class="nav-number">3.2.</span> <span class="nav-text">register存储类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#static%E5%AD%98%E5%82%A8%E7%B1%BB"><span class="nav-number">3.3.</span> <span class="nav-text">static存储类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#extern%E5%AD%98%E5%82%A8%E7%B1%BB"><span class="nav-number">3.4.</span> <span class="nav-text">extern存储类</span></a></li></ol></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -226,7 +229,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2020/12/10/Markdown/Markdown-%E6%95%99%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2020/12/17/programing-language/Clang/c-basic2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -239,7 +242,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Markdown 教程1
+          c-basic2
         </h1>
 
         <div class="post-meta-container">
@@ -249,23 +252,21 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2020-12-10 19:14:17" itemprop="dateCreated datePublished" datetime="2020-12-10T19:14:17+08:00">2020-12-10</time>
+      <time title="创建时间：2020-12-17 13:44:07 / 修改时间：14:53:38" itemprop="dateCreated datePublished" datetime="2020-12-17T13:44:07+08:00">2020-12-17</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-12-13 23:50:34" itemprop="dateModified" datetime="2020-12-13T23:50:34+08:00">2020-12-13</time>
-      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Markdown/" itemprop="url" rel="index"><span itemprop="name">Markdown</span></a>
+          <a href="/categories/programing-language/" itemprop="url" rel="index"><span itemprop="name">programing-language</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/programing-language/Clang/" itemprop="url" rel="index"><span itemprop="name">Clang</span></a>
         </span>
     </span>
 
@@ -279,6 +280,7 @@
     </span>
 </div>
 
+            <div class="post-description">变量与常量</div>
         </div>
       </header>
 
@@ -286,18 +288,25 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="Markdown的标题有两种格式。"><a href="#Markdown的标题有两种格式。" class="headerlink" title="Markdown的标题有两种格式。"></a>Markdown的标题有两种格式。</h2><h1 id="展示的是一级标题"><a href="#展示的是一级标题" class="headerlink" title="=展示的是一级标题"></a>=展示的是一级标题</h1><h2 id="展示的是二级标题"><a href="#展示的是二级标题" class="headerlink" title="-展示的是二级标题"></a>-展示的是二级标题</h2><h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><h4 id="四级标题"><a href="#四级标题" class="headerlink" title="四级标题"></a>四级标题</h4><h5 id="五级标题"><a href="#五级标题" class="headerlink" title="五级标题"></a>五级标题</h5><h6 id="六级标题"><a href="#六级标题" class="headerlink" title="六级标题"></a>六级标题</h6><p>####### 只到六级标题</p>
-<a id="more"></a>
-<h2 id="显示代码"><a href="#显示代码" class="headerlink" title="显示代码"></a>显示代码</h2><h3 id="代码函数-使用”-”"><a href="#代码函数-使用”-”" class="headerlink" title="代码函数 使用”`”"></a>代码函数 使用”`”</h3><p><code>printf()</code> 函数</p>
-<h3 id="代码块使用-Tab"><a href="#代码块使用-Tab" class="headerlink" title="代码块使用 Tab"></a>代码块使用 Tab</h3><pre><code>&lt;? php
-echo &#39;RUNOOB&#39;
-function test() &#123;
-    echi &#39;test&#39;;    
-&#125;</code></pre>
-<h3 id="使用”-”-加上指定语言名字"><a href="#使用”-”-加上指定语言名字" class="headerlink" title="使用”```” 加上指定语言名字"></a>使用”```” 加上指定语言名字</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Hello World!&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>float： 单精度浮点值。1位符号位，8位指数，23位小数。<br><img src="/2020/12/17/programing-language/Clang/c-basic2/float.png" alt="float"><br>float可以保证十进制科学计数法小数点后6位有效精度和第7位的部分精度</p>
+<p>双精度：1位符号，11位指数，52位小数。<br><img src="/2020/12/17/programing-language/Clang/c-basic2/double.png" alt="double"><br>double可以保证十进制科学计数法小数点后15位有效精度和第16位的部分精度。</p>
+<h4 id="存放有小数点的数"><a href="#存放有小数点的数" class="headerlink" title="存放有小数点的数"></a>存放有小数点的数</h4><p>整数部分转换成二进制采用除2取余的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">22 &#x2F; 2 &#x3D; 11   余0</span><br><span class="line">11 &#x2F; 2 &#x3D; 5    余1</span><br><span class="line">5 &#x2F; 2 &#x3D; 2     余1</span><br><span class="line">2 &#x2F; 2 &#x3D; 1     余0</span><br><span class="line">1 &#x2F; 2 &#x3D; 0     余1</span><br></pre></td></tr></table></figure>
 
-<h2 id="插入图片"><a href="#插入图片" class="headerlink" title="插入图片"></a>插入图片</h2><p>插入图片使用<br><code>!文字说明[](图片资源路径)</code><br>图片路径可以使本地路径，也可以是网络路径</p>
-<h2 id="文字格式"><a href="#文字格式" class="headerlink" title="文字格式"></a>文字格式</h2><p>使用 <code>&lt;center&gt;&lt;/center&gt;</code> <center>使文字居中</center><br>使用 <code>** 加粗的文字 **</code>  <strong>使文字加粗</strong> </p>
+<p>小数部分采取乘2取整数的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">0.45 * 2 &#x3D; 0.9 0</span><br><span class="line">0.9 * 2 &#x3D; 1.8 1</span><br><span class="line">0.8 * 2 &#x3D; 1.6 1</span><br><span class="line">0.6 * 2 &#x3D; 1.2 1</span><br><span class="line">0.2 * 2 &#x3D; 0.4 0</span><br><span class="line">0.4 * 2 &#x3D; 0.8 0</span><br><span class="line">0.8 * 2 &#x3D; 1.6 1</span><br><span class="line">0.6 * 2 &#x3D; 1.2 1</span><br><span class="line">0.2 * 2 &#x3D; 0.4 0</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>所以22.45表示二进制为：10110.011100110  = 1.0110011100110 x 2^4<br>然后1可以省去</p>
+<h4 id="精度"><a href="#精度" class="headerlink" title="精度"></a>精度</h4><p>float和double的精度是由尾数的位数来决定的。浮点数在内存中是按科学计数法来存储的，其整数部分始终是一个隐含着的1，由于它是不变的，故不能对精度造成影响。 </p>
+<p>float：2^23 = 8388608，一共七位，这意味着最多能有7位有效数字，但绝对能保证的为6位，也即float的精度为6~7位有效数字； </p>
+<p>double：2^52 = 4503599627370496，一共16位，同理，double的精度为15~16位。 </p>
+<h4 id="左值、右值"><a href="#左值、右值" class="headerlink" title="左值、右值"></a>左值、右值</h4><p>左值（lvalue）：指向内存位置的表达式被称为左值（lvalue）表达式。左值可以出现在赋值号的左边或右边。<br>右值（rvalue）：术语右值（rvalue）指的是存储在内存中某些地址的数值。右值是不能对其进行赋值的表达式，也就是说，右值可以出现在赋值号的右边，但不能出现在赋值号的左边。</p>
+<h3 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h3><p>常量的表示</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">3.14159</span><br><span class="line">314159E-5L</span><br></pre></td></tr></table></figure>
+<h4 id="定义常量"><a href="#定义常量" class="headerlink" title="定义常量"></a>定义常量</h4><p>1、<code>#define</code><br>2、const关键字<br>略</p>
+<h3 id="存储类"><a href="#存储类" class="headerlink" title="存储类"></a>存储类</h3><h4 id="auto存储类"><a href="#auto存储类" class="headerlink" title="auto存储类"></a>auto存储类</h4><p>auto 只能用在函数内，即 auto 只能修饰局部变量。</p>
+<h4 id="register存储类"><a href="#register存储类" class="headerlink" title="register存储类"></a>register存储类</h4><p>register 存储类用于定义存储在寄存器中而不是 RAM 中的局部变量。这意味着变量的最大尺寸等于寄存器的大小（一般小于或等于整型长度），且不能对它应用一元的 ‘&amp;’ 运算符（因为它没有内存位置）。</p>
+<h4 id="static存储类"><a href="#static存储类" class="headerlink" title="static存储类"></a>static存储类</h4><p>被修饰的变量程序生命周期内,但是作用域被限制在文件内部。</p>
+<h4 id="extern存储类"><a href="#extern存储类" class="headerlink" title="extern存储类"></a>extern存储类</h4><p>使用 extern 时，对于无法初始化的变量，会把变量名指向一个之前定义过的存储位置。但是会是变量对所有程序的文件都是可见的。</p>
 
     </div>
 
@@ -307,20 +316,20 @@ function test() &#123;
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Markdown/" rel="tag"># Markdown</a>
+              <a href="/tags/programing-language/" rel="tag"># programing-language</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2020/12/10/hello-world/" rel="prev" title="Hello World">
-                  <i class="fa fa-chevron-left"></i> Hello World
+                <a href="/2020/12/16/network/iptables/iptables%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/" rel="prev" title="iptables常用指令">
+                  <i class="fa fa-chevron-left"></i> iptables常用指令
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2020/12/11/design-mode/design-mode-introduction/" rel="next" title="设计模式design-patterns-introduction">
-                  设计模式design-patterns-introduction <i class="fa fa-chevron-right"></i>
+                <a href="/2020/12/17/programing-language/Clang/c-basic3/" rel="next" title="运算符优先级">
+                  运算符优先级 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
