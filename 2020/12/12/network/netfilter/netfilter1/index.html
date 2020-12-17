@@ -32,7 +32,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://mrliuliu.github.io/2020/12/12/network/netfilter/netfilter1/Netfilter%E7%9A%84hook%E7%82%B9.png">
 <meta property="article:published_time" content="2020-12-12T01:51:52.000Z">
-<meta property="article:modified_time" content="2020-12-14T08:19:19.581Z">
+<meta property="article:modified_time" content="2020-12-16T11:03:13.803Z">
 <meta property="article:author" content="Liu liu">
 <meta property="article:tag" content="network">
 <meta name="twitter:card" content="summary">
@@ -175,7 +175,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -259,7 +259,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-12-14 16:19:19" itemprop="dateModified" datetime="2020-12-14T16:19:19+08:00">2020-12-14</time>
+        <time title="修改时间：2020-12-16 19:03:13" itemprop="dateModified" datetime="2020-12-16T19:03:13+08:00">2020-12-16</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -300,7 +300,7 @@
 <h3 id="四表五链"><a href="#四表五链" class="headerlink" title="四表五链"></a>四表五链</h3><p><strong>表是链的容器，链是规则的容器。</strong> 规则就是iptables的过滤信息的具体方法。</p>
 <h4 id="表"><a href="#表" class="headerlink" title="表"></a>表</h4><ul>
 <li>raw: 高级功能， 如过滤。</li>
-<li>mangle： 数据包修改（QOS）,用于实现服务质量.</li>
+<li>mangle： 数据包修改（QOS）,用于实现服务质量.mangle表的主要功能是根据规则修改数据包的一些标志位，以便其他规则或程序可以利用这种标志对数据包进行过滤或策略路由。</li>
 <li>nat： 地址转换，用于网关路由器.</li>
 <li>filter：包过滤，用于防火墙规则。</li>
 </ul>
