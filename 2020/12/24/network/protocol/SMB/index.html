@@ -23,21 +23,21 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
-<meta name="description" content="Linux 链接WiFi">
+<meta name="description" content="SMB2协议通信流程">
 <meta property="og:type" content="article">
-<meta property="og:title" content="wpa_supplicant">
-<meta property="og:url" content="https://mrliuliu.github.io/2020/12/19/operating-system/Linux/wpa_supplicant/wpa-supplicant/index.html">
+<meta property="og:title" content="SMB2 协议">
+<meta property="og:url" content="https://mrliuliu.github.io/2020/12/24/network/protocol/SMB/index.html">
 <meta property="og:site_name" content="copy dog">
-<meta property="og:description" content="Linux 链接WiFi">
+<meta property="og:description" content="SMB2协议通信流程">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-12-19T11:36:48.000Z">
-<meta property="article:modified_time" content="2020-12-19T11:43:12.780Z">
+<meta property="article:published_time" content="2020-12-24T09:59:03.000Z">
+<meta property="article:modified_time" content="2020-12-24T11:18:55.021Z">
 <meta property="article:author" content="Liu liu">
-<meta property="article:tag" content="operating-system">
+<meta property="article:tag" content="network">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://mrliuliu.github.io/2020/12/19/operating-system/Linux/wpa_supplicant/wpa-supplicant/">
+<link rel="canonical" href="https://mrliuliu.github.io/2020/12/24/network/protocol/SMB/">
 
 
 <script class="page-configurations">
@@ -49,7 +49,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>wpa_supplicant | copy dog</title>
+<title>SMB2 协议 | copy dog</title>
   
 
 
@@ -159,7 +159,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5WiFi"><span class="nav-number">1.</span> <span class="nav-text">链接WiFi</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">配置配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4-wpa-supplicant-B-d-i-wlan0-c-etc-wpa-supplicant-conf-%E5%88%9D%E5%A7%8B%E5%8C%96wpa-supplicant"><span class="nav-number">1.2.</span> <span class="nav-text">使用命令 wpa_supplicant -B -d -i wlan0 -c &#x2F;etc&#x2F;wpa_supplicant.conf 初始化wpa_supplicant</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4-dhclient-wlan0-%E8%8E%B7%E5%8F%96IP%E5%9C%B0%E5%9D%80"><span class="nav-number">1.3.</span> <span class="nav-text">使用命令 dhclient wlan0 获取IP地址</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SMB2-%E5%8D%8F%E8%AE%AE%E9%80%9A%E8%AE%AF%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">SMB2 协议通讯流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NEGOITATE-%E6%8A%A5%E6%96%87"><span class="nav-number">1.1.</span> <span class="nav-text">NEGOITATE 报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Session-Setup%E6%8A%A5%E6%96%87"><span class="nav-number">1.2.</span> <span class="nav-text">Session Setup报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CREATE-%E6%8A%A5%E6%96%87"><span class="nav-number">1.3.</span> <span class="nav-text">CREATE 报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#READ-WRITE%E6%8A%A5%E6%96%87"><span class="nav-number">1.4.</span> <span class="nav-text">READ&#x2F;WRITE报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SMB2-CLOSE"><span class="nav-number">1.5.</span> <span class="nav-text">SMB2 CLOSE</span></a></li></ol></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -226,7 +226,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2020/12/19/operating-system/Linux/wpa_supplicant/wpa-supplicant/">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2020/12/24/network/protocol/SMB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          wpa_supplicant
+          SMB2 协议
         </h1>
 
         <div class="post-meta-container">
@@ -251,7 +251,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2020-12-19 19:36:48 / 修改时间：19:43:12" itemprop="dateCreated datePublished" datetime="2020-12-19T19:36:48+08:00">2020-12-19</time>
+      <time title="创建时间：2020-12-24 17:59:03 / 修改时间：19:18:55" itemprop="dateCreated datePublished" datetime="2020-12-24T17:59:03+08:00">2020-12-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -259,11 +259,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/operating-system/" itemprop="url" rel="index"><span itemprop="name">operating-system</span></a>
+          <a href="/categories/network/" itemprop="url" rel="index"><span itemprop="name">network</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/operating-system/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+          <a href="/categories/network/protocol/" itemprop="url" rel="index"><span itemprop="name">protocol</span></a>
         </span>
     </span>
 
@@ -277,7 +277,7 @@
     </span>
 </div>
 
-            <div class="post-description">Linux 链接WiFi</div>
+            <div class="post-description">SMB2协议通信流程</div>
         </div>
       </header>
 
@@ -285,10 +285,21 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3 id="链接WiFi"><a href="#链接WiFi" class="headerlink" title="链接WiFi"></a>链接WiFi</h3><h4 id="配置配置文件"><a href="#配置配置文件" class="headerlink" title="配置配置文件"></a>配置配置文件</h4><p>编辑<code>/etc/wpa_supplicant.conf</code>添加链接的WiFi信息，可以添加多个。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">country=CN</span><br><span class="line">ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev</span><br><span class="line">update_config=1</span><br><span class="line">network=&#123;</span><br><span class="line">	ssid=<span class="string">&quot;TP-LINK_C925&quot;</span></span><br><span class="line">	psk=<span class="string">&quot;111111111&quot;</span></span><br><span class="line">	key_mgmt=WPA-PSK</span><br><span class="line">&#125;</span><br><span class="line">network=&#123;</span><br><span class="line">	ssid=<span class="string">&quot;TP-LINK_C925&quot;</span></span><br><span class="line">	psk=<span class="string">&quot;111111111&quot;</span></span><br><span class="line">	key_mgmt=WPA-PSK</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h3 id="SMB2-协议通讯流程"><a href="#SMB2-协议通讯流程" class="headerlink" title="SMB2 协议通讯流程"></a>SMB2 协议通讯流程</h3><h4 id="NEGOITATE-报文"><a href="#NEGOITATE-报文" class="headerlink" title="NEGOITATE 报文"></a>NEGOITATE 报文</h4><p>TCP连接建立完成后，先发送这个报文。协商使用的SMB版本客户端列出所有支持的版本，供服务器在Response中选择，这是一个smb链接的开始。</p>
+<h4 id="Session-Setup报文"><a href="#Session-Setup报文" class="headerlink" title="Session Setup报文"></a>Session Setup报文</h4><p>这个包建立一个认证的会话，选择认证方式，提交用户、密码等信息，然后认证成功建立一个新的会话，用来通讯。</p>
+<p>报文中的dislects字段指定了使用的加密凭据的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">These dialects allow assignment of various capabilities like encryption, signing algorithms, multichannel connections, etc. When the SMB client initially connects to a destination server, it negotiates the matched and required set of capabilities.</span><br><span class="line">来自 &lt;https:&#x2F;&#x2F;techcommunity.microsoft.com&#x2F;t5&#x2F;storage-at-microsoft&#x2F;controlling-smb-dialects&#x2F;ba-p&#x2F;860024&gt; </span><br></pre></td></tr></table></figure>
 
-<h4 id="使用命令-wpa-supplicant-B-d-i-wlan0-c-etc-wpa-supplicant-conf-初始化wpa-supplicant"><a href="#使用命令-wpa-supplicant-B-d-i-wlan0-c-etc-wpa-supplicant-conf-初始化wpa-supplicant" class="headerlink" title="使用命令 wpa_supplicant -B -d -i wlan0 -c /etc/wpa_supplicant.conf 初始化wpa_supplicant"></a>使用命令 wpa_supplicant -B -d -i wlan0 -c /etc/wpa_supplicant.conf 初始化wpa_supplicant</h4><h4 id="使用命令-dhclient-wlan0-获取IP地址"><a href="#使用命令-dhclient-wlan0-获取IP地址" class="headerlink" title="使用命令 dhclient wlan0 获取IP地址"></a>使用命令 dhclient wlan0 获取IP地址</h4>
+
+<p>NTLM需要一个随机字符串的响应来认真有足够平局访问。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">The security model used in Microsoft SMB Protocol is identical to the one used by other variants of SMB, and consists of two levels of securityuser and share. A share is a file, directory, or printer that can be accessed by Microsoft SMB Protocol clients.</span><br><span class="line">User-level authentication indicates that the client attempting to access a share on a server must provide a user name and password. When authenticated, the user can then access all shares on a server not also protected by share-level security. This security level allows system administrators to specifically determine which users and groups can access a share.</span><br><span class="line">Share-level authentication indicates that access to a share is controlled by a password assigned to that share only. Unlike user-level security, this security level does not require a user name for authentication and no user identity is established.</span><br><span class="line">Under both of these security levels, the password is encrypted before it is sent to the server.NTLMand the older LAN Manager (LM) encryption are supported by Microsoft SMB Protocol. Both encryption methods use challenge-response authentication, where the server sends the client a random string and the client returns a computed response string that proves the client has sufficient credentials for access.</span><br></pre></td></tr></table></figure>
+
+<p>协议头有一个Message ID，这个MID标识一组request、response。（SMB时请求、应答类型协议）</p>
+<h4 id="CREATE-报文"><a href="#CREATE-报文" class="headerlink" title="CREATE 报文"></a>CREATE 报文</h4><p>创建一个链接的会话,每个链接标识建立的一个文件或文件夹的会话，这个会话用Session ID标识。<br>同时为每个文件生成一个FID。</p>
+<h4 id="READ-WRITE报文"><a href="#READ-WRITE报文" class="headerlink" title="READ/WRITE报文"></a>READ/WRITE报文</h4><p>这个指令使用一个FileID标识一个文件的内容，这个FID是从Create Request报文获取的。</p>
+<p>请求发送请求的数据起始偏移以及请求数据长度<br>响应直接发送数据<br>MID的话是每个会话一个请求和响应匹配的MID，长文件需要多次读取或写，用MID来确认哪个请求已经被回复了。</p>
+<h4 id="SMB2-CLOSE"><a href="#SMB2-CLOSE" class="headerlink" title="SMB2 CLOSE"></a>SMB2 CLOSE</h4><p>一般文件传输完成或文件传输失败后，关闭一个会话，释放FID。</p>
+
     </div>
 
     
@@ -297,21 +308,18 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/operating-system/" rel="tag"># operating-system</a>
+              <a href="/tags/network/" rel="tag"># network</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2020/12/19/operating-system/Linux/vim/vim/" rel="prev" title="vim">
-                  <i class="fa fa-chevron-left"></i> vim
+                <a href="/2020/12/24/network/netfilter/netfilter-driver/" rel="prev" title="netfilter驱动程序模板">
+                  <i class="fa fa-chevron-left"></i> netfilter驱动程序模板
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2020/12/19/AI/paddlepaddle/introduction/" rel="next" title="AI简介">
-                  AI简介 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>

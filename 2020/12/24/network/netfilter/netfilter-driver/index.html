@@ -23,21 +23,21 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
-<meta name="description" content="Linux 链接WiFi">
+<meta name="description" content="netfilter 注册驱动程序模板">
 <meta property="og:type" content="article">
-<meta property="og:title" content="wpa_supplicant">
-<meta property="og:url" content="https://mrliuliu.github.io/2020/12/19/operating-system/Linux/wpa_supplicant/wpa-supplicant/index.html">
+<meta property="og:title" content="netfilter驱动程序模板">
+<meta property="og:url" content="https://mrliuliu.github.io/2020/12/24/network/netfilter/netfilter-driver/index.html">
 <meta property="og:site_name" content="copy dog">
-<meta property="og:description" content="Linux 链接WiFi">
+<meta property="og:description" content="netfilter 注册驱动程序模板">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-12-19T11:36:48.000Z">
-<meta property="article:modified_time" content="2020-12-19T11:43:12.780Z">
+<meta property="article:published_time" content="2020-12-24T03:54:48.000Z">
+<meta property="article:modified_time" content="2020-12-24T04:09:36.894Z">
 <meta property="article:author" content="Liu liu">
-<meta property="article:tag" content="operating-system">
+<meta property="article:tag" content="network">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://mrliuliu.github.io/2020/12/19/operating-system/Linux/wpa_supplicant/wpa-supplicant/">
+<link rel="canonical" href="https://mrliuliu.github.io/2020/12/24/network/netfilter/netfilter-driver/">
 
 
 <script class="page-configurations">
@@ -49,7 +49,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>wpa_supplicant | copy dog</title>
+<title>netfilter驱动程序模板 | copy dog</title>
   
 
 
@@ -159,7 +159,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5WiFi"><span class="nav-number">1.</span> <span class="nav-text">链接WiFi</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">配置配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4-wpa-supplicant-B-d-i-wlan0-c-etc-wpa-supplicant-conf-%E5%88%9D%E5%A7%8B%E5%8C%96wpa-supplicant"><span class="nav-number">1.2.</span> <span class="nav-text">使用命令 wpa_supplicant -B -d -i wlan0 -c &#x2F;etc&#x2F;wpa_supplicant.conf 初始化wpa_supplicant</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4-dhclient-wlan0-%E8%8E%B7%E5%8F%96IP%E5%9C%B0%E5%9D%80"><span class="nav-number">1.3.</span> <span class="nav-text">使用命令 dhclient wlan0 获取IP地址</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A9%B1%E5%8A%A8%E6%A8%A1%E5%9D%97%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E6%B3%A8%E9%94%80"><span class="nav-number">1.</span> <span class="nav-text">驱动模块的注册和注销</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8C%85%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">数据包处理函数的返回值：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">3.</span> <span class="nav-text">处理函数的优先级</span></a></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -226,7 +226,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2020/12/19/operating-system/Linux/wpa_supplicant/wpa-supplicant/">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2020/12/24/network/netfilter/netfilter-driver/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          wpa_supplicant
+          netfilter驱动程序模板
         </h1>
 
         <div class="post-meta-container">
@@ -251,7 +251,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2020-12-19 19:36:48 / 修改时间：19:43:12" itemprop="dateCreated datePublished" datetime="2020-12-19T19:36:48+08:00">2020-12-19</time>
+      <time title="创建时间：2020-12-24 11:54:48 / 修改时间：12:09:36" itemprop="dateCreated datePublished" datetime="2020-12-24T11:54:48+08:00">2020-12-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -259,11 +259,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/operating-system/" itemprop="url" rel="index"><span itemprop="name">operating-system</span></a>
+          <a href="/categories/network/" itemprop="url" rel="index"><span itemprop="name">network</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/operating-system/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+          <a href="/categories/network/netfilter/" itemprop="url" rel="index"><span itemprop="name">netfilter</span></a>
         </span>
     </span>
 
@@ -277,7 +277,7 @@
     </span>
 </div>
 
-            <div class="post-description">Linux 链接WiFi</div>
+            <div class="post-description">netfilter 注册驱动程序模板</div>
         </div>
       </header>
 
@@ -285,10 +285,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3 id="链接WiFi"><a href="#链接WiFi" class="headerlink" title="链接WiFi"></a>链接WiFi</h3><h4 id="配置配置文件"><a href="#配置配置文件" class="headerlink" title="配置配置文件"></a>配置配置文件</h4><p>编辑<code>/etc/wpa_supplicant.conf</code>添加链接的WiFi信息，可以添加多个。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">country=CN</span><br><span class="line">ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev</span><br><span class="line">update_config=1</span><br><span class="line">network=&#123;</span><br><span class="line">	ssid=<span class="string">&quot;TP-LINK_C925&quot;</span></span><br><span class="line">	psk=<span class="string">&quot;111111111&quot;</span></span><br><span class="line">	key_mgmt=WPA-PSK</span><br><span class="line">&#125;</span><br><span class="line">network=&#123;</span><br><span class="line">	ssid=<span class="string">&quot;TP-LINK_C925&quot;</span></span><br><span class="line">	psk=<span class="string">&quot;111111111&quot;</span></span><br><span class="line">	key_mgmt=WPA-PSK</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h3 id="驱动模块的注册和注销"><a href="#驱动模块的注册和注销" class="headerlink" title="驱动模块的注册和注销"></a>驱动模块的注册和注销</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/kernel.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/netfilter.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/netfilter_ipv4.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">nf_hook_ops</span> <span class="title">nfho</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 数据包处理函数</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">hook_func</span><span class="params">(<span class="keyword">const</span> struct nf_hook_ops *ops, struct sk_buff* skb,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">const</span> struct net_device* in, <span class="keyword">const</span> struct net_device* out, <span class="keyword">int</span> (*okfn)(struct sk_buff*))</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> NF_DROP;  <span class="comment">// 丢弃所有数据包</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> __init <span class="title">hook_init</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	nfho.hook = hook_func;  <span class="comment">// 数据包处理函数注册</span></span><br><span class="line">	nfho.pf = PF_INET;</span><br><span class="line">	nfho.priority = NF_IP_PRI_FIRST;  <span class="comment">// 函数执行的优先级</span></span><br><span class="line"></span><br><span class="line">	nf_register_hook(&amp;nfho);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> __exit <span class="title">hook_exit</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	nf_unregister_hook(&amp;nfho);  <span class="comment">// 注销操作</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MODULE_LICENSE(<span class="string">&quot;GPL&quot;</span>);</span><br><span class="line">module_init(hook_init);  <span class="comment">// 加载驱动程序</span></span><br><span class="line">module_exit(hook_exit);	<span class="comment">// 卸载驱动程序</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="使用命令-wpa-supplicant-B-d-i-wlan0-c-etc-wpa-supplicant-conf-初始化wpa-supplicant"><a href="#使用命令-wpa-supplicant-B-d-i-wlan0-c-etc-wpa-supplicant-conf-初始化wpa-supplicant" class="headerlink" title="使用命令 wpa_supplicant -B -d -i wlan0 -c /etc/wpa_supplicant.conf 初始化wpa_supplicant"></a>使用命令 wpa_supplicant -B -d -i wlan0 -c /etc/wpa_supplicant.conf 初始化wpa_supplicant</h4><h4 id="使用命令-dhclient-wlan0-获取IP地址"><a href="#使用命令-dhclient-wlan0-获取IP地址" class="headerlink" title="使用命令 dhclient wlan0 获取IP地址"></a>使用命令 dhclient wlan0 获取IP地址</h4>
+<h3 id="数据包处理函数的返回值："><a href="#数据包处理函数的返回值：" class="headerlink" title="数据包处理函数的返回值："></a>数据包处理函数的返回值：</h3><p>1、NF_DROP   丢弃所有数据包，不再传输，为它分配的资源应该全部释放。<br>2、NF_ACCEPT 继续正常传输数据包这个返回值告诉Netfilter，到目前为止，该数据包还是被接受的并且该数据包应当被递交到网络堆栈的下一个阶段<br>3、NF_STOLEN: 忘掉该数据包，不对该数据包进行处理<br>4、NF_QUEUE: 将数据包插入到用户空间<br>5、NF_REPEAT: 回到上一个hook点。</p>
+<h3 id="处理函数的优先级"><a href="#处理函数的优先级" class="headerlink" title="处理函数的优先级"></a>处理函数的优先级</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">nf_ip_hook_priorities</span> &#123;</span></span><br><span class="line">    NF_IP_PRI_FIRST = INT_MIN,</span><br><span class="line">    NF_IP_PRI_CONNTRACK_DEFRAG = <span class="number">-400</span>,</span><br><span class="line">    NF_IP_PRI_RAW = <span class="number">-300</span>,</span><br><span class="line">    NF_IP_PRI_SELINUX_FIRST = <span class="number">-225</span>,</span><br><span class="line">    NF_IP_PRI_CONNTRACK = <span class="number">-200</span>,</span><br><span class="line">    NF_IP_PRI_MANGLE = <span class="number">-150</span>,</span><br><span class="line">    NF_IP_PRI_NAT_DST = <span class="number">-100</span>,</span><br><span class="line">    NF_IP_PRI_FILTER = <span class="number">0</span>,</span><br><span class="line">    NF_IP_PRI_SECURITY = <span class="number">50</span>,</span><br><span class="line">    NF_IP_PRI_NAT_SRC = <span class="number">100</span>,</span><br><span class="line">    NF_IP_PRI_SELINUX_LAST = <span class="number">225</span>,</span><br><span class="line">    NF_IP_PRI_CONNTRACK_HELPER = <span class="number">300</span>,</span><br><span class="line">    NF_IP_PRI_CONNTRACK_CONFIRM = INT_MAX,</span><br><span class="line">    NF_IP_PRI_LAST = INT_MAX,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
     </div>
 
     
@@ -297,20 +298,20 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/operating-system/" rel="tag"># operating-system</a>
+              <a href="/tags/network/" rel="tag"># network</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2020/12/19/operating-system/Linux/vim/vim/" rel="prev" title="vim">
-                  <i class="fa fa-chevron-left"></i> vim
+                <a href="/2020/12/24/leetcode/%E5%90%88%E5%B9%B6%E4%B8%A4%E4%B8%AA%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84/" rel="prev" title="合并两个有序数组">
+                  <i class="fa fa-chevron-left"></i> 合并两个有序数组
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2020/12/19/AI/paddlepaddle/introduction/" rel="next" title="AI简介">
-                  AI简介 <i class="fa fa-chevron-right"></i>
+                <a href="/2020/12/24/network/protocol/SMB/" rel="next" title="SMB2 协议">
+                  SMB2 协议 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
