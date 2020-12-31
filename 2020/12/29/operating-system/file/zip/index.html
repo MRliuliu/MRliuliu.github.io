@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/th.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/th.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="zip 文件格式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="zip 文件格式分析">
+<meta property="og:url" content="https://mrliuliu.github.io/2020/12/29/operating-system/file/zip/index.html">
+<meta property="og:site_name" content="copy dog">
+<meta property="og:description" content="zip 文件格式">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-29T10:12:42.000Z">
+<meta property="article:modified_time" content="2020-12-31T08:22:56.433Z">
+<meta property="article:author" content="Liu liu">
+<meta property="article:tag" content="文件格式">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://mrliuliu.github.io/2020/12/29/operating-system/file/zip/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>zip 文件格式分析 | copy dog</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">copy dog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">和懒惰抗争</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="fa fa-tag fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#zip-%E6%96%87%E4%BB%B6%E6%95%B4%E4%BD%93%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">.zip 文件整体概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E6%96%87%E4%BB%B6%E6%95%B0%E6%8D%AE%E5%8C%BA"><span class="nav-number">2.</span> <span class="nav-text">1、文件数据区</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#loal-file-header"><span class="nav-number">2.1.</span> <span class="nav-text">loal file header</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#file-data"><span class="nav-number">2.2.</span> <span class="nav-text">file data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Data-Descriptor"><span class="nav-number">2.3.</span> <span class="nav-text">Data Descriptor</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Central-directory-structure"><span class="nav-number">3.</span> <span class="nav-text">Central directory structure</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E9%9D%A2%E6%98%AFfile-header"><span class="nav-number">3.1.</span> <span class="nav-text">下面是file header</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%AB%E5%B0%BE%E7%9A%84Digital-signature"><span class="nav-number">3.2.</span> <span class="nav-text">末尾的Digital signature:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AA%E5%AE%8C%E6%88%90"><span class="nav-number">4.</span> <span class="nav-text">未完成</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Liu liu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2020/12/29/operating-system/file/zip/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          zip 文件格式分析
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <i class="fa fa-thumb-tackk"></i>
+    <font color="#222">置顶</font>
+    <span class="post-meta-divider"></span>
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-12-29 18:12:42" itemprop="dateCreated datePublished" datetime="2020-12-29T18:12:42+08:00">2020-12-29</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-12-31 16:22:56" itemprop="dateModified" datetime="2020-12-31T16:22:56+08:00">2020-12-31</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">文件系统</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+            <div class="post-description">zip 文件格式</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>from <a target="_blank" rel="noopener" href="https://pkware.cachefly.net/webdocs/APPNOTE/APPNOTE-6.2.0.txt">https://pkware.cachefly.net/webdocs/APPNOTE/APPNOTE-6.2.0.txt</a></p>
+<h3 id="zip-文件整体概述"><a href="#zip-文件整体概述" class="headerlink" title=".zip 文件整体概述"></a>.zip 文件整体概述</h3><table>
+<thead>
+<tr>
+<th align="center">zip 文件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">local file header 1</td>
+</tr>
+<tr>
+<td align="center">file data 1</td>
+</tr>
+<tr>
+<td align="center">data descriptor 1</td>
+</tr>
+<tr>
+<td align="center">…</td>
+</tr>
+<tr>
+<td align="center">local file header n</td>
+</tr>
+<tr>
+<td align="center">file data n</td>
+</tr>
+<tr>
+<td align="center">data description n</td>
+</tr>
+<tr>
+<td align="center">archive decryption header (EFS)</td>
+</tr>
+<tr>
+<td align="center">archive extra data record (EFS)</td>
+</tr>
+<tr>
+<td align="center">central directory</td>
+</tr>
+<tr>
+<td align="center">zip64 end of central directory record</td>
+</tr>
+<tr>
+<td align="center">zip64 end of central directory locator</td>
+</tr>
+<tr>
+<td align="center">end of central directory record</td>
+</tr>
+</tbody></table>
+<h3 id="1、文件数据区"><a href="#1、文件数据区" class="headerlink" title="1、文件数据区"></a>1、文件数据区</h3><p>zip文件以二进制打开，开头就是文件数据区。格式如下：</p>
+<h4 id="loal-file-header"><a href="#loal-file-header" class="headerlink" title="loal file header"></a>loal file header</h4><table>
+<thead>
+<tr>
+<th align="center">signatrue</th>
+<th align="center">文件头标识： 0x04034b50</th>
+<th align="center">4 bytes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">frVersion</td>
+<td align="center">解压文件所需的pkware最低版本</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">frFlags</td>
+<td align="center">通用比特标志位（置比特0位=加密）</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">frCompression</td>
+<td align="center">压缩方式 （frCompression的取值有0~12）</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">frFileTime</td>
+<td align="center">文件最后修改时间</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">frFileData</td>
+<td align="center">文件最后修改日期</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">frCrc</td>
+<td align="center">CRC-32校验码</td>
+<td align="center">4 bytes</td>
+</tr>
+<tr>
+<td align="center">frCompressedSize</td>
+<td align="center">压缩后的大小</td>
+<td align="center">4 bytes</td>
+</tr>
+<tr>
+<td align="center">frUncompressedSize</td>
+<td align="center">未压缩的大小</td>
+<td align="center">4 bytes</td>
+</tr>
+<tr>
+<td align="center">frFileNameLength</td>
+<td align="center">文件名长度</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">frExtraFieldLength</td>
+<td align="center">扩展区长度</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">frFileName</td>
+<td align="center">文件名</td>
+<td align="center">variable size</td>
+</tr>
+<tr>
+<td align="center">frExtraField</td>
+<td align="center">扩展区</td>
+<td align="center">vriable size</td>
+</tr>
+<tr>
+<td align="center">frData</td>
+<td align="center">压缩数据</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<h4 id="file-data"><a href="#file-data" class="headerlink" title="file data"></a>file data</h4><p>位压缩过的文件内容。</p>
+<h4 id="Data-Descriptor"><a href="#Data-Descriptor" class="headerlink" title="Data Descriptor"></a>Data Descriptor</h4><p>| </p>
+<h3 id="Central-directory-structure"><a href="#Central-directory-structure" class="headerlink" title="Central directory structure"></a>Central directory structure</h3><p>中央目录结构的构造<br>[file header 1]<br>.<br>.<br>.<br>[file header n]<br>[digital signature]</p>
+<hr>
+<h4 id="下面是file-header"><a href="#下面是file-header" class="headerlink" title="下面是file header"></a>下面是file header</h4><table>
+<thead>
+<tr>
+<th align="center">signature</th>
+<th align="center">中央目录文件header标识：0x02014b50</th>
+<th align="center">4 bytes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">deVersionMadeBy</td>
+<td align="center">压缩所用的pkware版本</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">deVersionMadeBy</td>
+<td align="center">压缩所用的pkware版本</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">deVersionToExtract</td>
+<td align="center">解压所需pkware的最低版本</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">deFlags</td>
+<td align="center">通用位标记</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">deCompression</td>
+<td align="center">压缩方法</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">deFileTime</td>
+<td align="center">文件最后修改时间</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">deFileDate</td>
+<td align="center">文件最后修改日期</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">deCrc</td>
+<td align="center">CRC-32校验码</td>
+<td align="center">4 bytes</td>
+</tr>
+<tr>
+<td align="center">deCompressedSize</td>
+<td align="center">压缩后的大小</td>
+<td align="center">4 bytes</td>
+</tr>
+<tr>
+<td align="center">deUncompressedSize</td>
+<td align="center">未压缩的大小</td>
+<td align="center">4 bytes</td>
+</tr>
+<tr>
+<td align="center">deFileNameLength</td>
+<td align="center">文件名长度</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">deExtraFieldLength</td>
+<td align="center">扩展域长度</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">deFileCommentLength</td>
+<td align="center">文件注释长度</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">deDiskNumberStart</td>
+<td align="center">文件开始位置的磁盘编号</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">deInternalAttributes</td>
+<td align="center">内部文件属性</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">deExternalAttributes</td>
+<td align="center">外部文件属性</td>
+<td align="center">4 bytes</td>
+</tr>
+<tr>
+<td align="center">deHeaderOffset</td>
+<td align="center">本地文件头的相对位移</td>
+<td align="center">4 bytes</td>
+</tr>
+<tr>
+<td align="center">deFileName</td>
+<td align="center">目录文件名</td>
+<td align="center">variable size</td>
+</tr>
+<tr>
+<td align="center">deExtraField</td>
+<td align="center"></td>
+<td align="center">扩展域</td>
+</tr>
+<tr>
+<td align="center">deFileComment</td>
+<td align="center">文件注释内容</td>
+<td align="center">variable size</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="末尾的Digital-signature"><a href="#末尾的Digital-signature" class="headerlink" title="末尾的Digital signature:"></a>末尾的Digital signature:</h4><table>
+<thead>
+<tr>
+<th align="center">header signature</th>
+<th align="center">标识0x05054b50</th>
+<th align="center">4 bytes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">size of data</td>
+<td align="center">数据大小</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">signature</td>
+<td align="center">签名</td>
+<td align="center">variable size</td>
+</tr>
+</tbody></table>
+<h3 id="未完成"><a href="#未完成" class="headerlink" title="未完成"></a>未完成</h3>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/" rel="tag"># 文件格式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/12/29/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/leetcode/1-1%E9%AA%8C%E8%AF%81%E5%9B%9E%E6%96%87%E4%B8%B2/" rel="prev" title="验证回文串">
+                  <i class="fa fa-chevron-left"></i> 验证回文串
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/12/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/leetcode/1-2%E5%88%86%E5%89%B2%E5%9B%9E%E6%96%87%E4%B8%B2/" rel="next" title="1-2分割回文串">
+                  1-2分割回文串 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu liu</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+</body>
+</html>
