@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/th.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/th.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="from: https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;u3Y2jItQcD9qezmAzJX-Jw  一、计算机网络通信协议通信协议（communications protocol）是指双方实体完成通信或服务所必须遵循的规则和约定。通过通信信道和设备互连起来的多个不同地理位置的数据通信系统，要使其能协同工作实现信息交换和资源共享，它们之间必须具有共同的语言。交流什么、怎样交流及何时交流">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP-IP">
+<meta property="og:url" content="https://mrliuliu.github.io/2021/01/02/network/protocol/TCP-IP/index.html">
+<meta property="og:site_name" content="copy dog">
+<meta property="og:description" content="from: https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;u3Y2jItQcD9qezmAzJX-Jw  一、计算机网络通信协议通信协议（communications protocol）是指双方实体完成通信或服务所必须遵循的规则和约定。通过通信信道和设备互连起来的多个不同地理位置的数据通信系统，要使其能协同工作实现信息交换和资源共享，它们之间必须具有共同的语言。交流什么、怎样交流及何时交流">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/01/02/network/protocol/TCP-IP/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E6%A0%88%E6%A8%A1%E5%9E%8B.jpg">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/01/02/network/protocol/TCP-IP/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93%E6%B5%81%E7%A8%8B.jpg">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/01/02/network/protocol/TCP-IP/IP%E5%9C%B0%E5%9D%80%E5%88%86%E7%B1%BB.jpg">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/01/02/network/protocol/TCP-IP/TCP-IP%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%BA%94%E7%94%A8.jpg">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/01/02/network/protocol/TCP-IP/TCP%E9%A6%96%E9%83%A8%E6%A0%BC%E5%BC%8F.jpg">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/01/02/network/protocol/TCP-IP/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.jpg">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/01/02/network/protocol/TCP-IP/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.jpg">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/01/02/network/protocol/TCP-IP/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3.jpg">
+<meta property="article:published_time" content="2021-01-02T02:02:10.000Z">
+<meta property="article:modified_time" content="2021-01-02T03:51:38.916Z">
+<meta property="article:author" content="Liu liu">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mrliuliu.github.io/2021/01/02/network/protocol/TCP-IP/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E6%A0%88%E6%A8%A1%E5%9E%8B.jpg">
+
+
+<link rel="canonical" href="https://mrliuliu.github.io/2021/01/02/network/protocol/TCP-IP/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>TCP-IP | copy dog</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">copy dog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">和懒惰抗争</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="fa fa-tag fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C"><span class="nav-number">1.</span> <span class="nav-text">一、计算机网络</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.1.</span> <span class="nav-text">通信协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">网络模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP-IP"><span class="nav-number">2.</span> <span class="nav-text">TCP&#x2F;IP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#IP"><span class="nav-number">2.1.</span> <span class="nav-text">IP</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#IP%E5%9C%B0%E5%9D%80%E5%88%86%E7%B1%BB"><span class="nav-number">2.1.1.</span> <span class="nav-text">IP地址分类</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP-%E4%B8%8E-UDP"><span class="nav-number">2.2.</span> <span class="nav-text">TCP 与 UDP</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#TCP%E5%92%8CUDP%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BA%94%E7%94%A8"><span class="nav-number">2.2.1.</span> <span class="nav-text">TCP和UDP协议的一些应用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP%E9%93%BE%E6%8E%A5%E7%9A%84%E5%BB%BA%E7%AB%8B%E4%B8%8E%E7%BB%88%E6%AD%A2"><span class="nav-number">2.3.</span> <span class="nav-text">TCP链接的建立与终止</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP%E6%8A%A5%E6%96%87%E9%A6%96%E9%83%A8"><span class="nav-number">2.4.</span> <span class="nav-text">TCP报文首部</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">2.5.</span> <span class="nav-text">TCP三次握手</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">2.6.</span> <span class="nav-text">为什么需要三次握手</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP-%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="nav-number">2.7.</span> <span class="nav-text">TCP 四次挥手</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%9E%E6%8E%A5%E7%9A%84%E6%97%B6%E5%80%99%E6%98%AF%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%EF%BC%8C%E5%85%B3%E9%97%AD%E7%9A%84%E6%97%B6%E5%80%99%E5%8D%B4%E6%98%AF%E5%9B%9B%E6%AC%A1%E6%8F%A1%E6%89%8B%EF%BC%9F"><span class="nav-number">2.8.</span> <span class="nav-text">为什么连接的时候是三次握手，关闭的时候却是四次握手？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88TIME-WAIT%E7%8A%B6%E6%80%81%E9%9C%80%E8%A6%81%E7%BB%8F%E8%BF%872MSL-%E6%9C%80%E5%A4%A7%E6%8A%A5%E6%96%87%E6%AE%B5%E7%94%9F%E5%AD%98%E6%97%B6%E9%97%B4-%E6%89%8D%E8%83%BD%E8%BF%94%E5%9B%9E%E5%88%B0CLOSE%E7%8A%B6%E6%80%81%EF%BC%9F"><span class="nav-number">2.9.</span> <span class="nav-text">为什么TIME_WAIT状态需要经过2MSL(最大报文段生存时间)才能返回到CLOSE状态？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E6%9D%A5%E4%BF%9D%E8%AF%81%E4%BC%A0%E8%BE%93%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7"><span class="nav-number">2.10.</span> <span class="nav-text">TCP协议如何来保证传输的可靠性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6"><span class="nav-number">2.11.</span> <span class="nav-text">滑动窗口机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="nav-number">2.11.1.</span> <span class="nav-text">流量控制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">2.11.2.</span> <span class="nav-text">拥塞控制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%87%BA%E7%8E%B0%E4%BA%86%E5%A4%A7%E9%87%8FCLOSE-WAIT%E7%8A%B6%E6%80%81%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3"><span class="nav-number">2.12.</span> <span class="nav-text">服务器出现了大量CLOSE_WAIT状态如何解决</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%B2%E4%B8%80%E8%AE%B2SYN%E8%B6%85%E6%97%B6%EF%BC%8C%E6%B4%AA%E6%B3%9B%E6%94%BB%E5%87%BB%EF%BC%8C%E4%BB%A5%E5%8F%8A%E8%A7%A3%E5%86%B3%E7%AD%96%E7%95%A5"><span class="nav-number">2.13.</span> <span class="nav-text">讲一讲SYN超时，洪泛攻击，以及解决策略</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Liu liu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/01/02/network/protocol/TCP-IP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TCP-IP
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-01-02 10:02:10 / 修改时间：11:51:38" itemprop="dateCreated datePublished" datetime="2021-01-02T10:02:10+08:00">2021-01-02</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>from: <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/u3Y2jItQcD9qezmAzJX-Jw">https://mp.weixin.qq.com/s/u3Y2jItQcD9qezmAzJX-Jw</a></p>
+<hr>
+<h3 id="一、计算机网络"><a href="#一、计算机网络" class="headerlink" title="一、计算机网络"></a>一、计算机网络</h3><h4 id="通信协议"><a href="#通信协议" class="headerlink" title="通信协议"></a>通信协议</h4><p>通信协议（communications protocol）是指双方实体完成通信或服务所必须遵循的规则和约定。通过通信信道和设备互连起来的多个不同地理位置的数据通信系统，要使其能协同工作实现信息交换和资源共享，它们之间必须具有共同的语言。交流什么、怎样交流及何时交流，都必须遵循某种互相都能接受的规则。这个规则就是通信协议。</p>
+<a id="more"></a>
+<hr>
+<h4 id="网络模型"><a href="#网络模型" class="headerlink" title="网络模型"></a>网络模型</h4><p>随着技术的发展，计算机的应用越来越广泛，计算机之间的通信开始了百花齐放的状态，每个具有独立计算服务体系的信息技术公司都会建立自己的计算机通信规则，而这种情况会导致异构计算机之间无法通信，极大的阻碍了网络通信的发展，至此为了解决这个问题，国际标准化组织（ISO）制定了OSI模型，该模型定义了不同计算机互联的标准，OSI模型把网络通信的工作分为7层，分别是 <strong>物理层、数据链路层、网络层、传输层、会话层、表示层和应用层</strong> 。<br>这七层模型是设计层面的概念，每一层都有固定要完成的职责和功能，分层的好处在于清晰和功能独立性，但分层过多会使层次变的更加复杂，虽然不需要实现本层的功能，但是也需要构造本层的上下文，空耗系统资源，所以在落地实施网络通信模型的时候将这七层模型简化合并为四层模型分别是 <strong>应用层、传输层、网络层、网络接口层</strong> （各层之间的模型、协议统称为：TCP/IP协议簇）。<br><img src="/2021/01/02/network/protocol/TCP-IP/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E6%A0%88%E6%A8%A1%E5%9E%8B.jpg" alt="网络协议栈"></p>
+<p>从上图可以看到，TCP/IP模型合并了OSI模型的应用层、表示层和会话层，将OSI模型的数据链路层和物理层合并为网络访问层。</p>
+<p>上图还列出了各层模型对应TCP/IP协议栈中的协议以及各层协议之间的关系。比如DNS协议是建立在TCP和UDP协议的基础上，FTP、HTTP、TELNET协议建立在TCP协议的基础上，NTP、TFTP、SNMP建立在UDP协议的基础上，而TCP、UDP协议又建立在IP协议的基础上，以此类推….</p>
+<table>
+<thead>
+<tr>
+<th align="center">OSI中的层</th>
+<th align="center">功能</th>
+<th align="center">TCP/IP协议族</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">应用层</td>
+<td align="center">文件传输，电子邮件，文件服务，虚拟终端</td>
+<td align="center">TFTP，HTTP，SNMP，FTP，SMTP，DNS，RIP，Telnet</td>
+</tr>
+<tr>
+<td align="center">表示层</td>
+<td align="center">数据格式化，代码转换，数据加密</td>
+<td align="center">无</td>
+</tr>
+<tr>
+<td align="center">会话层</td>
+<td align="center">控制应用程序之间会话能力；如不同软件数据分发给不同软件</td>
+<td align="center">ASAP、TLS、SSH、ISO 8327 / CCITT X.225、RPC、NetBIOS、ASP、Winsock、BSD sockets</td>
+</tr>
+<tr>
+<td align="center">传输层</td>
+<td align="center">端到端传输数据的基本功能</td>
+<td align="center">TCP、UDP</td>
+</tr>
+<tr>
+<td align="center">网络层</td>
+<td align="center">定义IP编址，定义路由功能；如不同设备的数据转发</td>
+<td align="center">IP，ICMP，RIP，OSPF，BGP，IGMP</td>
+</tr>
+<tr>
+<td align="center">数据链路层</td>
+<td align="center">定义数据的基本格式，如何传输，如何标识</td>
+<td align="center">SLIP，CSLIP，PPP，ARP，RARP，MTU</td>
+</tr>
+<tr>
+<td align="center">物理层</td>
+<td align="center">以二进制数据形式在物理媒体上传输数据</td>
+<td align="center">ISO2110，IEEE802</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="TCP-IP"><a href="#TCP-IP" class="headerlink" title="TCP/IP"></a>TCP/IP</h3><p>数据再网络层中传输最终一定通过物理介质传输。物理介质就是把电脑连接起来的物理手段，如：光纤、双绞线、无线电波，它决定了电信号(0和1)的传输方式，物理介质的不同决定了电信号的 <strong>传输带宽、速率、传输距离以及抗干扰性</strong> 等等。</p>
+<p>TCP/IP的模型的每一层都需要下一层所提供的协议来完成自己的目的。我们来看下数据是怎么通过TCP/IP协议模型从一台主机发送到另一台主机的。<br><img src="/2021/01/02/network/protocol/TCP-IP/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93%E6%B5%81%E7%A8%8B.jpg" alt="数据传输流程"></p>
+<hr>
+<h4 id="IP"><a href="#IP" class="headerlink" title="IP"></a>IP</h4><h5 id="IP地址分类"><a href="#IP地址分类" class="headerlink" title="IP地址分类"></a>IP地址分类</h5><p>IP地址是指互联网协议地址，是IP协议提供的一种统一的地址格式，它为互联网上的每一个网络和每一台主机分配一个逻辑地址，以此来屏蔽物理地址的差异。IP地址编址方案将IP地址空间划分为A、B、C、D、E五类，其中A、B、C是基本类，D、E类作为多播和保留使用，为特殊地址。<br>每个IP地址包括两个标识码（ID），即网络ID和主机ID。同一个物理网络上的所有主机都使用同一个网络ID，网络上的一个主机（包括网络上工作站，服务器和路由器等）有一个主机ID与其对应。A~E类地址的特点如下：</p>
+<ul>
+<li>A类地址：以0开头，第一个字节范围：0~127；</li>
+<li>B类地址：以10开头，第一个字节范围：128~191；</li>
+<li>C类地址：以110开头，第一个字节范围：192~223；</li>
+<li>D类地址：以1110开头，第一个字节范围为224~239；</li>
+<li>E类地址：以1111开头，保留地址<br><img src="/2021/01/02/network/protocol/TCP-IP/IP%E5%9C%B0%E5%9D%80%E5%88%86%E7%B1%BB.jpg" alt="IP地址分类"></li>
+</ul>
+<hr>
+<h4 id="TCP-与-UDP"><a href="#TCP-与-UDP" class="headerlink" title="TCP 与 UDP"></a>TCP 与 UDP</h4><p>都属于传输层协议。<br>TCP（Transmission Control Protocol，传输控制协议）是面向连接的协议，也就是说，在收发数据前，必须和对方建立可靠的连接。一个TCP连接必须有三次握手、四次挥手。<br>UDP（User Data Protocol，用户数据报协议）是一个非连接的协议，传输数据之前源端和终端不建立连接， 当它想传送时就简单地去抓取来自应用程序的数据，并尽可能快地把它扔到网络上</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">TCP</th>
+<th align="center">UDP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">连接性</td>
+<td align="center">面向连接</td>
+<td align="center">面向非连接</td>
+</tr>
+<tr>
+<td align="center">传输可靠性</td>
+<td align="center">可靠</td>
+<td align="center">不可靠</td>
+</tr>
+<tr>
+<td align="center">报文</td>
+<td align="center">面向字节流</td>
+<td align="center">面向报文</td>
+</tr>
+<tr>
+<td align="center">效率</td>
+<td align="center">传输效率低</td>
+<td align="center">传输效率高</td>
+</tr>
+<tr>
+<td align="center">流量控制</td>
+<td align="center">滑动窗口</td>
+<td align="center">无</td>
+</tr>
+<tr>
+<td align="center">拥塞控制</td>
+<td align="center">慢开始、拥塞避免、快重传、快恢复</td>
+<td align="center">无</td>
+</tr>
+<tr>
+<td align="center">传输速度</td>
+<td align="center">慢</td>
+<td align="center">快</td>
+</tr>
+<tr>
+<td align="center">应用场合</td>
+<td align="center">对效率要求低，对准确性要求高或要求有连接的场景</td>
+<td align="center">对效率要求高，对准确性要求低</td>
+</tr>
+</tbody></table>
+<hr>
+<h5 id="TCP和UDP协议的一些应用"><a href="#TCP和UDP协议的一些应用" class="headerlink" title="TCP和UDP协议的一些应用"></a>TCP和UDP协议的一些应用</h5><p><img src="/2021/01/02/network/protocol/TCP-IP/TCP-IP%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%BA%94%E7%94%A8.jpg" alt="TCP-IP协议的应用"></p>
+<hr>
+<h4 id="TCP链接的建立与终止"><a href="#TCP链接的建立与终止" class="headerlink" title="TCP链接的建立与终止"></a>TCP链接的建立与终止</h4><p>TCP虽然是面向字节流的，但TCP传送的数据单元却是报文段。一个TCP报文段分为首部和数据两部分，而TCP的全部功能体现在它首部中的各字段的作用。<br>TCP报文段首部的前20个字节是固定的（下图），后面有4n字节是根据需要而增加的选项（n是整数）。因此TCP首部的最小长度是20字节。<br><img src="/2021/01/02/network/protocol/TCP-IP/TCP%E9%A6%96%E9%83%A8%E6%A0%BC%E5%BC%8F.jpg" alt="TCP首部格式"></p>
+<hr>
+<h4 id="TCP报文首部"><a href="#TCP报文首部" class="headerlink" title="TCP报文首部"></a>TCP报文首部</h4><ul>
+<li><p>源端口和目的端口，个两个字节，分别写入源端口和目的端口，端口大小为0-65535；端口号 0 是一个预留的端口号，代表的意思就是它在TCP或者UDP网络传输中应该不会被用到。但是在网络编程中，尤其是在unix socket编程当中，它有一些特殊的含义。在unix socket编程当中，端口号 0 是一种由系统指定动态生成的端口。<br>当建立新的TCP和UDP socket连接时，需要给它们指定端口号。 为了避免这种写死端口号的做法或者说为了从本地系统中找到可用端口。网络编程员们可以以端口号0来作为连接参数。这样的话操作系统就会从动态端口号范围内搜索接下来可以使用的端口号。windows系统和其他操作系统在处理端口号0时有一些细微的差别。</p>
+</li>
+<li><p>序列号（Sequence number），占4字节。序号范围是0-[2^32 - 1]。在一个TCP连接中传送的字节流中的每一个字节都按顺序编号。传送的字节流的起始序号在连接建立时通过主机随机设置。首部中的序号字段值则是指的是 <strong>本报文段所发送的数据的第一个字节的序号</strong> 。例如，一报文段的序号是301，而接待的数据共有100字节。这就表明：本报文段的数据的第一个字节的序号是301，最后一个字节的序号是400。显然，下一个报文段（如果还有的话）的数据序号应当从401开始，即下一个报文段的序号字段值应为401。这个字段的序号也叫“报文段序号”;</p>
+</li>
+<li><p>确认序号（Acknowledge number），占4个字节 <strong>是期望收到对方下一个报文的第一个数据字节的序号。</strong> ， 例如，B收到了A发送过来的报文，其序列号字段是501，而数据长度是200字节，这表明B正确的收到了A发送的到序号700为止的数据。因此，B期望收到A的下一个数据序号是701，于是B在发送给A的确认报文段中把确认号置为701；</p>
+</li>
+<li><p>数据偏移 占4位，它指出TCP报文段的数据起始处距离TCP报文段的起始处的偏移量。</p>
+</li>
+<li><p>保留： 占6位，保留为今后使用，但目前应置为0；</p>
+</li>
+<li><p>紧急URG（URGent），当URG=1，表明紧急指针字段有效。告诉系统此报文段中有紧急数据；</p>
+</li>
+<li><p>确认ACK（ACKnowledgment）， 仅当ACK=1时，确认号字段才有效。 <strong>TCP规定，在连接建立后所有报文的传输都必须把ACK置1</strong> ；</p>
+</li>
+<li><p>推送PSH（PuSH） ，当两个应用进程进行交互式通信时，有时在一端的应用进程希望在键入一个命令后立即就能收到对方的响应，这时候就将PSH=1；</p>
+</li>
+<li><p>复位RST（ReSeT），当RST=1，表明TCP连接中出现严重差错，必须释放连接，然后再重新建立连接；</p>
+</li>
+<li><p>同步SYN（SYNchronization），在连接建立时用来同步序号。 <strong>当SYN=1，ACK=0，表明是连接请求报文，若同意连接，则响应报文中应该使SYN=1，ACK=1</strong> ；</p>
+</li>
+<li><p>终止FIN（FINis），用来释放连接。 <strong>当FIN=1，表明此报文的发送方的数据已经发送完毕，并且要求释放</strong> ；</p>
+<ul>
+<li>窗口，占2字节，指的是通知接收方，发送本报文你需要有多大的空间来接受；</li>
+</ul>
+</li>
+<li><p>检验和，占2字节，校验首部和数据这两部分；</p>
+</li>
+<li><p>急指针，占2字节，指出本报文段中的紧急数据的字节数；</p>
+</li>
+<li><p>选项，长度可变，定义一些其他的可选的参数<br>TCP是一种面向连接的单播协议，在发送数据前，通信双方必须在彼此间建立一条连接。所谓的“连接”，其实是客户端和服务器的内存里保存的一份关于对方的信息，如ip地址、端口号等，TCP链接通过五元组确认一个链接。</p>
+</li>
+</ul>
+<hr>
+<h4 id="TCP三次握手"><a href="#TCP三次握手" class="headerlink" title="TCP三次握手"></a>TCP三次握手</h4><p>所谓三次握手(Three-way Handshake)，是指建立一个 TCP 连接时，需要客户端和服务器总共发送3个包。<br>三次握手的目的是连接服务器指定端口，建立 TCP 连接，并同步连接双方的序列号和确认号，交换 TCP 窗口大小信息。<br><img src="/2021/01/02/network/protocol/TCP-IP/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.jpg" alt="三次握手"></p>
+<ul>
+<li>第一次握手（SYN=1, seq=x）<br>建立连接。客户端发送连接请求报文段，这是报文首部中的同步位 <code>SYN=1</code>，同时选择一个初始序列号   <code>seq=x</code>  ，此时，客户端进程进入了 <code>SYN-SENT</code>（同步已发送状态）状态。TCP规定，SYN报文段（SYN=1的报文段） <strong>不能携带数据，但需要消耗掉一个序号</strong> ；</li>
+<li>第二次握手(SYN=1, ACK=1, seq=y, ACKnum=x+1)<br>服务器收到客户端的SYN报文段，如果同意连接，则发出确认报文。确认报文中应该 ACK=1，SYN=1，确认号ACKnum=x+1，同时，自己还要发送SYN请求信息，SYN=1，为自己初始化一个序列号 seq=y，服务器端将上述所有信息放到一个报文段（即SYN+ACK报文段）中，一并发送给客户端，此时，TCP服务器进程进入了 <code>SYN-RCVD</code> （同步收到）状态。 <strong>这个报文也不能携带数据，但是同样要消耗一个序号</strong> 。</li>
+<li>第三次握手(ACK=1，ACKnum=y+1)<br>客户端收到服务器的SYN+ACK报文段，再次发送确认包(ACK)，SYN 标志位为0，ACK 标志位为1，确认号 ACKnum = y+1，这个报文段发送完毕以后，客户端和服务器端都进入 <code>ESTABLISHED</code>（已建立连接）状态，完成TCP三次握手。</li>
+</ul>
+<hr>
+<h4 id="为什么需要三次握手"><a href="#为什么需要三次握手" class="headerlink" title="为什么需要三次握手"></a>为什么需要三次握手</h4><p>为了防止已失效的连接请求报文段突然又传送到了服务端，因而产生错误。<br>具体例子：“已失效的连接请求报文段”的产生在这样一种情况下：client发出的第一个连接请求报文段并没有丢失，而是在某个网络结点长时间的滞留了，以致延误到连接释放以后的某个时间才到达server。本来这是一个早已失效的报文段。但server收到此失效的连接请求报文段后，就误认为是client再次发出的一个新的连接请求。于是就向client发出确认报文段，同意建立连接。假设不采用“三次握手”，那么只要server发出确认，新的连接就建立了。由于现在client并没有发出建立连接的请求，因此不会理睬server的确认，也不会向server发送数据。但server却以为新的运输连接已经建立，并一直等待client发来数据。这样，server的很多资源就白白浪费掉了。采用“三次握手”的办法可以防止上述现象发生。例如刚才那种情况，client不会向server的确认发出确认。server由于收不到确认，就知道client并没有要求建立连接。”</p>
+<hr>
+<h4 id="TCP-四次挥手"><a href="#TCP-四次挥手" class="headerlink" title="TCP 四次挥手"></a>TCP 四次挥手</h4><p>TCP 的连接的拆除需要发送四个包，因此称为四次挥手(Four-way handshake)，也叫做改进的三次握手。 <strong>客户端或服务器均可主动发起挥手动作</strong> 。<br><img src="/2021/01/02/network/protocol/TCP-IP/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.jpg" alt="四次挥手"></p>
+<ul>
+<li>第一次挥手(FIN=1，seq=x)<br>主机1（可以使客户端，也可以是服务器端），设置seq=x，向主机2发送一个FIN报文段；此时，主机1进入 <code>FIN_WAIT_1</code> 状态；这表示主机1没有数据要发送给主机2了；</li>
+<li>第二次挥手(ACK=1，ACKnum=x+1)<br>主机2收到了主机1发送的FIN报文段，向主机1回一个ACK报文段， <code>Acknnum=x+1</code> ，主机1进入 <code>FIN_WAIT_2</code> 状态；主机2告诉主机1，我“同意”你的关闭请求；</li>
+<li>第三次挥手(FIN=1，seq=y)<br>主机2向主机1发送FIN报文段，请求关闭连接，同时主机2进入 <code>LAST_ACK</code> 状态</li>
+<li>第四次挥手(ACK=1，ACKnum=y+1)<br>主机1收到主机2发送的FIN报文段，向主机2发送ACK报文段，然后主机1进入 <code>TIME_WAIT</code> 状态；主机2收到主机1的ACK报文段以后，就关闭连接；此时， <strong>主机1等待2MSL后依然没有收到回复，则证明Server端已正常关闭</strong> ，那好，主机1也可以关闭连接了，进入 CLOSED 状态。<br>主机 1 等待了某个固定时间（两个最大段生命周期，2MSL，2 Maximum Segment Lifetime）之后，没有收到服务器端的 ACK ，认为服务器端已经正常关闭连接，于是自己也关闭连接，进入 CLOSED 状态。</li>
+</ul>
+<hr>
+<h4 id="为什么连接的时候是三次握手，关闭的时候却是四次握手？"><a href="#为什么连接的时候是三次握手，关闭的时候却是四次握手？" class="headerlink" title="为什么连接的时候是三次握手，关闭的时候却是四次握手？"></a>为什么连接的时候是三次握手，关闭的时候却是四次握手？</h4><p>因为当Server端收到Client端的SYN连接请求报文后，可以直接发送SYN+ACK报文。其中ACK报文是用来应答的，SYN报文是用来同步的。但是关闭连接时，当Server端收到FIN报文时，很可能并不会立即关闭SOCKET，所以只能先回复一个ACK报文，告诉Client端，”你发的FIN报文我收到了”。只有等到我Server端所有的报文都发送完了，我才能发送FIN报文，因此不能一起发送。故需要四步握手。<br>由于 TCP 协议是全双工的，也就是说客户端和服务端都可以发起断开连接。两边各发起一次断开连接的申请，加上各自的两次确认，看起来就像执行了四次挥手。</p>
+<hr>
+<h4 id="为什么TIME-WAIT状态需要经过2MSL-最大报文段生存时间-才能返回到CLOSE状态？"><a href="#为什么TIME-WAIT状态需要经过2MSL-最大报文段生存时间-才能返回到CLOSE状态？" class="headerlink" title="为什么TIME_WAIT状态需要经过2MSL(最大报文段生存时间)才能返回到CLOSE状态？"></a>为什么TIME_WAIT状态需要经过2MSL(最大报文段生存时间)才能返回到CLOSE状态？</h4><p>虽然按道理，四个报文都发送完毕，我们可以直接进入CLOSE状态了，但是我们必须假想网络是不可靠的，有可能最后一个ACK丢失。所以TIME_WAIT状态就是用来重发可能丢失的ACK报文。<br>还有一个原因，防止类似与“三次握手”中提到了的“已经失效的连接请求报文段”出现在本连接中。客户端发送完最后一个确认报文后，在这个2MSL时间中， <strong>就可以使本连接持续的时间内所产生的所有报文段都从网络中消失。这样新的连接中不会出现旧连接的请求报文</strong> 。</p>
+<hr>
+<h4 id="TCP协议如何来保证传输的可靠性"><a href="#TCP协议如何来保证传输的可靠性" class="headerlink" title="TCP协议如何来保证传输的可靠性"></a>TCP协议如何来保证传输的可靠性</h4><p>对于可靠性，TCP通过以下方式进行保证：</p>
+<ul>
+<li>数据包校验：目的是检测数据在传输过程中的任何变化，若校验出包有错，则丢弃报文段并且不给出响应，这时TCP发送数据端超时后会重发数据；</li>
+<li>对失序数据包重排序：既然TCP报文段作为IP数据报来传输，而IP数据报的到达可能会失序，因此TCP报文段的到达也可能会失序。TCP将对失序数据进行重新排序，然后才交给应用层；</li>
+<li>丢弃重复数据：对于重复数据，能够丢弃重复数据；</li>
+<li>应答机制：当TCP收到发自TCP连接另一端的数据，它将发送一个确认。这个确认不是立即发送，通常将推迟几分之一秒；</li>
+<li>超时重发：当TCP发出一个段后，它启动一个定时器，等待目的端确认收到这个报文段。如果不能及时收到一个确认，将重发这个报文段；</li>
+<li>流量控制：TCP连接的每一方都有固定大小的 <strong>缓冲空间</strong> 。TCP的接收端只允许另一端发送接收端缓冲区所能接纳的数据，这可以防止较快主机致使较慢主机的缓冲区溢出，这就是流量控制。TCP使用的流量控制协议是可变大小的滑动窗口协议。</li>
+</ul>
+<hr>
+<h4 id="滑动窗口机制"><a href="#滑动窗口机制" class="headerlink" title="滑动窗口机制"></a>滑动窗口机制</h4><p>如果发送方把数据发送得过快，接收方可能会来不及接收，这就会造成数据的丢失。所谓流量控制就是让发送方的发送速率不要太快，要让接收方来得及接收。<br>利用滑动窗口机制可以很方便地在TCP连接上实现对发送方的流量控制。<br><img src="/2021/01/02/network/protocol/TCP-IP/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3.jpg" alt="滑动窗口"><br>从上面的图可以看到滑动窗口左边的是已发送并且被确认的分组，滑动窗口右边是还没有轮到的分组。滑动窗口里面也分为两块，一块是已经发送但是未被确认的分组，另一块是窗口内等待发送的分组。随着已发送的分组不断被确认，窗口内等待发送的分组也会不断被发送。整个窗口就会往右移动，让还没轮到的分组进入窗口内。<br>可以看到滑动窗口起到了一个限流的作用，也就是说当前滑动窗口的大小决定了当前 TCP 发送包的速率，而滑动窗口的大小取决于 <strong>拥塞控制窗口和流量控制窗口</strong> 的两者间的最小值。</p>
+<hr>
+<h5 id="流量控制"><a href="#流量控制" class="headerlink" title="流量控制"></a>流量控制</h5><p>TCP 是全双工的，客户端和服务器均可作为发送方或接收方，我们现在假设一个发送方向接收方发送数据的场景来讲解流量控制。首先我们的接收方有一块接收缓存，当数据来到时会先把数据放到缓存中，上层应用等缓存中有数据时就会到缓存中取数据。假如发送方没有限制地不断地向接收方发送数据，接收方的应用程序又没有及时把接收缓存中的数据读走，就会出现缓存溢出，数据丢失的现象，为了解决这个问题，我们引入流量控制窗口。<br>假设应用程序最后读走的数据序号是 lastByteRead，接收缓存中接收到的最后一个数据序号是 lastByteRcv，接收缓存的大小为 RcvSize，那么必须要满足 lastByteRcv - lastByteRead &lt;= RcvSize 才能保证接收缓存不会溢出，所以我们定义流量窗口为接收缓存剩余的空间，也就是Rcv = RcvSize - (lastByteRcv - lastByteRead)。只要接收方在响应 ACK 的时候把这个窗口的值带给发送方，发送方就能知道接收方的接收缓存还有多大的空间，进而设置滑动窗口的大小。</p>
+<hr>
+<h5 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h5><p>拥塞控制是指发送方先设置一个小的窗口值作为发送速率，当成功发包并接收到ACK时，便以指数速率增大发送窗口的大小，直到遇到丢包（超时/三个冗余ACK），才停止并调整窗口的大小。这么做能最大限度地利用带宽，又不至于让网络环境变得太过拥挤。<br>最终滑动窗口的值将设置为流量控制窗口和拥塞控制窗口中的较小值。</p>
+<p>计算机网络中的带宽、交换结点中的缓存及处理机等都是网络的资源。在某段时间，若对网络中某一资源的需求超过了该资源所能提供的可用部分，网络的性能就会变坏，这种情况就叫做拥塞。拥塞控制就是防止过多的数据注入网络中，这样可以使网络中的路由器或链路不致过载。注意，拥塞控制和流量控制不同，前者是一个全局性的过程，而后者指点对点通信量的控制。拥塞控制的方法主要有以下四种：<br>1、慢启动：不要一开始就发送大量的数据，先探测一下网络的拥塞程度，也就是说由小到大逐渐增加拥塞窗口的大小;<br>2、拥塞避免：拥塞避免算法让拥塞窗口缓慢增长，即每经过一个往返时间RTT就把发送方的拥塞窗口cwnd加1，而不是加倍，这样拥塞窗口按线性规律缓慢增长。<br>3、快重传：快重传要求接收方在收到一个 失序的报文段 后就立即发出 重复确认（为的是使发送方及早知道有报文段没有到达对方）而不要等到自己发送数据时捎带确认。快重传算法规定，发送方只要一连收到三个重复确认就应当立即重传对方尚未收到的报文段，而不必继续等待设置的重传计时器时间到期。<br>4、快恢复：快重传配合使用的还有快恢复算法，当发送方连续收到三个重复确认时，就执行“乘法减小”算法，把ssthresh门限减半，但是接下去并不执行慢开始算法：因为如果网络出现拥塞的话就不会收到好几个重复的确认，所以发送方现在认为网络可能没有出现拥塞。所以此时不执行慢开始算法，而是将cwnd设置为ssthresh的大小，然后执行拥塞避免算法。</p>
+<hr>
+<h4 id="服务器出现了大量CLOSE-WAIT状态如何解决"><a href="#服务器出现了大量CLOSE-WAIT状态如何解决" class="headerlink" title="服务器出现了大量CLOSE_WAIT状态如何解决"></a>服务器出现了大量CLOSE_WAIT状态如何解决</h4><p>大量 CLOSE_WAIT 表示程序出现了问题，对方的 socket 已经关闭连接，而我方忙于读或写没有及时关闭连接，需要检查代码，特别是释放资源的代码，或者是处理请求的线程配置。</p>
+<hr>
+<h4 id="讲一讲SYN超时，洪泛攻击，以及解决策略"><a href="#讲一讲SYN超时，洪泛攻击，以及解决策略" class="headerlink" title="讲一讲SYN超时，洪泛攻击，以及解决策略"></a>讲一讲SYN超时，洪泛攻击，以及解决策略</h4><p>什么 SYN 是洪泛攻击？在 TCP 的三次握手机制的第一步中，客户端会向服务器发送 SYN 报文段。服务器接收到 SYN 报文段后会为该TCP分配缓存和变量，如果攻击分子大量地往服务器发送 SYN 报文段，服务器的连接资源终将被耗尽，导致内存溢出无法继续服务。<br>解决策略：当服务器接受到 SYN 报文段时，不直接为该 TCP 分配资源，而只是打开一个半开的套接字。接着会使用 SYN 报文段的源Id，目的Id，端口号以及只有服务器自己知道的一个秘密函数生成一个 cookie，并把 cookie 作为序列号响应给客户端。<br>如果客户端是正常建立连接，将会返回一个确认字段为 cookie + 1 的报文段。接下来服务器会根据确认报文的源Id，目的Id，端口号以及秘密函数计算出一个结果，如果结果的值 + 1等于确认字段的值，则证明是刚刚请求连接的客户端，这时候才为该 TCP 分配资源<br>这样一来就不会为恶意攻击的 SYN 报文段分配资源空间，避免了攻击。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/01/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/datastructure/ringbuf/" rel="prev" title="ringbuf">
+                  <i class="fa fa-chevron-left"></i> ringbuf
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu liu</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+</body>
+</html>
