@@ -167,7 +167,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">39</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -462,6 +462,179 @@
     
     <div class="post-body" itemprop="articleBody">
           <h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><p>算法（algorithm）是为求解一个问题需要遵循的、被清楚的指定的简单指令的集合。<br>《数据结构与算法分析》第二遍笔记记录新坑</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/01/02/operating-system/Linux/software/tcpdump/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/01/02/operating-system/Linux/software/tcpdump/" class="post-title-link" itemprop="url">tcpdump</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-01-02 15:16:50 / 修改时间：15:56:19" itemprop="dateCreated datePublished" datetime="2021-01-02T15:16:50+08:00">2021-01-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/" itemprop="url" rel="index"><span itemprop="name">operating-system</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/Linux/software/" itemprop="url" rel="index"><span itemprop="name">software</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>from：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/ggjucheng/archive/2012/01/14/2322659.html">https://www.cnblogs.com/ggjucheng/archive/2012/01/14/2322659.html</a><br>tcpdump的使用方法。</p>
+<h3 id="指定网络接口"><a href="#指定网络接口" class="headerlink" title="指定网络接口"></a>指定网络接口</h3><p><code>tcpdump -i iface-name</code></p>
+<h3 id="指定所有网络接口"><a href="#指定所有网络接口" class="headerlink" title="指定所有网络接口"></a>指定所有网络接口</h3><p><code>tcpdump -i any</code></p>
+<h3 id="监听指定主机的数据包"><a href="#监听指定主机的数据包" class="headerlink" title="监听指定主机的数据包"></a>监听指定主机的数据包</h3><p>所有进入或者离开主机的数据包(以主机名方式指定主机)<br><code>tcpdump -i any host sundown</code><br>抓取指定主机之间的通信数据(以主机名方式指定主机)<br><code>tcpdump -i any host sundown and \( hel or destopZTE\)</code><br>所有进入或者离开主机的数据包(以IP方式指定主机)<br><code>tcpdump -i any host 192.168.1.167</code><br>抓取指定主机之间的通信数据(以IP方式指定主机)<br><code>tcpdump -i any host 192.168.1.167 and \( 172.20.1.122 or 192.168.1.88\)</code><br>抓取出指定主机外的通信包<br><code>tcpdump -i any host 210.1.1.87 and ! 172.20.1.189</code><br>抓取指定主机作为源发送的数据包<br><code>tcpdump -i any src host DESKTOP-HPCK5K8</code><br>抓取所有目标地址为指定主机的数据包<br><code>tcpdump -i any dst host DESKTOP-HPCK5K8</code></p>
+<h3 id="通过指定主机和端口监听数据包"><a href="#通过指定主机和端口监听数据包" class="headerlink" title="通过指定主机和端口监听数据包"></a>通过指定主机和端口监听数据包</h3><p>加入tcp端口的筛选<br><code>tcpdump -i any host 192.168.1.22 and tcp port 23</code><br>加入udp端口的筛选<br><code>tcpdump -i any udp port 123 src 192.168.2.111</code></p>
+<h3 id="指定协议抓取数据包"><a href="#指定协议抓取数据包" class="headerlink" title="指定协议抓取数据包"></a>指定协议抓取数据包</h3><p>抓取协议<br><code>tcpdump -i any &#39;tcp[tcpflags] &amp; (tcp-syn|tcp-fin) != 0&#39;</code></p>
+<h3 id="抓取包保存"><a href="#抓取包保存" class="headerlink" title="抓取包保存"></a>抓取包保存</h3><p><code>tcpdump -i any -w file.pcapng</code></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/01/02/operating-system/Linux/software/gdb/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/01/02/operating-system/Linux/software/gdb/" class="post-title-link" itemprop="url">gdb</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-01-02 14:25:06 / 修改时间：14:58:56" itemprop="dateCreated datePublished" datetime="2021-01-02T14:25:06+08:00">2021-01-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/" itemprop="url" rel="index"><span itemprop="name">operating-system</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/Linux/software/" itemprop="url" rel="index"><span itemprop="name">software</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="gdb-使用"><a href="#gdb-使用" class="headerlink" title="gdb 使用"></a>gdb 使用</h3><h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><p>1、编译代码<br>使用 <code>gcc -ggdb3</code> 编译之后，给生成的信息添加足够的调试信息。<br>2、使用 <code>gdb 执行代码</code><br>开始执行。<br>进入gdb界面后使用如下操作：<br>r(run)   开始执行代码。<br>n(next)  从断点开始执行到协议个断点。<br>b(break) 给代码打断点。<br>l(list)  列出代码清单。<br>p(print) 打印变量<br>bt(backstrace)    打印调用栈</p>
+<h4 id="layout命令"><a href="#layout命令" class="headerlink" title="layout命令"></a>layout命令</h4><p>1、显示源代码窗口<br><code>(gdb)layout src</code><br>2、显示寄存器窗口<br><code>(gdb)layout regs</code><br>3、显示汇编代码窗口<br><code>(gdb)layout asm</code><br>4、希纳是源代码和汇编代码<br><code>(gdb)layout split</code><br>5、显示窗口的大小<br><code>info win</code><br>6、刷新所有窗口<br><code>refresh</code></p>
 
       
     </div>
@@ -870,182 +1043,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/12/31/operating-system/Linux/raspberry/raspberry%E4%BD%BF%E7%94%A8/">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2020/12/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/leetcode/1-2%E5%88%86%E5%89%B2%E5%9B%9E%E6%96%87%E4%B8%B2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Liu liu">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="copy dog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/12/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/leetcode/1-2%E5%88%86%E5%89%B2%E5%9B%9E%E6%96%87%E4%B8%B2/" class="post-title-link" itemprop="url">1-2分割回文串</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-  
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-12-30 10:47:45" itemprop="dateCreated datePublished" datetime="2020-12-30T10:47:45+08:00">2020-12-30</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-12-31 17:05:19" itemprop="dateModified" datetime="2020-12-31T17:05:19+08:00">2020-12-31</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>给定一个字符串 s，将 s 分割成一些子串，使每个子串都是回文串。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/12/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/leetcode/1-2%E5%88%86%E5%89%B2%E5%9B%9E%E6%96%87%E4%B8%B2/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2020/12/29/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/leetcode/1-1%E9%AA%8C%E8%AF%81%E5%9B%9E%E6%96%87%E4%B8%B2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Liu liu">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="copy dog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/12/29/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/leetcode/1-1%E9%AA%8C%E8%AF%81%E5%9B%9E%E6%96%87%E4%B8%B2/" class="post-title-link" itemprop="url">验证回文串</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-  
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-12-29 11:35:55" itemprop="dateCreated datePublished" datetime="2020-12-29T11:35:55+08:00">2020-12-29</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-12-31 16:24:56" itemprop="dateModified" datetime="2020-12-31T16:24:56+08:00">2020-12-31</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/12/29/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/leetcode/1-1%E9%AA%8C%E8%AF%81%E5%9B%9E%E6%96%87%E4%B8%B2/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
