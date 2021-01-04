@@ -167,14 +167,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -462,6 +462,174 @@
     
     <div class="post-body" itemprop="articleBody">
           <h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><p>算法（algorithm）是为求解一个问题需要遵循的、被清楚的指定的简单指令的集合。<br>《数据结构与算法分析》第二遍笔记记录新坑</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/01/04/programing-language/Clang/%E7%A8%8B%E5%BA%8F%E7%A7%BB%E6%A4%8D%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/01/04/programing-language/Clang/%E7%A8%8B%E5%BA%8F%E7%A7%BB%E6%A4%8D%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">程序移植问题</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-01-04 18:37:27 / 修改时间：18:48:54" itemprop="dateCreated datePublished" datetime="2021-01-04T18:37:27+08:00">2021-01-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/programing-language/" itemprop="url" rel="index"><span itemprop="name">programing-language</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/programing-language/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="使用库-头文件的安装路径问题"><a href="#使用库-头文件的安装路径问题" class="headerlink" title="使用库/头文件的安装路径问题"></a>使用库/头文件的安装路径问题</h3><p>比如将x86的Debian8程序一直到树莓派的过程中。原程序依赖路径位于<code>/usr/lib/x86_64-linux-gnu/glib-2.0/include</code>的头文件，但是在树莓派的Debian10.5系统下该文件时安装在<code>/usr/lib/aarch64-linux-gnu/glib-2.0/include</code> 目录下。<br>所以需要修改编译中的依赖库的路径。</p>
+<h3 id="依赖库版本导致的问题"><a href="#依赖库版本导致的问题" class="headerlink" title="依赖库版本导致的问题"></a>依赖库版本导致的问题</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#warning &quot;_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE&quot;</span><br></pre></td></tr></table></figure>
+<p>这个问题时因为glibc的库版本问题导致的，需要将<code>_BSD_SOURCE</code> 宏改成 <code>_DEFAULT_SOURCE</code> 宏。</p>
+<h3 id="编译器版本问题"><a href="#编译器版本问题" class="headerlink" title="编译器版本问题"></a>编译器版本问题</h3><p>报错如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">storage size of status isnt known</span><br></pre></td></tr></table></figure>
+<p>在使用gcc4.9.2编译时，可以通过，但是在树莓派更新后的gcc8.3.0-6 下会出现上面错误。</p>
+<h3 id="动态库"><a href="#动态库" class="headerlink" title="动态库"></a>动态库</h3><p>使用过的动态库需要重新编译。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/01/04/operating-system/Linux/%E5%8F%91%E8%A1%8C%E7%89%88%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/01/04/operating-system/Linux/%E5%8F%91%E8%A1%8C%E7%89%88%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85/" class="post-title-link" itemprop="url">发行版软件安装</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-01-04 15:47:18 / 修改时间：18:37:02" itemprop="dateCreated datePublished" datetime="2021-01-04T15:47:18+08:00">2021-01-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/" itemprop="url" rel="index"><span itemprop="name">operating-system</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>在发行版安装软件时经常会出现那问题。<br>以raspberry + Debian为例：<br>树莓派安装的时基于Debian10.5(buster)为例：<br>最初为了安装软件速率快写按照网上更换了国内的镜像源。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># &#x2F;etc&#x2F;apt&#x2F;sources.list</span><br><span class="line">deb http:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;raspbian&#x2F;raspbian&#x2F; stretch main contrib non-free rpi</span><br><span class="line">deb-src http:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;raspbian&#x2F;raspbian&#x2F; stretch main contrib non-free rpi</span><br><span class="line"># &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;raspi.list</span><br><span class="line">deb http:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;raspberrypi&#x2F; stretch main ui</span><br><span class="line">deb-src http:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;raspberrypi&#x2F; stretch main ui</span><br></pre></td></tr></table></figure>
+<p>发现出现类似如下这样的错误。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libc6:armhf (&gt;&#x3D; 2.11) but it is not going to be installed</span><br></pre></td></tr></table></figure>
+<p>这个是因为，选择的镜像源适用的发行版版本和实际系统的版本不同。<br>可以看到每个镜像的源都有一个字段表明发行版的名字，当发行版的名字不同时，会出现使用apt安装软件失败。</p>
 
       
     </div>
@@ -906,171 +1074,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/01/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/datastructure/ringbuf/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Liu liu">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="copy dog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/01/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/datastructure/ringbuf/" class="post-title-link" itemprop="url">ringbuf</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-  
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-01-01 16:52:07 / 修改时间：22:16:30" itemprop="dateCreated datePublished" datetime="2021-01-01T16:52:07+08:00">2021-01-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">数据结构与算法</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          Welcome
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/01/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/datastructure/ringbuf/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2020/12/31/programing-language/Clang/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E5%87%BD%E6%95%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Liu liu">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="copy dog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/12/31/programing-language/Clang/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E5%87%BD%E6%95%B0/" class="post-title-link" itemprop="url">线程安全函数</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-  
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2020-12-31 20:58:23 / 修改时间：21:05:24" itemprop="dateCreated datePublished" datetime="2020-12-31T20:58:23+08:00">2020-12-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/programing-language/" itemprop="url" rel="index"><span itemprop="name">programing-language</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/programing-language/Clang/" itemprop="url" rel="index"><span itemprop="name">Clang</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><a href="/2020/12/31/programing-language/Clang/reentran/">可重入与不可重入函数</a></p>
-
       
     </div>
 
