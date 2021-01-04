@@ -31,7 +31,7 @@
 <meta property="og:description" content="lighttpd 使用记录">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-12-26T11:28:50.000Z">
-<meta property="article:modified_time" content="2021-01-04T14:48:59.107Z">
+<meta property="article:modified_time" content="2021-01-04T15:26:18.373Z">
 <meta property="article:author" content="Liu liu">
 <meta property="article:tag" content="software">
 <meta name="twitter:card" content="summary">
@@ -159,7 +159,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85lighttpd"><span class="nav-number">1.</span> <span class="nav-text">安装lighttpd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C"><span class="nav-number">2.</span> <span class="nav-text">运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0lighttpd%E8%87%AA%E5%90%AF%E5%8A%A8"><span class="nav-number">3.</span> <span class="nav-text">添加lighttpd自启动</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0systemctl%E6%9C%8D%E5%8A%A1%E6%96%87%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">添加systemctl服务文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%9D%83%E9%99%90"><span class="nav-number">3.2.</span> <span class="nav-text">添加可执行权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8"><span class="nav-number">3.3.</span> <span class="nav-text">添加开机启动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E7%94%A8https"><span class="nav-number">4.</span> <span class="nav-text">启用https</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%99lighttpd%E6%B7%BB%E5%8A%A0RESPONSE-HEADER"><span class="nav-number">5.</span> <span class="nav-text">给lighttpd添加RESPONSE HEADER</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%84%E7%90%86-Content-Security-Policy-CSP-not-implemented"><span class="nav-number">5.1.</span> <span class="nav-text">处理 Content Security Policy (CSP) not implemented</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Clickjacking-X-Frame-Options-header-missing"><span class="nav-number">5.2.</span> <span class="nav-text">Clickjacking: X-Frame-Options header missing</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%8A%B6%E6%80%81"><span class="nav-number">6.</span> <span class="nav-text">查看服务器状态</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85lighttpd"><span class="nav-number">1.</span> <span class="nav-text">安装lighttpd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C"><span class="nav-number">2.</span> <span class="nav-text">运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0lighttpd%E8%87%AA%E5%90%AF%E5%8A%A8"><span class="nav-number">3.</span> <span class="nav-text">添加lighttpd自启动</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0systemctl%E6%9C%8D%E5%8A%A1%E6%96%87%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">添加systemctl服务文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%9D%83%E9%99%90"><span class="nav-number">3.2.</span> <span class="nav-text">添加可执行权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8"><span class="nav-number">3.3.</span> <span class="nav-text">添加开机启动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E7%94%A8https"><span class="nav-number">4.</span> <span class="nav-text">启用https</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%99lighttpd%E6%B7%BB%E5%8A%A0RESPONSE-HEADER"><span class="nav-number">5.</span> <span class="nav-text">给lighttpd添加RESPONSE HEADER</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%84%E7%90%86-Content-Security-Policy-CSP-not-implemented"><span class="nav-number">5.1.</span> <span class="nav-text">处理 Content Security Policy (CSP) not implemented</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Clickjacking-X-Frame-Options-header-missing"><span class="nav-number">5.2.</span> <span class="nav-text">Clickjacking: X-Frame-Options header missing</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%8A%B6%E6%80%81"><span class="nav-number">6.</span> <span class="nav-text">查看服务器状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TIME-WAIT-%E7%AB%AF%E5%8F%A3%E8%BF%87%E5%A4%9A"><span class="nav-number">7.</span> <span class="nav-text">TIME_WAIT 端口过多</span></a></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -173,7 +173,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -258,7 +258,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-01-04 22:48:59" itemprop="dateModified" datetime="2021-01-04T22:48:59+08:00">2021-01-04</time>
+        <time title="修改时间：2021-01-04 23:26:18" itemprop="dateModified" datetime="2021-01-04T23:26:18+08:00">2021-01-04</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -319,6 +319,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;X-Frame-Options&quot;</span> =&gt; <span class="string">&quot;DENY&quot;</span>,</span><br></pre></td></tr></table></figure>
 <h3 id="查看服务器状态"><a href="#查看服务器状态" class="headerlink" title="查看服务器状态"></a>查看服务器状态</h3><p>在 <code>/etc/lighttpd/lighttpd.conf</code> 中做如下配置：<br>配置可以在源码的 <code>lighttpd-1.4.57/doc/outdated/status.txt</code></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># status.txt文件写的是 status.modules(<span class="meta-string">&quot;mod_ssi&quot;</span>) 但是执行时不成功</span></span><br><span class="line">server.modules(<span class="string">&quot;mod_status&quot;</span>)</span><br><span class="line">status.status-url = <span class="string">&quot;/server-status&quot;</span></span><br><span class="line">auth.require = ( <span class="string">&quot;/server-status&quot;</span> =&gt;</span><br><span class="line">	( <span class="string">&quot;realm&quot;</span> ... ) </span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="TIME-WAIT-端口过多"><a href="#TIME-WAIT-端口过多" class="headerlink" title="TIME_WAIT 端口过多"></a>TIME_WAIT 端口过多</h3><p><a href="/2021/01/04/operating-system/Linux/%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE/">处理TIME_WAIT端口过多</a></p>
 
     </div>
 
