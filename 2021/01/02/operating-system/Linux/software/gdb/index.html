@@ -31,7 +31,7 @@
 <meta property="og:description" content="gdb使用">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-01-02T06:25:06.000Z">
-<meta property="article:modified_time" content="2021-01-03T05:37:10.928Z">
+<meta property="article:modified_time" content="2021-01-10T09:46:13.001Z">
 <meta property="article:author" content="Liu liu">
 <meta property="article:tag" content="operating-system">
 <meta name="twitter:card" content="summary">
@@ -159,7 +159,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#gdb-%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">gdb 使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#layout%E5%91%BD%E4%BB%A4"><span class="nav-number">1.2.</span> <span class="nav-text">layout命令</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#gdb-%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">gdb 使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#layout%E5%91%BD%E4%BB%A4"><span class="nav-number">1.2.</span> <span class="nav-text">layout命令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E6%96%AD%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">设置断点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%99%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E8%AE%BE%E7%BD%AE%E6%96%AD%E7%82%B9"><span class="nav-number">2.1.</span> <span class="nav-text">给系统调用设置断点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E8%BF%BD%E8%B8%AA%E7%9A%84%E8%BF%9B%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">选择追踪的进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gdb%E4%BC%A0%E5%8F%82"><span class="nav-number">4.</span> <span class="nav-text">gdb传参</span></a></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -258,7 +258,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-01-03 13:37:10" itemprop="dateModified" datetime="2021-01-03T13:37:10+08:00">2021-01-03</time>
+        <time title="修改时间：2021-01-10 17:46:13" itemprop="dateModified" datetime="2021-01-10T17:46:13+08:00">2021-01-10</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -298,6 +298,11 @@
     <div class="post-body" itemprop="articleBody">
         <h3 id="gdb-使用"><a href="#gdb-使用" class="headerlink" title="gdb 使用"></a>gdb 使用</h3><h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><p>1、编译代码<br>使用 <code>gcc -ggdb3</code> 编译之后，给生成的信息添加足够的调试信息。<br>2、使用 <code>gdb 执行代码</code><br>开始执行。<br>进入gdb界面后使用如下操作：<br>r(run)   开始执行代码。<br>n(next)  从断点开始执行到协议个断点。<br>b(break) 给代码打断点。<br>l(list)  列出代码清单。<br>p(print) 打印变量<br>bt(backstrace)    打印调用栈</p>
 <h4 id="layout命令"><a href="#layout命令" class="headerlink" title="layout命令"></a>layout命令</h4><p>1、显示源代码窗口<br><code>(gdb)layout src</code><br>2、显示寄存器窗口<br><code>(gdb)layout regs</code><br>3、显示汇编代码窗口<br><code>(gdb)layout asm</code><br>4、希纳是源代码和汇编代码<br><code>(gdb)layout split</code><br>5、显示窗口的大小<br><code>info win</code><br>6、刷新所有窗口<br><code>refresh</code></p>
+<h3 id="设置断点"><a href="#设置断点" class="headerlink" title="设置断点"></a>设置断点</h3><h4 id="给系统调用设置断点"><a href="#给系统调用设置断点" class="headerlink" title="给系统调用设置断点"></a>给系统调用设置断点</h4><p>使用break指令加函数名设置断点。</p>
+<h3 id="选择追踪的进程"><a href="#选择追踪的进程" class="headerlink" title="选择追踪的进程"></a>选择追踪的进程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set follow-fork-mode child # 命令设置gdb在fork之后跟踪子进程。</span><br><span class="line">set follow-fork-mode parent # 设置跟踪父进程。</span><br></pre></td></tr></table></figure>
+
+<h3 id="gdb传参"><a href="#gdb传参" class="headerlink" title="gdb传参"></a>gdb传参</h3><p>执行lighttpd命令时c需要传参<br>如下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gdb .&#x2F;lighttpd</span><br><span class="line">set args -f &#x2F;etc&#x2F;lighttpd&#x2F;lighttpd.conf</span><br></pre></td></tr></table></figure>
 
     </div>
 
