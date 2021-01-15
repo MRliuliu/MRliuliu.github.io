@@ -30,11 +30,13 @@
 <meta property="og:site_name" content="copy dog">
 <meta property="og:description" content="系统配置">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/01/04/operating-system/Linux/%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE/win32diskimager.png">
 <meta property="article:published_time" content="2021-01-04T15:19:57.000Z">
-<meta property="article:modified_time" content="2021-01-05T14:34:36.740Z">
+<meta property="article:modified_time" content="2021-01-15T05:56:50.170Z">
 <meta property="article:author" content="Liu liu">
 <meta property="article:tag" content="operating-system">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mrliuliu.github.io/2021/01/04/operating-system/Linux/%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE/win32diskimager.png">
 
 
 <link rel="canonical" href="https://mrliuliu.github.io/2021/01/04/operating-system/Linux/%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE/">
@@ -159,7 +161,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9FTIME-WAIT%E8%BF%87%E5%A4%9A"><span class="nav-number">1.</span> <span class="nav-text">处理系统TIME_WAIT过多</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AEcore-dump%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84"><span class="nav-number">2.</span> <span class="nav-text">设置core dump文件路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#apt%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E9%94%99%E8%AF%AF"><span class="nav-number">3.</span> <span class="nav-text">apt安装软件错误</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9FTIME-WAIT%E8%BF%87%E5%A4%9A"><span class="nav-number">1.</span> <span class="nav-text">处理系统TIME_WAIT过多</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AEcore-dump%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84"><span class="nav-number">2.</span> <span class="nav-text">设置core dump文件路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#apt%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E9%94%99%E8%AF%AF"><span class="nav-number">3.</span> <span class="nav-text">apt安装软件错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F"><span class="nav-number">4.</span> <span class="nav-text">系统备份与还原</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8windows%E4%B8%8B%E4%BD%BF%E7%94%A8win32diskimage%E5%B7%A5%E5%85%B7"><span class="nav-number">4.1.</span> <span class="nav-text">在windows下使用win32diskimage工具</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E2%80%9C%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6%E5%A4%B1%E8%B4%A5%E2%80%9D"><span class="nav-number">5.</span> <span class="nav-text">问题“修改文件失败”</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%AA%E5%AE%8C%E6%88%90"><span class="nav-number"></span> <span class="nav-text">未完成</span></a></div>
         </section>
         <!--/noindex-->
 
@@ -173,20 +175,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-count">51</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -258,7 +260,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-01-05 22:34:36" itemprop="dateModified" datetime="2021-01-05T22:34:36+08:00">2021-01-05</time>
+        <time title="修改时间：2021-01-15 13:56:50" itemprop="dateModified" datetime="2021-01-15T13:56:50+08:00">2021-01-15</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -299,7 +301,13 @@
 
 <h3 id="apt安装软件错误"><a href="#apt安装软件错误" class="headerlink" title="apt安装软件错误"></a>apt安装软件错误</h3><p>使用apt安装软件报错如下：<br><code>The following packages cannot be authenticated!</code></p>
 <p>sudo apt-key update<br>sudo apt-get update</p>
-
+<h3 id="系统备份与还原"><a href="#系统备份与还原" class="headerlink" title="系统备份与还原"></a>系统备份与还原</h3><h4 id="在windows下使用win32diskimage工具"><a href="#在windows下使用win32diskimage工具" class="headerlink" title="在windows下使用win32diskimage工具"></a>在windows下使用win32diskimage工具</h4><p><img src="/2021/01/04/operating-system/Linux/%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE/win32diskimager.png" alt="树莓派系统备份win32diskimage"><br>如图，将树莓派系统SD卡插入windows系统，然后需要在本地新建一个 <code>.img</code> 文件，在映像文件中选中该 <code>.img</code> 文件。如果要备份点击读取，如果要还原点击写入。（鼠标放到对应的按钮上，最低行会显示提示信息）</p>
+<h3 id="问题“修改文件失败”"><a href="#问题“修改文件失败”" class="headerlink" title="问题“修改文件失败”"></a>问题“修改文件失败”</h3><p>最初猜测需要修改隐藏属性，于是使用 <code>lsattr</code> <code>chattr</code> 修改权限，隐藏属性也失败,显示如下。<br><code>chattr: 不支持的操作 while reading flags on /etc/resolv.conf</code><br>搜索资料后，在使用 <code>mount</code> 命令查看挂在信息时发现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;dev&#x2F;sda2 on &#x2F; type ext4 (rw,relatime,errors&#x3D;remount-ro,data&#x3D;ordered)</span><br></pre></td></tr></table></figure>
+<p>使用 <code>mount -o rw,remount /</code> 命令后，仍然显示上面信息，于是打开 <code>/etc/fstab</code> 文件，内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">UUID&#x3D;b4c440f8-62b3-4fb3-8ed6-207e5a917532 &#x2F;               ext4    errors&#x3D;remount-ro 0       1</span><br><span class="line"># &#x2F;backup was on &#x2F;dev&#x2F;sda3 during installation</span><br><span class="line">UUID&#x3D;6e8a8f03-b5cc-4a9b-9850-8069a80ae038 &#x2F;backup         ext4    noauto          0       0</span><br><span class="line"># &#x2F;boot was on &#x2F;dev&#x2F;sda1 during installation</span><br><span class="line">UUID&#x3D;f06b1e25-af57-4e18-b11b-5919f0aeed7d &#x2F;boot           ext4    defaults        0       2</span><br><span class="line"># &#x2F;boot&#x2F;efi was on &#x2F;dev&#x2F;sda6 during installation</span><br><span class="line">UUID&#x3D;6AAA-B671  &#x2F;boot&#x2F;efi       vfat    umask&#x3D;0077      0       1</span><br><span class="line"># &#x2F;data was on &#x2F;dev&#x2F;sda4 during installation</span><br><span class="line">UUID&#x3D;f94be3d4-25f0-40be-95f0-f2e90580c13e &#x2F;data           ext4    rw,user,x-gvfs-show,nosuid,nofail 0       2</span><br><span class="line"># swap was on &#x2F;dev&#x2F;sda5 during installation</span><br><span class="line">UUID&#x3D;3cbca3fa-6767-4245-b8e7-02982635f878 none            swap    sw              0       0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>然后进入回复模式使用 <code>fsck</code> 命令修复 <code>sda2</code> 。重启系统，在开机选项中高级下又recovery mode，选中后，执行mount命令，查看目标磁盘 <code>sda2</code>  是否改在，然后 <code>umount</code> 卸载,之后使用<code>fsck -y /dev/sda2</code> 修复。发现没有错误。</p>
+<h1 id="未完成"><a href="#未完成" class="headerlink" title="未完成"></a>未完成</h1>
     </div>
 
     
@@ -315,12 +323,12 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/01/04/programing-language/Clang/%E7%A8%8B%E5%BA%8F%E7%A7%BB%E6%A4%8D%E9%97%AE%E9%A2%98/" rel="prev" title="程序移植问题">
+                <a href="/2021/01/04/programing/Clang/%E7%A8%8B%E5%BA%8F%E7%A7%BB%E6%A4%8D%E9%97%AE%E9%A2%98/" rel="prev" title="程序移植问题">
                   <i class="fa fa-chevron-left"></i> 程序移植问题
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/01/05/programing-language/Clang/GNU-C/" rel="next" title="GNU-C">
+                <a href="/2021/01/05/programing/Clang/GNU-C/" rel="next" title="GNU-C">
                   GNU-C <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
