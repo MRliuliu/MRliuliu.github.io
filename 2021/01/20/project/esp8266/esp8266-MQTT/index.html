@@ -23,21 +23,21 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
-<meta name="description" content="MQTT 协议">
+<meta name="description" content="MQTT 使用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MQTT">
-<meta property="og:url" content="https://mrliuliu.github.io/2021/01/06/network/protocol/MQTT/index.html">
+<meta property="og:title" content="esp8266-MQTT">
+<meta property="og:url" content="https://mrliuliu.github.io/2021/01/20/project/esp8266/esp8266-MQTT/index.html">
 <meta property="og:site_name" content="copy dog">
-<meta property="og:description" content="MQTT 协议">
+<meta property="og:description" content="MQTT 使用">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-01-06T14:30:25.000Z">
-<meta property="article:modified_time" content="2021-01-06T14:47:26.454Z">
+<meta property="article:published_time" content="2021-01-20T04:44:29.000Z">
+<meta property="article:modified_time" content="2021-01-20T13:52:34.190Z">
 <meta property="article:author" content="Liu liu">
-<meta property="article:tag" content="network">
+<meta property="article:tag" content="project">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://mrliuliu.github.io/2021/01/06/network/protocol/MQTT/">
+<link rel="canonical" href="https://mrliuliu.github.io/2021/01/20/project/esp8266/esp8266-MQTT/">
 
 
 <script class="page-configurations">
@@ -49,7 +49,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>MQTT | copy dog</title>
+<title>esp8266-MQTT | copy dog</title>
   
 
 
@@ -159,7 +159,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">下载安装</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">MQTT使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mosquito-%E5%81%9A%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">mosquito 做服务器</span></a></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -226,7 +226,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/01/06/network/protocol/MQTT/">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/01/20/project/esp8266/esp8266-MQTT/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          MQTT
+          esp8266-MQTT
         </h1>
 
         <div class="post-meta-container">
@@ -252,7 +252,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-01-06 22:30:25 / 修改时间：22:47:26" itemprop="dateCreated datePublished" datetime="2021-01-06T22:30:25+08:00">2021-01-06</time>
+      <time title="创建时间：2021-01-20 12:44:29 / 修改时间：21:52:34" itemprop="dateCreated datePublished" datetime="2021-01-20T12:44:29+08:00">2021-01-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -260,11 +260,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/network/" itemprop="url" rel="index"><span itemprop="name">network</span></a>
+          <a href="/categories/project/" itemprop="url" rel="index"><span itemprop="name">project</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/network/protocol/" itemprop="url" rel="index"><span itemprop="name">protocol</span></a>
+          <a href="/categories/project/esp8266/" itemprop="url" rel="index"><span itemprop="name">esp8266</span></a>
         </span>
     </span>
 
@@ -278,7 +278,7 @@
     </span>
 </div>
 
-            <div class="post-description">MQTT 协议</div>
+            <div class="post-description">MQTT 使用</div>
         </div>
       </header>
 
@@ -286,12 +286,18 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3 id="下载安装"><a href="#下载安装" class="headerlink" title="下载安装"></a>下载安装</h3><p>使用的开源工具mosqutto。git仓库地址为：<a target="_blank" rel="noopener" href="https://github.com/eclipse/mosquitto.git">https://github.com/eclipse/mosquitto.git</a> </p>
-<p>####使用cmake编译。<br>在代码根目录下，新建build目录，进入后执行<code>cmake ../</code>在build目录下生成编译文件。然后执行make命令编译。<br>在build/client   目录下生成mosquitto_sub目录和mosquitto_pub两个文件，在build/src下生成mosquitto可执行文件。配置文件在代码的根目录下。<br>其中配置文件的内容为：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 服务进程的PID</span></span><br><span class="line"><span class="comment">#pid_file /var/run/mosquitto.pid</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 服务进程的系统用户</span></span><br><span class="line"><span class="comment">#user mosquitto</span></span><br><span class="line">  </span><br><span class="line"><span class="comment"># 服务绑定的IP地址</span></span><br><span class="line"><span class="comment">#bind_address</span></span><br><span class="line">   </span><br><span class="line"><span class="comment"># 服务绑定的端口号</span></span><br><span class="line"><span class="comment">#port 1883</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># 允许的最大连接数，-1表示没有限制</span></span><br><span class="line"><span class="comment">#max_connections -1</span></span><br><span class="line">	 </span><br><span class="line"><span class="comment"># 允许匿名用户</span></span><br><span class="line"><span class="comment">#allow_anonymous true</span></span><br></pre></td></tr></table></figure>
+        <h3 id="MQTT使用"><a href="#MQTT使用" class="headerlink" title="MQTT使用"></a>MQTT使用</h3><p>esp8266在Aduino开发环境下需要使用 <code>&lt;PubSubClient.h&gt;</code> 头文件和 <code>&lt;ESP8266WiFi.h&gt;</code>，在连接wifi后初始化一个MQTT的全局客户端</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WFiClient esp_client;</span><br><span class="line">PubSubClient client(esp_client);</span><br></pre></td></tr></table></figure>
 
+<p>然后设置连接的MQTT服务器并设置处理的回调函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; ip地址字符串mqtt_server_ip, 整型的mqtt服务器端口号</span><br><span class="line">client.setServer(mqtt_server_ip, mqtt_server_port);</span><br><span class="line">&#x2F;&#x2F; 设置回调函数,当收到订阅信息之后，处理的回调函数</span><br><span class="line">client.setCallback(callback);</span><br></pre></td></tr></table></figure>
 
-<p>分别执行上面的三个文件。其中mosquitto为MQTT的broker。Mosquitto_pub为发布者，mosquitto_sub为订阅者。<br>先执行mosquitto。然后执行订阅者mosquitto_sub并订阅一个主题。<br><code>Mosquitto_sub -t test</code><br>再执行发布一个该主题并添加发布信息<br><code>mosquitto_pub -t test -m &quot;publish information&quot;</code></p>
+<p>查看MQTT连接状态，并执行MQTT的循环监听</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">while (！client.connected()) &#123;</span><br><span class="line">    &#x2F;&#x2F; 连接服务器的方法有四个重载函数，和MQTT的标识符，用户名、密码、遗言等信息</span><br><span class="line">    &#x2F;&#x2F;client.connecet(mqtt_client_id, mqtt_user_name, mqtt_password, will_topic, will_qos, will_retain, will_message);</span><br><span class="line">    &#x2F;&#x2F; client.connect(id, will_topic, will_qos, will_retain, willmessage);</span><br><span class="line">    &#x2F;&#x2F; client.connect(id, user, pass);</span><br><span class="line">    connect(id);</span><br><span class="line">    &#x2F;&#x2F; 设置服务器订阅信息, 分为主题和客户端id</span><br><span class="line">    client.subscribe(topic);</span><br><span class="line">    client.publish(topic, clientid);</span><br><span class="line">&#125;</span><br><span class="line">client.loop(); &#x2F;&#x2F; 客户端开始轮询</span><br></pre></td></tr></table></figure>
+
+<p>基本上是一个固定的流程，需要自定义的是一些主题变量和自定义处理函数。</p>
+<h3 id="mosquito-做服务器"><a href="#mosquito-做服务器" class="headerlink" title="mosquito 做服务器"></a>mosquito 做服务器</h3><p>github上下载mosquito，安装 <code>cmake</code> 编译出结果之后，在编译目录中找到 <code>mosquito</code> 和配置文件 <code>mosquito.conf</code>， 需要在文件中做一些配置, 首先需要配置  <code>mosquito</code> 监听的IP和地址，如果不配置默认监听 <code>127.0.0.1</code> 地址，外部连接是连接不上的，然后可以设置用户名密码等相关配置，使用 <code>mosquito -c mosquito.conf</code></p>
+<pre><code>listener 1883 0.0.0.0</code></pre>
 
     </div>
 
@@ -301,21 +307,18 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/network/" rel="tag"># network</a>
+              <a href="/tags/project/" rel="tag"># project</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/01/05/operating-system/Linux/software/https%E5%8E%8B%E6%B5%8B%E5%B7%A5%E5%85%B7/" rel="prev" title="https压测工具">
-                  <i class="fa fa-chevron-left"></i> https压测工具
+                <a href="/2021/01/16/project/esp8266/esp8266-SPIFFS/" rel="prev" title="esp8266使用SPIFFS文件系统">
+                  <i class="fa fa-chevron-left"></i> esp8266使用SPIFFS文件系统
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/01/07/programing/Makefile/makefile/" rel="next" title="makefile">
-                  makefile <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
