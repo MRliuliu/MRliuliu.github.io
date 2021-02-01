@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/th.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/th.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="esp8266 https webserver">
+<meta property="og:type" content="article">
+<meta property="og:title" content="esp8266-webserver-https.md">
+<meta property="og:url" content="https://mrliuliu.github.io/2021/02/02/project/esp8266/esp8266-webserver-https-md/index.html">
+<meta property="og:site_name" content="copy dog">
+<meta property="og:description" content="esp8266 https webserver">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-02-01T22:35:59.000Z">
+<meta property="article:modified_time" content="2021-02-01T22:57:45.956Z">
+<meta property="article:author" content="Liu liu">
+<meta property="article:tag" content="project">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://mrliuliu.github.io/2021/02/02/project/esp8266/esp8266-webserver-https-md/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>esp8266-webserver-https.md | copy dog</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">copy dog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">和懒惰抗争</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="fa fa-tag fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Liu liu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/02/02/project/esp8266/esp8266-webserver-https-md/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          esp8266-webserver-https.md
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-02-02 06:35:59 / 修改时间：06:57:45" itemprop="dateCreated datePublished" datetime="2021-02-02T06:35:59+08:00">2021-02-02</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+            <div class="post-description">esp8266 https webserver</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">  HelloServerBearSSL - Simple HTTPS server example</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">  This example demonstrates a basic ESP8266WebServerSecure HTTPS server</span></span><br><span class="line"><span class="comment">  that can serve &quot;/&quot; and &quot;/inline&quot; and generate detailed 404 (not found)</span></span><br><span class="line"><span class="comment">  HTTP respoinses.  Be sure to update the SSID and PASSWORD before running</span></span><br><span class="line"><span class="comment">  to allow connection to your WiFi network.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">  Adapted by Earle F. Philhower, III, from the HelloServer.ino example.</span></span><br><span class="line"><span class="comment">  This example is released into the public domain.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ESP8266WiFi.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;WiFiClient.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ESP8266WebServerSecure.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ESP8266mDNS.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> STASSID</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STASSID <span class="meta-string">&quot;your-ssid&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STAPSK  <span class="meta-string">&quot;your-password&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* ssid = STASSID;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* password = STAPSK;</span><br><span class="line"></span><br><span class="line"><span class="function">BearSSL::ESP8266WebServerSecure <span class="title">server</span><span class="params">(<span class="number">443</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 服务器证书</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> serverCert[] PROGMEM = <span class="string">R&quot;EOF(</span></span><br><span class="line"><span class="string">-----BEGIN CERTIFICATE-----</span></span><br><span class="line"><span class="string">MIIDSzCCAjMCCQD2ahcfZAwXxDANBgkqhkiG9w0BAQsFADCBiTELMAkGA1UEBhMC</span></span><br><span class="line"><span class="string">VVMxEzARBgNVBAgMCkNhbGlmb3JuaWExFjAUBgNVBAcMDU9yYW5nZSBDb3VudHkx</span></span><br><span class="line"><span class="string">EDAOBgNVBAoMB1ByaXZhZG8xGjAYBgNVBAMMEXNlcnZlci56bGFiZWwuY29tMR8w</span></span><br><span class="line"><span class="string">HQYJKoZIhvcNAQkBFhBlYXJsZUB6bGFiZWwuY29tMB4XDTE4MDMwNjA1NDg0NFoX</span></span><br><span class="line"><span class="string">DTE5MDMwNjA1NDg0NFowRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3Rh</span></span><br><span class="line"><span class="string">dGUxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDCCASIwDQYJKoZI</span></span><br><span class="line"><span class="string">hvcNAQEBBQADggEPADCCAQoCggEBAPVKBwbZ+KDSl40YCDkP6y8Sv4iNGvEOZg8Y</span></span><br><span class="line"><span class="string">X7sGvf/xZH7UiCBWPFIRpNmDSaZ3yjsmFqm6sLiYSGSdrBCFqdt9NTp2r7hga6Sj</span></span><br><span class="line"><span class="string">oASSZY4B9pf+GblDy5m10KDx90BFKXdPMCLT+o76Nx9PpCvw13A848wHNG3bpBgI</span></span><br><span class="line"><span class="string">t+w/vJCX3bkRn8yEYAU6GdMbYe7v446hX3kY5UmgeJFr9xz1kq6AzYrMt/UHhNzO</span></span><br><span class="line"><span class="string">S+QckJaY0OGWvmTNspY3xCbbFtIDkCdBS8CZAw+itnofvnWWKQEXlt6otPh5njwy</span></span><br><span class="line"><span class="string">+O1t/Q+Z7OMDYQaH02IQx3188/kW3FzOY32knER1uzjmRO+jhA8CAwEAATANBgkq</span></span><br><span class="line"><span class="string">hkiG9w0BAQsFAAOCAQEAnDrROGRETB0woIcI1+acY1yRq4yAcH2/hdq2MoM+DCyM</span></span><br><span class="line"><span class="string">E8CJaOznGR9ND0ImWpTZqomHOUkOBpvu7u315blQZcLbL1LfHJGRTCHVhvVrcyEb</span></span><br><span class="line"><span class="string">fWTnRtAQdlirUm/obwXIitoz64VSbIVzcqqfg9C6ZREB9JbEX98/9Wp2gVY+31oC</span></span><br><span class="line"><span class="string">JfUvYadSYxh3nblvA4OL+iEZiW8NE3hbW6WPXxvS7Euge0uWMPc4uEcnsE0ZVG3m</span></span><br><span class="line"><span class="string">+TGimzSdeWDvGBRWZHXczC2zD4aoE5vrl+GD2i++c6yjL/otHfYyUpzUfbI2hMAA</span></span><br><span class="line"><span class="string">5tAF1D5vAAwA8nfPysumlLsIjohJZo4lgnhB++AlOg==</span></span><br><span class="line"><span class="string">-----END CERTIFICATE-----</span></span><br><span class="line"><span class="string">)EOF&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 私钥 (私钥和上面的证书可以换成SPIFS文件系统存储)</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> serverKey[] PROGMEM =  <span class="string">R&quot;EOF(</span></span><br><span class="line"><span class="string">-----BEGIN RSA PRIVATE KEY-----</span></span><br><span class="line"><span class="string">MIIEpQIBAAKCAQEA9UoHBtn4oNKXjRgIOQ/rLxK/iI0a8Q5mDxhfuwa9//FkftSI</span></span><br><span class="line"><span class="string">IFY8UhGk2YNJpnfKOyYWqbqwuJhIZJ2sEIWp2301OnavuGBrpKOgBJJljgH2l/4Z</span></span><br><span class="line"><span class="string">uUPLmbXQoPH3QEUpd08wItP6jvo3H0+kK/DXcDzjzAc0bdukGAi37D+8kJfduRGf</span></span><br><span class="line"><span class="string">zIRgBToZ0xth7u/jjqFfeRjlSaB4kWv3HPWSroDNisy39QeE3M5L5ByQlpjQ4Za+</span></span><br><span class="line"><span class="string">ZM2yljfEJtsW0gOQJ0FLwJkDD6K2eh++dZYpAReW3qi0+HmePDL47W39D5ns4wNh</span></span><br><span class="line"><span class="string">BofTYhDHfXzz+RbcXM5jfaScRHW7OOZE76OEDwIDAQABAoIBAQDKov5NFbNFQNR8</span></span><br><span class="line"><span class="string">djcM1O7Is6dRaqiwLeH4ZH1pZ3d9QnFwKanPdQ5eCj9yhfhJMrr5xEyCqT0nMn7T</span></span><br><span class="line"><span class="string">yEIGYDXjontfsf8WxWkH2TjvrfWBrHOIOx4LJEvFzyLsYxiMmtZXvy6YByD+Dw2M</span></span><br><span class="line"><span class="string">q2GH/24rRdI2klkozIOyazluTXU8yOsSGxHr/aOa9/sZISgLmaGOOuKI/3Zqjdhr</span></span><br><span class="line"><span class="string">eHeSqoQFt3xXa8jw01YubQUDw/4cv9rk2ytTdAoQUimiKtgtjsggpP1LTq4xcuqN</span></span><br><span class="line"><span class="string">d4jWhTcnorWpbD2cVLxrEbnSR3VuBCJEZv5axg5ZPxLEnlcId8vMtvTRb5nzzszn</span></span><br><span class="line"><span class="string">geYUWDPhAoGBAPyKVNqqwQl44oIeiuRM2FYenMt4voVaz3ExJX2JysrG0jtCPv+Y</span></span><br><span class="line"><span class="string">84R6Cv3nfITz3EZDWp5sW3OwoGr77lF7Tv9tD6BptEmgBeuca3SHIdhG2MR+tLyx</span></span><br><span class="line"><span class="string">/tkIAarxQcTGsZaSqra3gXOJCMz9h2P5dxpdU+0yeMmOEnAqgQ8qtNBfAoGBAPim</span></span><br><span class="line"><span class="string">RAtnrd0WSlCgqVGYFCvDh1kD5QTNbZc+1PcBHbVV45EmJ2fLXnlDeplIZJdYxmzu</span></span><br><span class="line"><span class="string">DMOxZBYgfeLY9exje00eZJNSj/csjJQqiRftrbvYY7m5njX1kM5K8x4HlynQTDkg</span></span><br><span class="line"><span class="string">rtKO0YZJxxmjRTbFGMegh1SLlFLRIMtehNhOgipRAoGBAPnEEpJGCS9GGLfaX0HW</span></span><br><span class="line"><span class="string">YqwiEK8Il12q57mqgsq7ag7NPwWOymHesxHV5mMh/Dw+NyBi4xAGWRh9mtrUmeqK</span></span><br><span class="line"><span class="string">iyICik773Gxo0RIqnPgd4jJWN3N3YWeynzulOIkJnSNx5BforOCTc3uCD2s2YB5X</span></span><br><span class="line"><span class="string">jx1LKoNQxLeLRN8cmpIWicf/AoGBANjRSsZTKwV9WWIDJoHyxav/vPb+8WYFp8lZ</span></span><br><span class="line"><span class="string">zaRxQbGM6nn4NiZI7OF62N3uhWB/1c7IqTK/bVHqFTuJCrCNcsgld3gLZ2QWYaMV</span></span><br><span class="line"><span class="string">kCPgaj1BjHw4AmB0+EcajfKilcqtSroJ6MfMJ6IclVOizkjbByeTsE4lxDmPCDSt</span></span><br><span class="line"><span class="string">/9MKanBxAoGAY9xo741Pn9WUxDyRplww606ccdNf/ksHWNc/Y2B5SPwxxSnIq8nO</span></span><br><span class="line"><span class="string">j01SmsCUYVFAgZVOTiiycakjYLzxlc6p8BxSVqy6LlJqn95N8OXoQ+bkwUux/ekg</span></span><br><span class="line"><span class="string">gz5JWYhbD6c38khSzJb0pNXCo3EuYAVa36kDM96k1BtWuhRS10Q1VXk=</span></span><br><span class="line"><span class="string">-----END RSA PRIVATE KEY-----</span></span><br><span class="line"><span class="string">)EOF&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> led = <span class="number">13</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">handleRoot</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  digitalWrite(led, <span class="number">1</span>);</span><br><span class="line">  server.send(<span class="number">200</span>, <span class="string">&quot;text/plain&quot;</span>, <span class="string">&quot;Hello from esp8266 over HTTPS!&quot;</span>);</span><br><span class="line">  digitalWrite(led, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">handleNotFound</span><span class="params">()</span></span>&#123;</span><br><span class="line">  digitalWrite(led, <span class="number">1</span>);</span><br><span class="line">  String message = <span class="string">&quot;File Not Found\n\n&quot;</span>;</span><br><span class="line">  message += <span class="string">&quot;URI: &quot;</span>;</span><br><span class="line">  message += server.uri();</span><br><span class="line">  message += <span class="string">&quot;\nMethod: &quot;</span>;</span><br><span class="line">  message += (server.method() == HTTP_GET)?<span class="string">&quot;GET&quot;</span>:<span class="string">&quot;POST&quot;</span>;</span><br><span class="line">  message += <span class="string">&quot;\nArguments: &quot;</span>;</span><br><span class="line">  message += server.args();</span><br><span class="line">  message += <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">uint8_t</span> i=<span class="number">0</span>; i&lt;server.args(); i++)&#123;</span><br><span class="line">    message += <span class="string">&quot; &quot;</span> + server.argName(i) + <span class="string">&quot;: &quot;</span> + server.arg(i) + <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  server.send(<span class="number">404</span>, <span class="string">&quot;text/plain&quot;</span>, message);</span><br><span class="line">  digitalWrite(led, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setup</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">  pinMode(led, OUTPUT);</span><br><span class="line">  digitalWrite(led, <span class="number">0</span>);</span><br><span class="line">  Serial.begin(<span class="number">115200</span>);</span><br><span class="line">  WiFi.begin(ssid, password);</span><br><span class="line">  Serial.println(<span class="string">&quot;&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Wait for connection</span></span><br><span class="line">  <span class="keyword">while</span> (WiFi.status() != WL_CONNECTED) &#123;</span><br><span class="line">    delay(<span class="number">500</span>);</span><br><span class="line">    Serial.print(<span class="string">&quot;.&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// init and get the time 获取网络服务器时间</span></span><br><span class="line">  configTime(<span class="number">3</span> * <span class="number">3600</span>, <span class="number">0</span>, <span class="string">&quot;pool.ntp.org&quot;</span>, <span class="string">&quot;time.nist.gov&quot;</span>);</span><br><span class="line"></span><br><span class="line">  Serial.println(<span class="string">&quot;&quot;</span>);</span><br><span class="line">  Serial.print(<span class="string">&quot;Connected to &quot;</span>);</span><br><span class="line">  Serial.println(ssid);</span><br><span class="line">  Serial.print(<span class="string">&quot;IP address: &quot;</span>);</span><br><span class="line">  Serial.println(WiFi.localIP());</span><br><span class="line"></span><br><span class="line"><span class="comment">//  域名解析</span></span><br><span class="line">  <span class="keyword">if</span> (MDNS.begin(<span class="string">&quot;esp8266&quot;</span>)) &#123;</span><br><span class="line">    Serial.println(<span class="string">&quot;MDNS responder started&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//加载服务器的证书和私钥</span></span><br><span class="line">  server.getServer().setRSACert(<span class="keyword">new</span> BearSSL::X509List(serverCert), <span class="keyword">new</span> BearSSL::PrivateKey(serverKey));</span><br><span class="line"></span><br><span class="line">  server.on(<span class="string">&quot;/&quot;</span>, handleRoot);</span><br><span class="line"></span><br><span class="line">  server.on(<span class="string">&quot;/inline&quot;</span>, []()&#123;</span><br><span class="line">    server.send(<span class="number">200</span>, <span class="string">&quot;text/plain&quot;</span>, <span class="string">&quot;this works as well&quot;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  server.onNotFound(handleNotFound);</span><br><span class="line"></span><br><span class="line">  server.begin();</span><br><span class="line">  Serial.println(<span class="string">&quot;HTTPS server started&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">loop</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">  server.handleClient();</span><br><span class="line">  MDNS.update();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/project/" rel="tag"># project</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/01/31/operating-system/Linux/raspberry/pi-3-5LCD/" rel="prev" title="pi-3.5LCD">
+                  <i class="fa fa-chevron-left"></i> pi-3.5LCD
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/02/02/network/protocol/%E8%AF%81%E4%B9%A6-%E7%A7%81%E9%92%A5-%E5%85%AC%E9%92%A5/" rel="next" title="证书-私钥-公钥">
+                  证书-私钥-公钥 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu liu</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+</body>
+</html>
