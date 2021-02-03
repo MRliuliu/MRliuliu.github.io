@@ -30,11 +30,14 @@
 <meta property="og:site_name" content="copy dog">
 <meta property="og:description" content="证书、私钥、公钥是什么以及他们之间的关系">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/02/02/network/protocol/%E8%AF%81%E4%B9%A6-%E7%A7%81%E9%92%A5-%E5%85%AC%E9%92%A5/%E6%8F%A1%E6%89%8B%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/02/02/network/protocol/%E8%AF%81%E4%B9%A6-%E7%A7%81%E9%92%A5-%E5%85%AC%E9%92%A5/%E6%8F%A1%E6%89%8B%E6%B5%81%E7%A8%8B.png">
 <meta property="article:published_time" content="2021-02-01T22:58:14.000Z">
-<meta property="article:modified_time" content="2021-02-01T22:59:59.259Z">
+<meta property="article:modified_time" content="2021-02-03T02:17:54.340Z">
 <meta property="article:author" content="Liu liu">
 <meta property="article:tag" content="network">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mrliuliu.github.io/2021/02/02/network/protocol/%E8%AF%81%E4%B9%A6-%E7%A7%81%E9%92%A5-%E5%85%AC%E9%92%A5/%E6%8F%A1%E6%89%8B%E6%B5%81%E7%A8%8B.png">
 
 
 <link rel="canonical" href="https://mrliuliu.github.io/2021/02/02/network/protocol/%E8%AF%81%E4%B9%A6-%E7%A7%81%E9%92%A5-%E5%85%AC%E9%92%A5/">
@@ -146,7 +149,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -159,6 +162,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">基本运行过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%8F%91%E5%87%BA%E8%AF%B7%E6%B1%82%EF%BC%88ClientHello%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">客户端发出请求（ClientHello）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9B%9E%E5%BA%94%EF%BC%88ServerHello%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">服务器回应（ServerHello）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%9B%9E%E5%BA%94"><span class="nav-number">1.3.</span> <span class="nav-text">客户端回应</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%87%BA%E7%8E%B0%E4%B8%89%E6%AC%A1%E9%9A%8F%E6%9C%BA%E6%95%B0%EF%BC%9A"><span class="nav-number">1.3.1.</span> <span class="nav-text">为什么出现三次随机数：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%9C%80%E5%90%8E%E7%9A%84%E5%9B%9E%E5%BA%94"><span class="nav-number">2.</span> <span class="nav-text">服务器最后的回应</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B-1"><span class="nav-number">3.</span> <span class="nav-text">基本运行过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%8F%91%E5%87%BA%E8%AF%B7%E6%B1%82%EF%BC%88ClientHello%EF%BC%89-1"><span class="nav-number">3.1.</span> <span class="nav-text">客户端发出请求（ClientHello）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9B%9E%E5%BA%94%EF%BC%88ServerHello%EF%BC%89-1"><span class="nav-number">3.2.</span> <span class="nav-text">服务器回应（ServerHello）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%9B%9E%E5%BA%94-1"><span class="nav-number">3.3.</span> <span class="nav-text">客户端回应</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%87%BA%E7%8E%B0%E4%B8%89%E6%AC%A1%E9%9A%8F%E6%9C%BA%E6%95%B0%EF%BC%9A-1"><span class="nav-number">3.3.1.</span> <span class="nav-text">为什么出现三次随机数：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%9C%80%E5%90%8E%E7%9A%84%E5%9B%9E%E5%BA%94-1"><span class="nav-number">4.</span> <span class="nav-text">服务器最后的回应</span></a></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -249,10 +253,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-02-02 06:58:14 / 修改时间：06:59:59" itemprop="dateCreated datePublished" datetime="2021-02-02T06:58:14+08:00">2021-02-02</time>
+      <time title="创建时间：2021-02-02 06:58:14" itemprop="dateCreated datePublished" datetime="2021-02-02T06:58:14+08:00">2021-02-02</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-02-03 10:17:54" itemprop="dateModified" datetime="2021-02-03T10:17:54+08:00">2021-02-03</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -285,7 +295,84 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        
+        <p>根据非对称密码学原理，每个证书持有人都有一对公钥和私钥，这两个密钥可以互为加解密。公钥是公开的，不需要保密，而 <strong>私钥</strong> 是由证书持人自己持有，并且必须妥善保管和注意保密。数字证书则是由证书认证机构（CA）对证书申请者真实身份验证之后，用CA的根证书对申请人的一些基本信息以及申请人的公钥进行签名（相当于加盖发证书机构的公章）后形成的一个数字文件。</p>
+<p>CA完成签发证书后，会将证书发布在CA的证书库（目录服务器）中，任何人都可以查询和下载，因此数字证书和公钥一样是公开的。</p>
+<p>具体使用时，签名操作是发送方用私钥进行签名，接受方用发送方证书来验证签名；加密操作则是用接受方的证书进行加密，接受方用自己的私钥进行解密。 因此，如果说数字证书是电子商务应用者的网上数字身份证话，那么证书相应的私钥则可以说是用户的私章或公章。</p>
+<p>SSL由两个共同工作的协议组成：”SSL 记录协议”（SSL Record Protocol）和”SSL 握手协议”（SSL Handshake Protocol）。SSL 记录协议建立在可靠的传输协议（如TCP）之上，为高层协议提供数据封装、压缩、加密等基本功能的支持；SSL 握手协议建立在SSL记录协议之上，用于在实际的数据传输开始前，通信双方进行身份认证、协商加密算法、交换加密密钥等。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># 这个部分客户端向服务器发送的密码是啥</span><br></pre></td></tr></table></figure>
+<p>SSL握手协议包含两个阶段，第一个阶段用于建立私密性通信信道，第二个阶段用于客户认证。第一阶段是通信的初始化阶段，在此阶段，首先SSL要求服务器向浏览器出示证书；然后浏览器中的SSL软件发给服务器一个随机产生的传输密钥，此密钥由已验证过的公钥加密，随机产生的传输密钥是核心机密，只有客户的浏览器和此公司的Web服务器知道这个数字序列。第二阶段的主要任务是对客户进行认证，此时服务器已经被认证了。服务器方向客户发出认证请求消息。客户收到服务器方的认证请求消息后，发出自己的证书，并且监听对方回送的认证结果。而当服务器收到客户的证书后，给客户回送认证成功消息，否则返回错误消息。到此为止，握手协议全部结束。 </p>
+<p>要使用SSL协议，服务器至少有一个私有密匙和一个用于验证身份的证书。私有密匙在密匙交换算法中用到，证书将发送到客户端，以通知服务器端的身份。如果SSL服务器要验证客户端的身份，那么客户端必须也有自己的密匙库（包含私有密匙和证书）。JSSE中引入了信任库（truststore）的概念，它是用来保存证书的数据库。客户端或者服务器通过信任库来验证对方的身份。</p>
+<h3 id="基本运行过程"><a href="#基本运行过程" class="headerlink" title="基本运行过程"></a>基本运行过程</h3><p>SSL/TLS协议的iben思路是才哟个公钥加密法，客户端先向服务器端索要公钥，然后用公钥加密信息，服务器收到密文后，用自己的私钥解密。</p>
+<p>如何保证公钥不被篡改：<br>将公钥放到数字证书中，只要证书是可信的，公钥就是可信的。</p>
+<p>公钥加密计算量太大，如何减少耗用的时间：<br>每一次对话（session），客户但和服务器都会生成一个“对话密钥”（session key），用对称加密来来加密信息。</p>
+<p>SSL/TLS协议的基本过程为：<br>1、客户端行服务器端索要并验证公钥；<br>2、双方协商生成“对话密钥”；<br>3、双方采用“对话密钥“进行加密信息。</p>
+<p><img src="/2021/02/02/network/protocol/%E8%AF%81%E4%B9%A6-%E7%A7%81%E9%92%A5-%E5%85%AC%E9%92%A5/%E6%8F%A1%E6%89%8B%E6%B5%81%E7%A8%8B.png" alt="握手流程"><br>“握手阶段”涉及四次通信，我们一个个来看。需要注意的是，”握手阶段”的所有通信都是明文的。</p>
+<h4 id="客户端发出请求（ClientHello）"><a href="#客户端发出请求（ClientHello）" class="headerlink" title="客户端发出请求（ClientHello）"></a>客户端发出请求（ClientHello）</h4><p>首先，客户端先向服务器发出通信请求，叫做ClientHello请求。在这一步，客户端主要向服务器提供一下信息。</p>
+<ul>
+<li>支持的协议版本；</li>
+<li>一个客户端生成的随机数，用于生成“对话密钥”；</li>
+<li>支持的加密方法；</li>
+<li>支持的压缩方法。</li>
+</ul>
+<p>客户端发送的信息之中不包括服务器的域名。也就是说，理论上服务器只能包含一个网站，否则会分不清应该向客户端提供哪一个网站的数字证书。这就是为什么通常一台服务器只能有一张数字证书的原因。</p>
+<h4 id="服务器回应（ServerHello）"><a href="#服务器回应（ServerHello）" class="headerlink" title="服务器回应（ServerHello）"></a>服务器回应（ServerHello）</h4><p>服务器收到客户端请求后，向客户端发出回应，回应内容包含一下内容：</p>
+<ul>
+<li>确认使用的加密通信协议版本；</li>
+<li>一个服务器生成的随机数，用于生成“对话密钥”；</li>
+<li>确认使用的加密方法；</li>
+<li>服务器证书。</li>
+</ul>
+<p>除了上面这些信息，如果服务器需要确认客户端的身份，就会再包含一项请求，要求客户端提供”客户端证书”。比如，金融机构往往只允许认证客户连入自己的网络，就会向正式客户提供USB密钥，里面就包含了一张客户端证书。</p>
+<h4 id="客户端回应"><a href="#客户端回应" class="headerlink" title="客户端回应"></a>客户端回应</h4><p>客户端收到服务器回应以后，首先验证服务器证书。 <strong>如果证书不是可信机构颁布、或者证书中的域名与实际域名不一致、或者证书已经过期，就会向访问者显示一个警告</strong>，由其选择是否还要继续通信。<br>如果证书没有问题，客户端就会从证书中取出服务器的公钥。然后，向服务器发送下面三项信息。</p>
+<ul>
+<li>一个随机数。该随机数用服务器公钥加密，防止被窃听；</li>
+<li>编码改变通知，标识随后的信息都将用双方商定的加密方法和密钥发送；</li>
+<li>客户端握手结束通知，标识客户端的握手阶段已经结束。这一项同时也是前面发送的所有内容的hash值，用来提供服务器校验。</li>
+</ul>
+<p>上面第一项的随机数，是整个握手阶段出现的第三个随机数，又称”pre-master key”。有了它以后，客户端和服务器就同时有了三个随机数，接着双方就用事先商定的加密方法，各自生成本次会话所用的同一把”会话密钥”。</p>
+<h5 id="为什么出现三次随机数："><a href="#为什么出现三次随机数：" class="headerlink" title="为什么出现三次随机数："></a>为什么出现三次随机数：</h5><p>ssl3_send_client_key_exchange是openssl中客户端确定密钥的函数，同时也发送了“一部分”数据给服务器，这一部分数据就是所谓的pre_master，不管是客户端还是服务器都根据对端传过来的pre_master和自己计算出来的另一部分数据来生成最终的对称密钥，生成过程中需要hello消息中的随机数，这样生成的密钥才不会每次都一样。由于ssl协议中dh份额来源于证书，而证书又是静态的，因此十分有必要引入一种随机因素来保证通过静态证书导出的密钥份额协商出来的密钥的随机性。同时这也是pre_master的意义，那就是随机，对于rsa密钥交换算法来说，pre-master-key本身就是一个随机数，再加上hello消息中的随机，三个随机数通过一个密钥导出器最终导出一个对称密钥，但是对于dh，包括ecdh算法(不考虑匿名dh和瞬时dh)，就只有hello消息中的两个随机数因子了。<br>pre master的存在在于ssl协议不信任每个主机都能产生完全随机的随机数，如果随机数不随机，那么pre master secret就有可能被猜出来，那么仅适用pre master secret作为密钥就不合适了，因此必须引入新的随机因素，那么客户端和服务器加上pre master secret三个随机数一同生成的密钥就不容易被猜出了，一个伪随机可能完全不随机，可是是三个伪随机就十分接近随机了，每增加一个自由度，随机性增加的可不是一。</p>
+<h3 id="服务器最后的回应"><a href="#服务器最后的回应" class="headerlink" title="服务器最后的回应"></a>服务器最后的回应</h3><p>服务器收到客户端的第三个随机数pre-master key之后，计算生成本次会话所用的”会话密钥”。然后，向客户端最后发送下面信息。</p>
+<ul>
+<li>编码改变通知，表示随后的信息都将用双方商定的加密方法和密钥发送；</li>
+<li>服务器握手结束通知，表示服务器的握手阶段已经结束。这一项同时也是前面发送的所有内容的hash值，用来供客户端校验。</li>
+</ul>
+<p>至此，整个握手阶段全部结束。接下来，客户端与服务器进入加密通信，就完全是使用普通的HTTP协议，只不过用”会话密钥”加密内容。</p>
+<h3 id="基本运行过程-1"><a href="#基本运行过程-1" class="headerlink" title="基本运行过程"></a>基本运行过程</h3><p>SSL/TLS协议的iben思路是才哟个公钥加密法，客户端先向服务器端索要公钥，然后用公钥加密信息，服务器收到密文后，用自己的私钥解密。</p>
+<p>如何保证公钥不被篡改：<br>将公钥放到数字证书中，只要证书是可信的，公钥就是可信的。</p>
+<p>公钥加密计算量太大，如何减少耗用的时间：<br>每一次对话（session），客户但和服务器都会生成一个“对话密钥”（session key），用对称加密来来加密信息。</p>
+<p>SSL/TLS协议的基本过程为：<br>1、客户端行服务器端索要并验证公钥；<br>2、双方协商生成“对话密钥”；<br>3、双方采用“对话密钥“进行加密信息。</p>
+<p><img src="/2021/02/02/network/protocol/%E8%AF%81%E4%B9%A6-%E7%A7%81%E9%92%A5-%E5%85%AC%E9%92%A5/%E6%8F%A1%E6%89%8B%E6%B5%81%E7%A8%8B.png" alt="握手流程"><br>“握手阶段”涉及四次通信，我们一个个来看。需要注意的是，”握手阶段”的所有通信都是明文的。</p>
+<h4 id="客户端发出请求（ClientHello）-1"><a href="#客户端发出请求（ClientHello）-1" class="headerlink" title="客户端发出请求（ClientHello）"></a>客户端发出请求（ClientHello）</h4><p>首先，客户端先向服务器发出通信请求，叫做ClientHello请求。在这一步，客户端主要向服务器提供一下信息。</p>
+<ul>
+<li>支持的协议版本；</li>
+<li>一个客户端生成的随机数，用于生成“对话密钥”；</li>
+<li>支持的加密方法；</li>
+<li>支持的压缩方法。</li>
+</ul>
+<p>客户端发送的信息之中不包括服务器的域名。也就是说，理论上服务器只能包含一个网站，否则会分不清应该向客户端提供哪一个网站的数字证书。这就是为什么通常一台服务器只能有一张数字证书的原因。</p>
+<h4 id="服务器回应（ServerHello）-1"><a href="#服务器回应（ServerHello）-1" class="headerlink" title="服务器回应（ServerHello）"></a>服务器回应（ServerHello）</h4><p>服务器收到客户端请求后，向客户端发出回应，回应内容包含一下内容：</p>
+<ul>
+<li>确认使用的加密通信协议版本；</li>
+<li>一个服务器生成的随机数，用于生成“对话密钥”；</li>
+<li>确认使用的加密方法；</li>
+<li>服务器证书。</li>
+</ul>
+<p>除了上面这些信息，如果服务器需要确认客户端的身份，就会再包含一项请求，要求客户端提供”客户端证书”。比如，金融机构往往只允许认证客户连入自己的网络，就会向正式客户提供USB密钥，里面就包含了一张客户端证书。</p>
+<h4 id="客户端回应-1"><a href="#客户端回应-1" class="headerlink" title="客户端回应"></a>客户端回应</h4><p>客户端收到服务器回应以后，首先验证服务器证书。 <strong>如果证书不是可信机构颁布、或者证书中的域名与实际域名不一致、或者证书已经过期，就会向访问者显示一个警告</strong>，由其选择是否还要继续通信。<br>如果证书没有问题，客户端就会从证书中取出服务器的公钥。然后，向服务器发送下面三项信息。</p>
+<ul>
+<li>一个随机数。该随机数用服务器公钥加密，防止被窃听；</li>
+<li>编码改变通知，标识随后的信息都将用双方商定的加密方法和密钥发送；</li>
+<li>客户端握手结束通知，标识客户端的握手阶段已经结束。这一项同时也是前面发送的所有内容的hash值，用来提供服务器校验。</li>
+</ul>
+<p>上面第一项的随机数，是整个握手阶段出现的第三个随机数，又称”pre-master key”。有了它以后，客户端和服务器就同时有了三个随机数，接着双方就用事先商定的加密方法，各自生成本次会话所用的同一把”会话密钥”。</p>
+<h5 id="为什么出现三次随机数：-1"><a href="#为什么出现三次随机数：-1" class="headerlink" title="为什么出现三次随机数："></a>为什么出现三次随机数：</h5><p>ssl3_send_client_key_exchange是openssl中客户端确定密钥的函数，同时也发送了“一部分”数据给服务器，这一部分数据就是所谓的pre_master，不管是客户端还是服务器都根据对端传过来的pre_master和自己计算出来的另一部分数据来生成最终的对称密钥，生成过程中需要hello消息中的随机数，这样生成的密钥才不会每次都一样。由于ssl协议中dh份额来源于证书，而证书又是静态的，因此十分有必要引入一种随机因素来保证通过静态证书导出的密钥份额协商出来的密钥的随机性。同时这也是pre_master的意义，那就是随机，对于rsa密钥交换算法来说，pre-master-key本身就是一个随机数，再加上hello消息中的随机，三个随机数通过一个密钥导出器最终导出一个对称密钥，但是对于dh，包括ecdh算法(不考虑匿名dh和瞬时dh)，就只有hello消息中的两个随机数因子了。<br>pre master的存在在于ssl协议不信任每个主机都能产生完全随机的随机数，如果随机数不随机，那么pre master secret就有可能被猜出来，那么仅适用pre master secret作为密钥就不合适了，因此必须引入新的随机因素，那么客户端和服务器加上pre master secret三个随机数一同生成的密钥就不容易被猜出了，一个伪随机可能完全不随机，可是是三个伪随机就十分接近随机了，每增加一个自由度，随机性增加的可不是一。</p>
+<h3 id="服务器最后的回应-1"><a href="#服务器最后的回应-1" class="headerlink" title="服务器最后的回应"></a>服务器最后的回应</h3><p>服务器收到客户端的第三个随机数pre-master key之后，计算生成本次会话所用的”会话密钥”。然后，向客户端最后发送下面信息。</p>
+<ul>
+<li>编码改变通知，表示随后的信息都将用双方商定的加密方法和密钥发送；</li>
+<li>服务器握手结束通知，表示服务器的握手阶段已经结束。这一项同时也是前面发送的所有内容的hash值，用来供客户端校验。</li>
+</ul>
+<p>至此，整个握手阶段全部结束。接下来，客户端与服务器进入加密通信，就完全是使用普通的HTTP协议，只不过用”会话密钥”加密内容。</p>
+
     </div>
 
     
