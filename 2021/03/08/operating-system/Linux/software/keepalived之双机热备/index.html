@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/th.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/th.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="keeepalived 实现双机热备">
+<meta property="og:type" content="article">
+<meta property="og:title" content="keepalived之双机热备">
+<meta property="og:url" content="https://mrliuliu.github.io/2021/03/08/operating-system/Linux/software/keepalived%E4%B9%8B%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87/index.html">
+<meta property="og:site_name" content="copy dog">
+<meta property="og:description" content="keeepalived 实现双机热备">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-08T02:04:33.000Z">
+<meta property="article:modified_time" content="2021-03-08T02:10:01.558Z">
+<meta property="article:author" content="Liu liu">
+<meta property="article:tag" content="operating-system">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://mrliuliu.github.io/2021/03/08/operating-system/Linux/software/keepalived%E4%B9%8B%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>keepalived之双机热备 | copy dog</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">copy dog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">和懒惰抗争</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="fa fa-tag fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#keepalived%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">keepalived双机热备</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.</span> <span class="nav-text">安装</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E9%BB%98%E8%AE%A4%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number"></span> <span class="nav-text">复制默认的配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E2%80%99MASTER%E2%80%99%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number"></span> <span class="nav-text">设置’MASTER’节点配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vi-etc-keepalived-keepalived-conf"><span class="nav-number"></span> <span class="nav-text">vi &#x2F;etc&#x2F;keepalived&#x2F;keepalived.conf</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#keepalived-%E4%BC%9A%E5%AE%9A%E6%97%B6%E6%89%A7%E8%A1%8C%E8%84%9A%E6%9C%AC%E5%B9%B6%E5%AF%B9%E8%84%9A%E6%9C%AC%E6%89%A7%E8%A1%8C%E7%9A%84%E7%BB%93%E6%9E%9C%E8%BF%9B%E8%A1%8C%E5%88%86%E6%9E%90%EF%BC%8C%E5%8A%A8%E6%80%81%E8%B0%83%E6%95%B4-vrrp-instance-%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7%E3%80%82%E5%A6%82%E6%9E%9C%E8%84%9A%E6%9C%AC%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9E%9C%E4%B8%BA-0%EF%BC%8C%E5%B9%B6%E4%B8%94-weight-%E9%85%8D%E7%BD%AE%E7%9A%84%E5%80%BC%E5%A4%A7%E4%BA%8E-0%EF%BC%8C%E5%88%99%E4%BC%98%E5%85%88%E7%BA%A7%E7%9B%B8%E5%BA%94%E7%9A%84%E5%A2%9E%E5%8A%A0%E3%80%82%E5%A6%82%E6%9E%9C%E8%84%9A%E6%9C%AC%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9E%9C%E9%9D%9E-0%EF%BC%8C%E5%B9%B6%E4%B8%94-weight%E9%85%8D%E7%BD%AE%E7%9A%84%E5%80%BC%E5%B0%8F%E4%BA%8E-0%EF%BC%8C%E5%88%99%E4%BC%98%E5%85%88%E7%BA%A7%E7%9B%B8%E5%BA%94%E7%9A%84%E5%87%8F%E5%B0%91%E3%80%82%E5%85%B6%E4%BB%96%E6%83%85%E5%86%B5%EF%BC%8C%E7%BB%B4%E6%8C%81%E5%8E%9F%E6%9C%AC%E9%85%8D%E7%BD%AE%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%8C%E5%8D%B3%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%B8%AD-priority-%E5%AF%B9%E5%BA%94%E7%9A%84%E5%80%BC%E3%80%82"><span class="nav-number"></span> <span class="nav-text">keepalived 会定时执行脚本并对脚本执行的结果进行分析，动态调整 vrrp_instance 的优先级。如果脚本执行结果为 0，并且 weight 配置的值大于 0，则优先级相应的增加。如果脚本执行结果非 0，并且 weight配置的值小于 0，则优先级相应的减少。其他情况，维持原本配置的优先级，即配置文件中 priority 对应的值。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E8%99%9A%E6%8B%9F%E8%B7%AF%E7%94%B1%EF%BC%8C-VI-1-%E4%B8%BA%E8%99%9A%E6%8B%9F%E8%B7%AF%E7%94%B1%E7%9A%84%E6%A0%87%E7%A4%BA%E7%AC%A6%EF%BC%8C%E8%87%AA%E5%B7%B1%E5%AE%9A%E4%B9%89%E5%90%8D%E7%A7%B0"><span class="nav-number"></span> <span class="nav-text">定义虚拟路由， VI_1 为虚拟路由的标示符，自己定义名称</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BACKUP-%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%EF%BC%88192-168-50-134%EF%BC%89"><span class="nav-number"></span> <span class="nav-text">BACKUP 节点配置文件（192.168.50.134）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vi-etc-keepalived-keepalived-conf-1"><span class="nav-number"></span> <span class="nav-text">vi &#x2F;etc&#x2F;keepalived&#x2F;keepalived.conf</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8keepalived%E6%9C%8D%E5%8A%A1"><span class="nav-number">0.1.</span> <span class="nav-text">启动keepalived服务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E4%B8%BE%E7%AD%96%E7%95%A5"><span class="nav-number">1.</span> <span class="nav-text">选举策略</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Liu liu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/03/08/operating-system/Linux/software/keepalived%E4%B9%8B%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          keepalived之双机热备
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-03-08 10:04:33 / 修改时间：10:10:01" itemprop="dateCreated datePublished" datetime="2021-03-08T10:04:33+08:00">2021-03-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/" itemprop="url" rel="index"><span itemprop="name">operating-system</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/Linux/software/" itemprop="url" rel="index"><span itemprop="name">software</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+            <div class="post-description">keeepalived 实现双机热备</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>&lt;!&gt;</p>
+<h3 id="keepalived双机热备"><a href="#keepalived双机热备" class="headerlink" title="keepalived双机热备"></a>keepalived双机热备</h3><h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>Keepalived 是一种高性能的服务器高可用或热备解决方案， Keepalived 可以用来防止服务器单点故障的发生。<br>Keepalived 以 VRRP 协议为实现基础，用 VRRP 协议来实现高可用性(HA)。 VRRP(Virtual RouterRedundancy Protocol)协议是用于实现路由器冗余的协议， VRRP 协议将两台或多台路由器设备虚拟成一个设备，对外提供虚拟路由器 IP(一个或多个)，而在路由器组内部，如果实际拥有这个对外 IP 的路由器如果工作正常的话就是 MASTER，或者是通过算法选举产生， MASTER 实现针对虚拟路由器 IP 的各种网络功能，如 ARP 请求， ICMP，以及数据的转发等；其他设备不拥有该虚拟 IP，状态是 BACKUP，除了接收 MASTER 的VRRP 状态通告信息外，不执行对外的网络功能。当主机失效时， BACKUP 将接管原先 MASTER 的网络功能。VRRP 协议使用多播数据来传输 VRRP 数据， VRRP 数据使用特殊的虚拟源 MAC 地址发送数据而不是自身网卡的 MAC 地址， VRRP 运行时只有 MASTER 路由器定时发送 VRRP 通告信息，表示 MASTER 工作正常以及虚拟路由器 IP(组)， BACKUP 只接收 VRRP 数据，不发送数据，如果一定时间内没有接收到 MASTER 的通告信息，各 BACKUP 将宣告自己成为 MASTER，发送通告信息，重新进行 MASTER 选举状态。</p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>1、下载keepalived for Linux <a target="_blank" rel="noopener" href="https://www.keepalived.org/download.html">下载链接</a><br>2、解压安装</p>
+<p>‘’’ bash<br>tar -xvf keepalived-1.2.18.tar.gz<br>cd keepalived-1.2.18<br>./configure –prefijx=/usr/local/keepalived<br>make &amp;&amp; make install<br>‘’’</p>
+<p>3、修改配置文件</p>
+<p>‘’’ bash</p>
+<h1 id="复制默认的配置文件"><a href="#复制默认的配置文件" class="headerlink" title="复制默认的配置文件"></a>复制默认的配置文件</h1><p>cp /usr/local/keepalibed/etc/keepalived/keepalived/keepalived.conf /etc/keepalibed     </p>
+<h1 id="设置’MASTER’节点配置文件"><a href="#设置’MASTER’节点配置文件" class="headerlink" title="设置’MASTER’节点配置文件"></a>设置’MASTER’节点配置文件</h1><h1 id="vi-etc-keepalived-keepalived-conf"><a href="#vi-etc-keepalived-keepalived-conf" class="headerlink" title="vi /etc/keepalived/keepalived.conf"></a>vi /etc/keepalived/keepalived.conf</h1><p>! Configuration File for keepalived<br>global_defs {<br>    ## keepalived 自带的邮件提醒需要开启 sendmail 服务。 建议用独立的监控或第三方 SMTP<br>    router_id liuyazhuang133 ## 标识本节点的字条串，通常为 hostname<br>} </p>
+<h2 id="keepalived-会定时执行脚本并对脚本执行的结果进行分析，动态调整-vrrp-instance-的优先级。如果脚本执行结果为-0，并且-weight-配置的值大于-0，则优先级相应的增加。如果脚本执行结果非-0，并且-weight配置的值小于-0，则优先级相应的减少。其他情况，维持原本配置的优先级，即配置文件中-priority-对应的值。"><a href="#keepalived-会定时执行脚本并对脚本执行的结果进行分析，动态调整-vrrp-instance-的优先级。如果脚本执行结果为-0，并且-weight-配置的值大于-0，则优先级相应的增加。如果脚本执行结果非-0，并且-weight配置的值小于-0，则优先级相应的减少。其他情况，维持原本配置的优先级，即配置文件中-priority-对应的值。" class="headerlink" title="keepalived 会定时执行脚本并对脚本执行的结果进行分析，动态调整 vrrp_instance 的优先级。如果脚本执行结果为 0，并且 weight 配置的值大于 0，则优先级相应的增加。如果脚本执行结果非 0，并且 weight配置的值小于 0，则优先级相应的减少。其他情况，维持原本配置的优先级，即配置文件中 priority 对应的值。"></a>keepalived 会定时执行脚本并对脚本执行的结果进行分析，动态调整 vrrp_instance 的优先级。如果脚本执行结果为 0，并且 weight 配置的值大于 0，则优先级相应的增加。如果脚本执行结果非 0，并且 weight配置的值小于 0，则优先级相应的减少。其他情况，维持原本配置的优先级，即配置文件中 priority 对应的值。</h2><p>vrrp_script chk_nginx {<br>    script “/etc/keepalived/nginx_check.sh” ## 检测 nginx 状态的脚本路径<br>    interval 2 ## 检测时间间隔<br>    weight -20 ## 如果条件成立，权重-20<br>}</p>
+<h2 id="定义虚拟路由，-VI-1-为虚拟路由的标示符，自己定义名称"><a href="#定义虚拟路由，-VI-1-为虚拟路由的标示符，自己定义名称" class="headerlink" title="定义虚拟路由， VI_1 为虚拟路由的标示符，自己定义名称"></a>定义虚拟路由， VI_1 为虚拟路由的标示符，自己定义名称</h2><p>vrrp_instance VI_1 {<br>    state MASTER ## 主节点为 MASTER， 对应的备份节点为 BACKUP<br>    interface eth0 ## 绑定虚拟 IP 的网络接口，与本机 IP 地址所在的网络接口相同， 我的是 eth0<br>    virtual_router_id 33 ## 虚拟路由的 ID 号， 两个节点设置必须一样， 可选 IP 最后一段使用, 相同的 VRID 为一个组，他将决定多播的 MAC 地址<br>    mcast_src_ip 192.168.50.133 ## 本机 IP 地址<br>    priority 100 ## 节点优先级， 值范围 0-254， MASTER 要比 BACKUP 高<br>    nopreempt ## 优先级高的设置 nopreempt 解决异常恢复后再次抢占的问题<br>    advert_int 1 ## 组播信息发送间隔，两个节点设置必须一样， 默认 1s<br>    ## 设置验证信息，两个节点必须一致<br>    authentication {<br>        auth_type PASS<br>        auth_pass 1111 ## 真实生产，按需求对应该过来<br>    }<br>    ## 将 track_script 块加入 instance 配置块<br>    track_script {<br>        chk_nginx ## 执行 Nginx 监控的服务<br>    } #<br>    # 虚拟 IP 池, 两个节点设置必须一样<br>    virtual_ipaddress {<br>        192.168.50.130 ## 虚拟 ip，可以定义多个<br>    }<br>}</p>
+<h1 id="BACKUP-节点配置文件（192-168-50-134）"><a href="#BACKUP-节点配置文件（192-168-50-134）" class="headerlink" title="BACKUP 节点配置文件（192.168.50.134）"></a>BACKUP 节点配置文件（192.168.50.134）</h1><h1 id="vi-etc-keepalived-keepalived-conf-1"><a href="#vi-etc-keepalived-keepalived-conf-1" class="headerlink" title="vi /etc/keepalived/keepalived.conf"></a>vi /etc/keepalived/keepalived.conf</h1><p>! Configuration File for keepalived<br>global_defs {<br>    router_id liuyazhuang134<br>}<br>vrrp_script chk_nginx {<br>    script “/etc/keepalived/nginx_check.sh”<br>    interval 2<br>    weight -20<br>}<br>vrrp_instance VI_1 {<br>    state BACKUP<br>    interface eth1<br>    virtual_router_id 33<br>    mcast_src_ip 192.168.50.134<br>    priority 90<br>    advert_int 1<br>    authentication {<br>        auth_type PASS<br>        auth_pass 1111<br>    }<br>    track_script {<br>        chk_nginx<br>    }<br>    virtual_ipaddress {<br>        192.168.50.130<br>    }<br>}<br>‘’’</p>
+<h4 id="启动keepalived服务"><a href="#启动keepalived服务" class="headerlink" title="启动keepalived服务"></a>启动keepalived服务</h4><p>‘’’ bash<br>keepalived -f /etc/keepalived/keepalived.conf<br>‘’’</p>
+<h3 id="选举策略"><a href="#选举策略" class="headerlink" title="选举策略"></a>选举策略</h3><p>from <a target="_blank" rel="noopener" href="https://blog.csdn.net/yujia_666/article/details/110195408">https://blog.csdn.net/yujia_666/article/details/110195408</a></p>
+<p>在Keepalived集群中，其实并没有严格意义上的主、备节点，虽然可以在Keepalived配置文件中设置“state”选项为“MASTER”状态，但是这并不意味着此节点一直就是Master角色。控制节点角色的是Keepalived配置文件中的“priority”值，但并它并不控制所有节点的角色，另一个能改变节点角色的是在vrrp_script模块中设置的“weight”值，这两个选项对应的都是一个整数值，其中“weight”值可以是个负整数，一个节点在集群中的角色就是通过这两个值的大小决定的。</p>
+<p>在一个一主多备的Keepalived集群中，“priority”值最大的将成为集群中的Master节点，而其他都是Backup节点。在Master节点发生故障后，Backup节点之间将进行“民主选举”，通过对节点优先级值“priority”和““weight”的计算，选出新的Master节点接管集群服务。</p>
+<p>在vrrp_script模块中，如果不设置“weight”选项值，那么集群优先级的选择将由Keepalived配置文件中的“priority”值决定，而在需要对集群中优先级进行灵活控制时，可以通过在vrrp_script模块中设置“weight”值来实现。下面列举一个实例来具体说明。</p>
+<p>假定有A和B两节点组成的Keepalived集群，在A节点keepalived.conf文件中，设置“priority”值为100，而在B节点keepalived.conf文件中，设置“priority”值为80，并且A、B两个节点都使用了“vrrp_script”模块来监控mysql服务，同时都设置“weight”值为10，那么将会发生如下情况。</p>
+<p>在两节点都启动Keepalived服务后，正常情况是A节点将成为集群中的Master节点，而B自动成为Backup节点，此时将A节点的mysql服务关闭，通过查看日志发现，并没有出现B节点接管A节点的日志，B节点仍然处于Backup状态，而A节点依旧是Master状态，在这种情况下整个HA集群将失去意义。</p>
+<p>下面就分析一下产生这种情况的原因，这也就是Keepalived集群中主、备角色选举策略的问题。下面总结了在Keepalived中使用vrrp_script模块时整个集群角色的选举算法，由于“weight”值可以是正数也可以是负数，因此，要分两种情况进行说明。</p>
+<ol>
+<li> “weight”值为正数时</li>
+</ol>
+<p>在vrrp_script中指定的脚本如果检测成功，那么Master节点的权值将是“weight值与”priority“值之和，如果脚本检测失败，那么Master节点的权值保持为“priority”值，因此切换策略为：</p>
+<p>Master节点“vrrp_script”脚本检测失败时，如果Master节点“priority”值小于Backup节点“weight值与”priority“值之和，将发生主、备切换。</p>
+<p>Master节点“vrrp_script”脚本检测成功时，如果Master节点“weight”值与“priority”值之和大于Backup节点“weight”值与“priority”值之和，主节点依然为主节点，不发生切换。</p>
+<ol start="2">
+<li> “weight”值为负数时</li>
+</ol>
+<p>在“vrrp_script”中指定的脚本如果检测成功，那么Master节点的权值仍为“priority”值，当脚本检测失败时，Master节点的权值将是“priority“值与“weight”值之差，因此切换策略为：</p>
+<p>Master节点“vrrp_script”脚本检测失败时，如果Master节点“priority”值与“weight”值之差小于Backup节点“priority”值，将发生主、备切换。</p>
+<p>Master节点“vrrp_script”脚本检测成功时，如果Master节点“priority”值大于Backup节点“priority”值时，主节点依然为主节点，不发生切换。</p>
+<p>在熟悉了Keepalived主、备角色的选举策略后，再来分析一下刚才实例，由于A、B两个节点设置的“weight”值都为10，因此符合选举策略的第一种，在A节点停止Mysql服务后，A节点的脚本检测将失败，此时A节点的权值将保持为A节点上设置的“priority”值，即为100，而B节点的权值将变为“weight”值与“priority”值之和，也就是90（10+80），这样就出现了A节点权值仍然大于B节点权值的情况，因此不会发生主、备切换。</p>
+<p>对于“weight”值的设置，有一个简单的标准，即“weight”值的绝对值要大于Master和Backup节点“priority”值之差。对于上面A、B两个节点的例子，只要设置“weight”值大于20即可保证集群正常运行和切换。由此可见，对于“weight值的设置，要非常谨慎，如果设置不好，将导致集群角色选举失败，使集群陷于瘫痪状态。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/operating-system/" rel="tag"># operating-system</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/07/operating-system/Linux/software/iperf3%E4%BD%BF%E7%94%A8/" rel="prev" title="iperf3使用">
+                  <i class="fa fa-chevron-left"></i> iperf3使用
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu liu</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+</body>
+</html>
