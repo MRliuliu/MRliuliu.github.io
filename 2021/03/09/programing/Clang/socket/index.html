@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/th.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/th.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="Linux C下socket使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="socket">
+<meta property="og:url" content="https://mrliuliu.github.io/2021/03/09/programing/Clang/socket/index.html">
+<meta property="og:site_name" content="copy dog">
+<meta property="og:description" content="Linux C下socket使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-09T02:42:23.000Z">
+<meta property="article:modified_time" content="2021-03-09T03:25:52.591Z">
+<meta property="article:author" content="Liu liu">
+<meta property="article:tag" content="programing">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://mrliuliu.github.io/2021/03/09/programing/Clang/socket/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>socket | copy dog</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">copy dog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">和懒惰抗争</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="fa fa-tag fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#socket%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">socket配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SO-REUSEADDR"><span class="nav-number">1.1.</span> <span class="nav-text">SO_REUSEADDR</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SO-KEEPALIVE"><span class="nav-number">1.2.</span> <span class="nav-text">SO_KEEPALIVE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SOLINGER"><span class="nav-number">1.3.</span> <span class="nav-text">SOLINGER</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SO-OOBINLINE"><span class="nav-number">1.4.</span> <span class="nav-text">SO_OOBINLINE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AEsocket%E9%9D%9E%E9%98%BB%E5%A1%9E"><span class="nav-number">1.5.</span> <span class="nav-text">设置socket非阻塞</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WAITALL"><span class="nav-number">2.</span> <span class="nav-text">WAITALL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="nav-number">3.</span> <span class="nav-text">其他配置项</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Liu liu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/03/09/programing/Clang/socket/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          socket
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-03-09 10:42:23 / 修改时间：11:25:52" itemprop="dateCreated datePublished" datetime="2021-03-09T10:42:23+08:00">2021-03-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/programing/" itemprop="url" rel="index"><span itemprop="name">programing</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/programing/Clang/" itemprop="url" rel="index"><span itemprop="name">Clang</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+            <div class="post-description">Linux C下socket使用</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="socket配置"><a href="#socket配置" class="headerlink" title="socket配置"></a>socket配置</h3><h4 id="SO-REUSEADDR"><a href="#SO-REUSEADDR" class="headerlink" title="SO_REUSEADDR"></a>SO_REUSEADDR</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置socket的地址可复用,当一个连接关闭后端口IP可能是TIMEWAIT，这样新进程不能使用这个端口，设置此选项后可以使用。</span></span><br><span class="line"><span class="comment">// https://blog.csdn.net/fz835304205/article/details/16980163/ 详解</span></span><br><span class="line">setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &amp;opt, <span class="keyword">sizeof</span>(opt));</span><br></pre></td></tr></table></figure>
+
+<h4 id="SO-KEEPALIVE"><a href="#SO-KEEPALIVE" class="headerlink" title="SO_KEEPALIVE"></a>SO_KEEPALIVE</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置长连接心跳，不推荐使用</span></span><br><span class="line"><span class="comment">// 详解 https://www.cnblogs.com/tekkaman/p/4849767.html</span></span><br><span class="line">setsockopt(newsockfd, SOL_SOCKET, SO_KEEPALIVE, &amp;keep_alive, <span class="keyword">sizeof</span>(keep_alive));  <span class="comment">//   </span></span><br></pre></td></tr></table></figure>
+
+<h4 id="SOLINGER"><a href="#SOLINGER" class="headerlink" title="SOLINGER"></a>SOLINGER</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 优雅关闭 关闭套接字时等待缓冲区发送完成。</span></span><br><span class="line">setsockopt(newsockfd, SOL_SOCKET, SO_LINGER, (<span class="keyword">char</span> *)&amp;lg, <span class="keyword">sizeof</span>(lg)); </span><br></pre></td></tr></table></figure>
+
+<p>此选项指定函数close对面向连接的协议如何操作（如TCP）。内核缺省close操作是立即返回，如果有数据残留在套接口缓冲区中则系统将试着将这些数据发送给对方。</p>
+<p>SO_LINGER选项用来改变此缺省设置。使用如下结构：<br>struct linger {<br>     int l_onoff; /* 0 = off, nozero = on <em>/<br>     int l_linger; /</em> linger time */<br>};<br>有下列三种情况：</p>
+<p>1、设置 l_onoff为0，则该选项关闭，l_linger的值被忽略，等于内核缺省情况，close调用会立即返回给调用者，如果可能将会传输任何未发送的数据；</p>
+<p>2、设置 l_onoff为非0，l_linger为0，则套接口关闭时TCP夭折连接，TCP将丢弃保留在套接口发送缓冲区中的任何数据并发送一个RST给对方，而不是通常的四分组终止序列，这避免了TIME_WAIT状态；</p>
+<p>3、设置 l_onoff 为非0，l_linger为非0，当套接口关闭时内核将拖延一段时间（由l_linger决定）。如果套接口缓冲区中仍残留数据，进程将处于睡眠状态，直 到（a）所有数据发送完且被对方确认，之后进行正常的终止序列（描述字访问计数为0）或（b）延迟时间到。此种情况下，应用程序检查close的返回值是非常重要的，如果在数据发送完并被确认前时间到，close将返回EWOULDBLOCK错误且套接口发送缓冲区中的任何数据都丢失。close的成功返回仅告诉我们发送的数据（和FIN）已由对方TCP确认，它并不能告诉我们对方应用进程是否已读了数据。如果套接口设为非阻塞的，它将不等待close完成。</p>
+<h4 id="SO-OOBINLINE"><a href="#SO-OOBINLINE" class="headerlink" title="SO_OOBINLINE"></a>SO_OOBINLINE</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  带外数据 带外数据详解 https://blog.csdn.net/gbasp2008/article/details/47666421</span></span><br><span class="line">setsockopt(newsockfd, SOL_SOCKET, SO_OOBINLINE, (<span class="keyword">char</span> *)&amp;opt, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br></pre></td></tr></table></figure>
+<h4 id="设置socket非阻塞"><a href="#设置socket非阻塞" class="headerlink" title="设置socket非阻塞"></a>设置socket非阻塞</h4><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u010765526/article/details/79872227">https://blog.csdn.net/u010765526/article/details/79872227</a> </p>
+<p>阻塞就一直等待数据，非阻塞如果当前没有数据就直接返回。需要判断数据长度。 但是阻塞非阻塞，都有可能接收到不完整数据返回的情况</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">iFlags = fcntl(iSock, F_GETFL, <span class="number">0</span>);</span><br><span class="line">iFlags |= O_NONBLOCK;</span><br><span class="line">iFlags |= O_NDELAY;</span><br><span class="line"><span class="keyword">int</span> ret = fcntl(iSock, F_SETFL, iFlags);</span><br></pre></td></tr></table></figure>
+<p>当由紧急指针指向的实际数据字节到达接收端TCP，该数据字节既可能被拉出带外，也可能被留在带内，即在线留存。SO_OOBINLINE套接字选项默认情况下是禁止的，对于这样的接收端套接字，该数据字节并不放入套接字接收缓冲区，而是被放入该连接的一个独立的单字节带外缓冲区。接收进程从这个单字节缓冲区读入数据的唯一方法是制定MSG_OOB标志调用recv，recvfrom或recvmsg。如果新的OOB字节在旧的OOB字节被读取之前就到达，旧的OOB字节会被丢弃。</p>
+<p>然而如果接收进程开启了SO_OOBINLINE套接字选项，那么由TCP紧急指针指向的实际数据字节将被留在通常的套接字接收缓冲区中。这种情况下，接收进程不能指定MSG_OOB标志读入该数据字节。相反，接收进程通过检查该连接的带外标记以获悉何时访问到这个数据字节。</p>
+<h3 id="WAITALL"><a href="#WAITALL" class="headerlink" title="WAITALL"></a>WAITALL</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">recv(sockfd, buff, buff_size, MSG_WAITALL);</span><br></pre></td></tr></table></figure>
+
+<p>在正常情况下recv 是会等待直到读取到buff_size 长度的数据，但是这里的WAITALL 也只是尽量读全，在有中断的情况下recv 还是可能会被打断，造成没有读完指定的buff_size的长度。</p>
+<h3 id="其他配置项"><a href="#其他配置项" class="headerlink" title="其他配置项"></a>其他配置项</h3><table>
+<thead>
+<tr>
+<th align="center">选项名称</th>
+<th align="center">说明</th>
+<th align="center">数据类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">SOL_SOCKET</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">SO_BROADCAST</td>
+<td align="center">允许发送广播数据</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">SO_DEBUG</td>
+<td align="center">允许调试</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">SO_DONTROUTE</td>
+<td align="center">不查找路由</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">SO_ERROR</td>
+<td align="center">获得套接字错误</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">SO_KEEPALIVE</td>
+<td align="center">保持连接</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">SO_LINGER</td>
+<td align="center">延迟关闭连接</td>
+<td align="center">struct linger</td>
+</tr>
+<tr>
+<td align="center">SO_OOBINLINE</td>
+<td align="center">带外数据放入正常数据流</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">SO_RCVBUF</td>
+<td align="center">接收缓冲区大小</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">SO_SNDBUF</td>
+<td align="center">发送缓冲区大小</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">SO_RCVLOWAT</td>
+<td align="center">接收缓冲区下限</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">SO_SNDLOWAT</td>
+<td align="center">发送缓冲区下限</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">SO_RCVTIMEO</td>
+<td align="center">接收超时</td>
+<td align="center">struct timeval</td>
+</tr>
+<tr>
+<td align="center">SO_SNDTIMEO</td>
+<td align="center">发送超时</td>
+<td align="center">struct timeval</td>
+</tr>
+<tr>
+<td align="center">SO_REUSERADDR</td>
+<td align="center">允许重用本地地址和端口</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">SO_TYPE</td>
+<td align="center">获得套接字类型</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">SO_BSDCOMPAT</td>
+<td align="center">与BSD系统兼容</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">IPPROTO_IP</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">IP_HDRINCL</td>
+<td align="center">在数据包中包含IP首部</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">IP_OPTINOS</td>
+<td align="center">IP首部选项</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">IP_TOS</td>
+<td align="center">服务类型</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">IP_TTL</td>
+<td align="center">生存时间</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">IPPRO_TCP</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">TCP_MAXSEG</td>
+<td align="center">TCP最大数据段的大小</td>
+<td align="center">int</td>
+</tr>
+<tr>
+<td align="center">TCP_NODELAY</td>
+<td align="center">不使用Nagle算法</td>
+<td align="center">int</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/programing/" rel="tag"># programing</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/08/operating-system/Linux/software/keepalived%E4%B9%8B%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87/" rel="prev" title="keepalived之双机热备">
+                  <i class="fa fa-chevron-left"></i> keepalived之双机热备
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/03/11/programing/other/%E7%BC%96%E7%A0%81/" rel="next" title="编码">
+                  编码 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu liu</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/th.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/th.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="FAT文件系统简介 需要补充">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FAT文件系统">
+<meta property="og:url" content="https://mrliuliu.github.io/2021/03/11/operating-system/file/FAT%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="copy dog">
+<meta property="og:description" content="FAT文件系统简介 需要补充">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-11T14:56:29.000Z">
+<meta property="article:modified_time" content="2021-03-11T14:58:03.032Z">
+<meta property="article:author" content="Liu liu">
+<meta property="article:tag" content="operating-system">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://mrliuliu.github.io/2021/03/11/operating-system/file/FAT%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>FAT文件系统 | copy dog</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">copy dog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">和懒惰抗争</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="fa fa-tag fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#FAT-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.</span> <span class="nav-text">FAT 文件系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B0%87"><span class="nav-number">1.1.</span> <span class="nav-text">簇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.1.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%9D%E7%95%99%E5%8C%BA"><span class="nav-number">1.1.2.</span> <span class="nav-text">保留区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DBR"><span class="nav-number">1.1.3.</span> <span class="nav-text">DBR</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FAT%E5%8C%BA"><span class="nav-number">1.1.4.</span> <span class="nav-text">FAT区</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Liu liu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/03/11/operating-system/file/FAT%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FAT文件系统
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-03-11 22:56:29 / 修改时间：22:58:03" itemprop="dateCreated datePublished" datetime="2021-03-11T22:56:29+08:00">2021-03-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/" itemprop="url" rel="index"><span itemprop="name">operating-system</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/file/" itemprop="url" rel="index"><span itemprop="name">file</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/operating-system/file/FAT%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">FAT文件系统</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+            <div class="post-description">FAT文件系统简介 需要补充</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="FAT-文件系统"><a href="#FAT-文件系统" class="headerlink" title="FAT 文件系统"></a>FAT 文件系统</h2><p>FAT文件系统分为三种类型：FAT12、FAT16、FAT32，FAT12和FAT16基本相同，FAT32与其稍有不同。</p>
+<h3 id="簇"><a href="#簇" class="headerlink" title="簇"></a>簇</h3><p><strong>簇的大小</strong>是2^n个扇区，扇区通常为512字节（可以是2^n Bytes）。有资料上说簇在大小要限制在32K之内，因为虽然有些版本的操作系统支持64K的簇，但是很多应用程序的安装程序无法在这样的文件系统上正常运行。</p>
+<p><strong>簇是文件存储的基本单位</strong>。哪怕文件只有一个字节也要占一个簇的空间，所以在可以标识的总容量允许的情况下，我们尽量将簇设的小一些，以此来减少浪费的空间。<br>FAT文件系统后面的数字即与簇相关，它表示簇号所占的bit位数。如FAT16表示一个<strong>簇号</strong>占16位，这样它可表示最大簇数是2^16。由此我们可以由*<em>簇数</em>字节/簇<strong>得到该分区的文件系统所支持的</strong>最大分区容量**。</p>
+<h4 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h4><ul>
+<li>FAT16<table>
+<thead>
+<tr>
+<th align="center">保留区</th>
+<th align="center">FAT区</th>
+<th align="center">根目录区</th>
+<th align="center">文件和目录数据区</th>
+</tr>
+</thead>
+</table>
+</li>
+<li>FAT32<table>
+<thead>
+<tr>
+<th align="center">保留区</th>
+<th align="center">FAT区</th>
+<th align="center">文件和目录数据区(根目录在其中)</th>
+</tr>
+</thead>
+</table>
+</li>
+</ul>
+<h4 id="保留区"><a href="#保留区" class="headerlink" title="保留区"></a>保留区</h4><p>保留区（Reserved Region),是分区内位于FAT区前的区域，至少由1个Sector。FAT16一般为1，FAT32一般为32.<br>操作系统引导记录DBR即位于保留区的第一个Sector（即为什么至少有一个sector）。</p>
+<h4 id="DBR"><a href="#DBR" class="headerlink" title="DBR"></a>DBR</h4><p>DBR（Dos Boot Record）是分区的第一个扇区，又称启动扇区，以0xAA55为结束标志。操作系统即以此标志判断DBR，进而读取磁盘参数和进行其它操作。<br>DBR中有两个重要结构：BPB（BIOS Parameter Block）和BS（Boot Sector）， 其成员分别以BPB_和BS_开头，描述了分区的各个信息如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">跳转指令、每扇区字节数、每簇扇区数、</span><br><span class="line">保留扇区数、FAT表数、FAT所占扇区数、</span><br><span class="line">根目录文件数、逻辑扇区总数、磁头数、隐藏扇区数、</span><br><span class="line">每磁道扇区数、媒体描述符、文件系统表示 ......</span><br></pre></td></tr></table></figure>
+
+<p>FS系统标识占8个字节，形如“FAT16”，但MS操作系统斌给依此判断FS类型，即使把此处的记号标识为其它甚至为宽，MS OS仍能根据其他判断FS类型。但你还是严格来写此区域，因为一些其它的OS据此判定FS。<br>从便宜36开始，FAT16和FAT32的DBR开始有所区别。<br>注意：文件系统的数据存储形式是小端方式（Little-endian）我们写的0xAA55，在小端方式存储的机器上是低字节55在前。哈弗建构的计算机时小端方式存储的。我们在写入时只要指定所写数据的类型（决定了数据所占字节）即可。</p>
+<h4 id="FAT区"><a href="#FAT区" class="headerlink" title="FAT区"></a>FAT区</h4><p>FAT（File Allocation Table）文件分配表，是FAT文件系统。FAT表一般为两个，第二个用于备份。<br>FAT表以链式存储的形式，记录了文件所在的簇号，OS即以根目录中存储的文件首簇号，实现对文件的读写。<br>下面以FAT16说明簇号所代表的含义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FFF8 磁盘标识字 FFFF 第一簇已经被占用 0000 可用 00002-FFEF 已用簇</span><br><span class="line">FFFF0-FFF6 保留簇 FFFF7 坏簇 FFF8-FFFF 文件的最后一簇</span><br></pre></td></tr></table></figure>
+<p>FAT12和FAT32于此类型，只不过用12和32位标识，前面加上或减去F即可。这些标识一般由OS在存储文件时自动完成。<br>FAT标识的前两个簇号为标识信息 <a target="_blank" rel="noopener" href="https://wenku.baidu.com/view/91a2c62cb4daa58da0114a81.html">https://wenku.baidu.com/view/91a2c62cb4daa58da0114a81.html</a> </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/operating-system/" rel="tag"># operating-system</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/algorithm/%E5%AF%86%E7%A0%81%E7%AE%97%E6%B3%95/" rel="prev" title="密码算法">
+                  <i class="fa fa-chevron-left"></i> 密码算法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/03/13/operating-system/Linux/usb2serial/" rel="next" title="usb2serial">
+                  usb2serial <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu liu</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+</body>
+</html>
