@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/th.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/th.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="什么是IDS、IPS及它们之间的区别">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IPS&#x2F;IDS">
+<meta property="og:url" content="https://mrliuliu.github.io/2021/05/24/network/IPS-IDS/index.html">
+<meta property="og:site_name" content="copy dog">
+<meta property="og:description" content="什么是IDS、IPS及它们之间的区别">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-05-24T07:35:09.000Z">
+<meta property="article:modified_time" content="2021-05-24T07:42:09.248Z">
+<meta property="article:author" content="Liu liu">
+<meta property="article:tag" content="network">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://mrliuliu.github.io/2021/05/24/network/IPS-IDS/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>IPS/IDS | copy dog</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">copy dog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">和懒惰抗争</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="fa fa-tag fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFIDS%E3%80%81IPS%E5%8F%8A%E5%AE%83%E4%BB%AC%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">什么是IDS、IPS及它们之间的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81IDS%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%EF%BC%88%E6%97%81%E8%B7%AF%E9%83%A8%E7%BD%B2%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">一、IDS入侵检测（旁路部署）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81IPS%E5%85%A5%E4%BE%B5%E9%98%B2%E5%BE%A1%EF%BC%88%E4%B8%B2%E8%A1%8C%E9%83%A8%E7%BD%B2%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">二、IPS入侵防御（串行部署）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPS%E4%B8%8EIDS%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.3.</span> <span class="nav-text">IPS与IDS的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E4%BA%A7%E5%93%81%EF%BC%8C%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E8%AF%A5%E9%80%89%E6%8B%A9%E5%85%A5%E4%BE%B5%E9%98%B2%E5%BE%A1%E4%BA%A7%E5%93%81%E5%91%A2"><span class="nav-number">1.4.</span> <span class="nav-text">如何选择入侵检测产品，什么时候该选择入侵防御产品呢?</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Liu liu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/05/24/network/IPS-IDS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          IPS/IDS
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-05-24 15:35:09 / 修改时间：15:42:09" itemprop="dateCreated datePublished" datetime="2021-05-24T15:35:09+08:00">2021-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/network/" itemprop="url" rel="index"><span itemprop="name">network</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/network/IPS-IDS/" itemprop="url" rel="index"><span itemprop="name">IPS-IDS</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="什么是IDS、IPS及它们之间的区别"><a href="#什么是IDS、IPS及它们之间的区别" class="headerlink" title="什么是IDS、IPS及它们之间的区别"></a>什么是IDS、IPS及它们之间的区别</h1><a id="more"></a>
+<p><em>from <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/96942352">https://zhuanlan.zhihu.com/p/96942352</a></em></p>
+<h2 id="一、IDS入侵检测（旁路部署）"><a href="#一、IDS入侵检测（旁路部署）" class="headerlink" title="一、IDS入侵检测（旁路部署）"></a>一、IDS入侵检测（旁路部署）</h2><p>专业上讲IDS是依照一定的安全策略，对网络、系统的运行状况进行监视，尽可能发现各种攻击企图、攻击行为或者攻击结果，以保证网络系统资源的机密性、完整性和可用性。</p>
+<p>打个比喻——假如防火墙是一幢大厦的门锁，那么IDS就是这幢大厦里的监视系统。一旦小偷进入了大厦，或内部人员有越界行为，只有实时监视系统才能发现情况并发出警告。</p>
+<p>与防火墙不同的是，IDS入侵检测系统是一个旁路监听设备，没有也不需要跨接在任何链路上，无须网络流量流经它便可以工作。因此，对IDS的部署的唯一要求是：IDS应当挂接在所有所关注的流量都必须流经的链路上。在这里，“所关注流量”指的是来自高危网络区域的访问流量和需要进行统计、监视的网络报文。</p>
+<p>IDS在交换式网络中的位置一般选择为：尽可能靠近攻击源、尽可能靠近受保护资源。这些位置通常是：</p>
+<p>1、服务器区域的交换机上；<br>2、Internet接入路由器之后的第一台交换机上；<br>3、重点保护网段的局域网交换机上</p>
+<h2 id="二、IPS入侵防御（串行部署）"><a href="#二、IPS入侵防御（串行部署）" class="headerlink" title="二、IPS入侵防御（串行部署）"></a>二、IPS入侵防御（串行部署）</h2><p>IPS系统是电脑网络安全设施，是对防病毒软件和防火墙的补充。 IPS系统是一部能够监视网络或网络设备的网络资料传输行为的计算机网络安全设备，能够 <strong>即时的中断、调整或隔离</strong> 一些不正常或是具有伤害性的网络资料传输行为。</p>
+<p>对于部署在数据转发路径上的IPS，可以根据预先设定的安全策略，对流经的每个报文进行深度检测（协议分析跟踪、特征匹配、流量统计分析、事件关联分析等），如果一旦发现隐藏于其中网络攻击，可以根据该攻击的威胁级别立即采取抵御措施，这些措施包括（按照处理力度）：向管理中心告警；丢弃该报文；切断此次应用会话；切断此次TCP连接。</p>
+<p>办公网中，需要在以下区域部署IPS：</p>
+<p>1、办公网与外部网络的连接部位（入口/出口）；<br>2、重要服务器集群前端；<br>3、办公网内部接入层。<br>4、至于其它区域，可以根据实际情况与重要程度，酌情部署</p>
+<h2 id="IPS与IDS的区别"><a href="#IPS与IDS的区别" class="headerlink" title="IPS与IDS的区别"></a>IPS与IDS的区别</h2><p>A、IPS对于初始者来说，是位于防火墙和网络的设备之间的设备。这样，如果检测到攻击，IPS会在这种攻击扩散到网络的其它地方之前阻止这个恶意的通信。而IDS只是存在于你的网络之外起到报警的作用，而不是在你的网络前面起到防御的作用。</p>
+<p>B、IPS具有检测已知和未知攻击并具有成功防止攻击的能力而IDS没有</p>
+<p>C、IDS的局限性是不能反击网络攻击，因为IDS传感器基于数据包嗅探技术，只能眼睁睁地看着网络信息流过。IPS可执行IDS相同的分析，因为他们可以插入网内，装在网络组件之间，而且他们可以阻止恶意活动</p>
+<h2 id="如何选择入侵检测产品，什么时候该选择入侵防御产品呢"><a href="#如何选择入侵检测产品，什么时候该选择入侵防御产品呢" class="headerlink" title="如何选择入侵检测产品，什么时候该选择入侵防御产品呢?"></a>如何选择入侵检测产品，什么时候该选择入侵防御产品呢?</h2><p>从产品价值角度讲：入侵检测系统注重的是网络安全状况的监管。入侵防御系统关注的是对入侵行为的控制。与防火墙类产品、入侵检测产品可以实施的安全策略不同，入侵防御系统可以实施深层防御安全策略，即可以在应用层检测出攻击并予以阻断，这是防火墙所做不到的，当然也是入侵检测产品所做不到的。</p>
+<p>从产品应用角度来讲：为了达到可以全面检测网络安全状况的目的，入侵检测系统需要部署在网络内部的中心点，需要能够观察到所有网络数据。如果信息系统中包含了多个逻辑隔离的子网，则需要在整个信息系统中实施分布部署，即每子网部署一个入侵检测分析引擎，并统一进行引擎的策略管理以及事件分析，以达到掌控整个信息系统安全状况的目的。</p>
+<p>而为了实现对外部攻击的防御，IPS系统需要部署在网络的边界。这样所有来自外部的数据必须串行通过入侵防御系统，IPS系统即可实时分析网络数据，发现攻击行为立即予以阻断，保证来自外部的攻击数据不能通过网络边界进入网络。</p>
+<p>IDS系统的核心价值在于通过对全网信息的分析，了解信息系统的安全状况，进而指导信息系统安全建设目标以及安全策略的确立和调整，而入侵防御系统的核心价值在于安全策略的实施—对黑客行为的阻击；IDS系统需要部署在网络内部，监控范围可以覆盖整个子网，包括来自外部的数据以及内部终端之间传输的数据，入侵防御系统则必须部署在网络边界，抵御来自外部的入侵，对内部攻击行为无能为力。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/network/" rel="tag"># network</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/13/network/protocol/TCP-IP%E5%B8%B8%E8%A7%81%E6%94%BB%E5%87%BB-md/" rel="prev" title="TCP-IP常见攻击.md">
+                  <i class="fa fa-chevron-left"></i> TCP-IP常见攻击.md
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu liu</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+</body>
+</html>
