@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/th.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/th.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mrliuliu.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="丢包查找流程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lost package">
+<meta property="og:url" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/index.html">
+<meta property="og:site_name" content="copy dog">
+<meta property="og:description" content="丢包查找流程">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/kernel_space.jpg">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/send_package.png">
+<meta property="og:image" content="https://mrliuliu.github.io/receive_package">
+<meta property="og:image" content="https://mrliuliu.github.io/%E6%9F%A5%E7%9C%8B%E7%BD%91%E5%8D%A1phy%E8%8A%AF%E7%89%87firmware">
+<meta property="og:image" content="https://mrliuliu.github.io/%E6%8A%A5%E6%96%87%E9%95%BF%E5%BA%A6%E4%B8%A2%E5%8C%85">
+<meta property="og:image" content="https://mrliuliu.github.io/%E7%BD%91%E5%8D%A1%E4%B8%A2%E5%8C%85%E6%80%BB%E7%BB%93">
+<meta property="og:image" content="https://mrliuliu.github.io/%E6%9F%A5%E7%9C%8B%E9%A9%B1%E5%8A%A8%E4%B8%A2%E5%8C%85">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E6%9F%A5%E7%9C%8B%E9%A9%B1%E5%8A%A8%E6%BA%A2%E5%87%BA%E4%B8%A2%E5%8C%85.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E5%8D%95%E6%A0%B8%E8%B4%9F%E8%BD%BD%E9%AB%98%E5%AF%BC%E8%87%B4%E4%B8%A2%E5%8C%85%E6%9F%A5%E7%9C%8B.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E9%A9%B1%E5%8A%A8%E4%B8%A2%E5%8C%85%E5%A4%84%E7%90%86.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/ARP_ignore.png">
+<meta property="og:image" content="https://mrliuliu.github.io/arp_filter%E6%9F%A5%E7%9C%8B">
+<meta property="og:image" content="https://mrliuliu.github.io/arp%E8%A1%A8%E6%BB%A1%E4%B8%A2%E5%8C%85.png">
+<meta property="og:image" content="https://mrliuliu.github.io/ARP%E8%A1%A8%E6%BB%A1%E4%B8%A2%E5%8C%85">
+<meta property="og:image" content="https://mrliuliu.github.io/gc_thresh%E6%9F%A5%E7%9C%8B.png">
+<meta property="og:image" content="https://mrliuliu.github.io/unres_qlen_bytes%E6%9F%A5%E7%9C%8B">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E6%8E%A5%E5%8F%A3ip%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE%E4%B8%A2%E5%8C%85.webp">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E6%9F%A5%E7%9C%8B%E6%98%AF%E5%90%A6%E9%85%8D%E7%BD%AE%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1.jpg">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E6%9F%A5%E7%9C%8B%E8%B7%AF%E7%94%B1%E8%A1%A8.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E5%90%84%E7%A7%8Dct%E5%BC%82%E5%B8%B8%E4%B8%A2%E5%8C%85%E7%BB%9F%E8%AE%A1.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/ipfrag_max_dist.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E6%9F%A5%E7%9C%8B%E4%B8%A2%E5%8C%85%E4%BD%8D%E7%BD%AE.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/MTU%E4%B8%A2%E5%8C%85.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E5%8D%8F%E8%AE%AE%E5%A4%84%E7%90%86.webp">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/tcp_early_retrans.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E7%BD%91%E7%BB%9CRTT.webp">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E4%B9%B1%E5%BA%8F%E6%8A%A5%E6%96%87.webp">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/TCP%E6%97%A0%E5%BA%8F%E4%BC%A0%E9%80%81%E7%9A%84%E5%AE%B9%E9%94%99%E7%8E%87.webp">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E4%B8%A2%E5%8C%851.webp">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E4%B8%A2%E5%8C%852.webp">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/UDP%E5%B1%82%E4%B8%A2%E5%8C%85.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E4%BC%B0%E7%AE%97BDP.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/%E5%86%85%E6%A0%B8%E5%8D%8F%E8%AE%AE%E6%A0%88%E4%B8%A2%E5%8C%85.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/dropwatch.png">
+<meta property="og:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/tcpdump.png">
+<meta property="article:published_time" content="2021-05-25T09:56:28.000Z">
+<meta property="article:modified_time" content="2021-06-19T11:50:26.646Z">
+<meta property="article:author" content="Liu liu">
+<meta property="article:tag" content="network">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mrliuliu.github.io/2021/05/25/network/lost-package/kernel_space.jpg">
+
+
+<link rel="canonical" href="https://mrliuliu.github.io/2021/05/25/network/lost-package/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>lost package | copy dog</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">copy dog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">和懒惰抗争</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="fa fa-tag fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%A2%E5%8C%85"><span class="nav-number">1.</span> <span class="nav-text">丢包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8C%85%E6%8E%A5%E6%94%B6%E3%80%81%E5%8F%91%E9%80%81%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">数据包接收、发送原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E6%94%B6%E6%95%B0%E6%8D%AE%E5%8C%85"><span class="nav-number">3.</span> <span class="nav-text">接收数据包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF"><span class="nav-number">3.1.</span> <span class="nav-text">核心思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E7%BD%91%E7%BB%9C%E4%B8%A2%E5%8C%85%E6%83%85%E5%BD%A2%E6%A6%82%E8%A7%88"><span class="nav-number">3.2.</span> <span class="nav-text">目录网络丢包情形概览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E5%8D%A1%E7%AB%AF%E5%8F%A3%E5%8D%8F%E5%95%86%E4%B8%A2%E5%8C%85"><span class="nav-number">3.3.</span> <span class="nav-text">网卡端口协商丢包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E5%8D%A1%E6%B5%81%E6%8E%A7%E4%B8%A2%E5%8C%85"><span class="nav-number">3.4.</span> <span class="nav-text">网卡流控丢包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8A%A5%E6%96%87%E9%95%BF%E5%BA%A6%E4%B8%A2%E5%8C%85"><span class="nav-number">3.5.</span> <span class="nav-text">报文长度丢包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E5%8D%A1%E9%A9%B1%E5%8A%A8%E4%B8%A2%E5%8C%85"><span class="nav-number">4.</span> <span class="nav-text">网卡驱动丢包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A9%B1%E5%8A%A8%E6%BA%A2%E5%87%BA%E4%B8%A2%E5%8C%85"><span class="nav-number">4.1.</span> <span class="nav-text">驱动溢出丢包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95%E6%A0%B8%E8%B4%9F%E8%BD%BD%E9%AB%98%E5%AF%BC%E8%87%B4%E4%B8%A2%E5%8C%85"><span class="nav-number">4.2.</span> <span class="nav-text">单核负载高导致丢包</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E8%BF%90%E8%A1%8C%E6%83%85%E5%86%B5"><span class="nav-number"></span> <span class="nav-text">查看当前运行情况</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%88%E6%AD%A2%E6%9C%8D%E5%8A%A1"><span class="nav-number"></span> <span class="nav-text">终止服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E5%8D%8F%E8%AE%AE%E6%A0%88%E4%B8%A2%E5%8C%85"><span class="nav-number">1.</span> <span class="nav-text">内核协议栈丢包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E5%B1%82%E4%B8%A2%E5%8C%85"><span class="nav-number">1.1.</span> <span class="nav-text">以太网链路层丢包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9CIP%E5%B1%82%E4%B8%A2%E5%8C%85"><span class="nav-number">2.</span> <span class="nav-text">网络IP层丢包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3ip%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE%E4%B8%A2%E5%8C%85"><span class="nav-number">2.1.</span> <span class="nav-text">接口ip地址配置丢包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E4%B8%A2%E5%8C%85"><span class="nav-number">3.</span> <span class="nav-text">路由丢包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE%E4%B8%A2%E5%8C%85"><span class="nav-number">3.1.</span> <span class="nav-text">路由配置丢包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E5%90%91%E8%B7%AF%E7%94%B1%E8%BF%87%E6%BB%A4%E4%B8%A2%E5%8C%85"><span class="nav-number">3.2.</span> <span class="nav-text">反向路由过滤丢包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99%E4%B8%A2%E5%8C%85"><span class="nav-number">4.</span> <span class="nav-text">防火墙丢包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E8%AE%BE%E7%BD%AE%E8%A7%84%E5%88%99%E5%AF%BC%E8%87%B4%E4%B8%A2%E5%8C%85"><span class="nav-number">4.1.</span> <span class="nav-text">客户设置规则导致丢包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E8%BF%BD%E8%B8%AA%E5%AF%BC%E8%87%B4%E4%B8%A2%E5%8C%85"><span class="nav-number">4.2.</span> <span class="nav-text">连接追踪导致丢包</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E8%B7%9F%E8%B8%AA%E8%A1%A8%E6%BA%A2%E5%87%BA%E4%B8%A2%E5%8C%85"><span class="nav-number">4.2.1.</span> <span class="nav-text">连接跟踪表溢出丢包</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ct%E5%88%9B%E5%BB%BA%E5%86%B2%E7%AA%81%E5%A4%B1%E5%AF%BC%E5%AF%BC%E8%87%B4%E4%B8%A2%E5%8C%85"><span class="nav-number">4.3.</span> <span class="nav-text">ct创建冲突失导导致丢包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82UDP-TCP%E4%B8%A2%E5%8C%85"><span class="nav-number">5.</span> <span class="nav-text">传输层UDP&#x2F;TCP丢包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP%E8%BF%9E%E6%8E%A5%E8%B7%9F%E8%B8%AA%E5%AE%89%E5%85%A8%E6%A3%80%E6%9F%A5%E4%B8%A2%E5%8C%85"><span class="nav-number">5.1.</span> <span class="nav-text">TCP连接跟踪安全检查丢包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%89%87%E9%87%8D%E7%BB%84%E4%B8%A2%E5%8C%85"><span class="nav-number">5.2.</span> <span class="nav-text">分片重组丢包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E6%B4%BE%E4%BD%A0%E5%AE%89%E5%85%A8%E8%B7%9D%E6%A3%80%E6%9F%A5%E7%A6%BB%E4%B8%A2%E5%8C%85"><span class="nav-number">5.3.</span> <span class="nav-text">分派你安全距检查离丢包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%89%87hash-bucket%E5%86%B2%E7%AA%81%E9%93%BE%E5%A4%AA%E9%95%BF%E8%B6%85%E8%BF%87%E7%B3%BB%E7%BB%9F%E9%BB%98%E8%AE%A4%E5%80%BC128"><span class="nav-number">5.4.</span> <span class="nav-text">分片hash bucket冲突链太长超过系统默认值128</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%86%85%E5%AD%98%E4%B8%8D%E8%B6%B3%EF%BC%8C%E5%88%9B%E5%BB%BA%E6%96%B0%E5%88%86%E7%89%87%E5%A4%B1%E8%B4%A5"><span class="nav-number">5.5.</span> <span class="nav-text">系统内存不足，创建新分片失败</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MTU%E4%B8%A2%E5%8C%85"><span class="nav-number">6.</span> <span class="nav-text">MTU丢包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tcp%E5%B1%82%E4%B8%A2%E5%8C%85"><span class="nav-number">7.</span> <span class="nav-text">tcp层丢包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TIME-WAIT%E8%BF%87%E5%A4%9A%E4%B8%A2%E5%8C%85"><span class="nav-number">7.1.</span> <span class="nav-text">TIME_WAIT过多丢包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E9%98%9F%E5%88%97%E9%97%AE%E9%A2%98%E5%AF%BC%E8%87%B4%E4%B8%A2%E5%8C%85"><span class="nav-number">8.</span> <span class="nav-text">TCP队列问题导致丢包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#syn-flood%E6%94%BB%E5%87%BB%E4%B8%A2%E5%8C%85"><span class="nav-number">8.1.</span> <span class="nav-text">syn flood攻击丢包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PAWS%E6%9C%BA%E5%88%B6%E4%B8%A2%E5%8C%85"><span class="nav-number">9.</span> <span class="nav-text">PAWS机制丢包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TLP%E9%97%AE%E9%A2%98%E4%B8%A2%E5%8C%85"><span class="nav-number">10.</span> <span class="nav-text">TLP问题丢包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E4%B8%8D%E8%B6%B3%E5%AF%BC%E8%87%B4%E4%B8%A2%E5%8C%85"><span class="nav-number">11.</span> <span class="nav-text">内存不足导致丢包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E8%B6%85%E6%97%B6%E4%B8%A2%E5%8C%85"><span class="nav-number">12.</span> <span class="nav-text">TCP超时丢包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP%E4%B9%B1%E5%BA%8F%E4%B8%A2%E5%8C%85"><span class="nav-number">12.1.</span> <span class="nav-text">TCP乱序丢包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E4%B8%A2%E5%8C%85"><span class="nav-number">12.2.</span> <span class="nav-text">拥塞控制丢包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UDP%E5%B1%82%E4%B8%A2%E5%8C%85"><span class="nav-number">13.</span> <span class="nav-text">UDP层丢包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82socket%E4%B8%A2%E5%8C%85"><span class="nav-number">13.1.</span> <span class="nav-text">应用层socket丢包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%8F%91%E9%80%81%E5%A4%AA%E5%BF%AB%E5%AF%BC%E8%87%B4%E4%B8%A2%E5%8C%85"><span class="nav-number">13.2.</span> <span class="nav-text">应用发送太快导致丢包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D"><span class="nav-number">14.</span> <span class="nav-text">相关工具介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">15.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Liu liu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mrliuliu.github.io/2021/05/25/network/lost-package/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Liu liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="copy dog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          lost package
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-25 17:56:28" itemprop="dateCreated datePublished" datetime="2021-05-25T17:56:28+08:00">2021-05-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-06-19 19:50:26" itemprop="dateModified" datetime="2021-06-19T19:50:26+08:00">2021-06-19</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/network/" itemprop="url" rel="index"><span itemprop="name">network</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+            <div class="post-description">丢包查找流程</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="丢包"><a href="#丢包" class="headerlink" title="丢包"></a>丢包</h3><p>from:<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/pQ8YNiRTpBE8BykhUv_mcg">https://mp.weixin.qq.com/s/pQ8YNiRTpBE8BykhUv_mcg</a></p>
+<p>数据在Iternet上是以数据包为单位传输的，单位就是字节，数据在网络上传输，受网络设备，网络质量的映像，使得接收到的数据小于发送出去的数据，造成丢包。</p>
+<h3 id="数据包接收、发送原理"><a href="#数据包接收、发送原理" class="headerlink" title="数据包接收、发送原理"></a>数据包接收、发送原理</h3><p><img src="/2021/05/25/network/lost-package/kernel_space.jpg" alt="kernel_space"></p>
+<p>发送数据包：<br><img src="/2021/05/25/network/lost-package/send_package.png" alt="send_package"></p>
+<p>1、应用程序的数据包，在TCP层增加TCP报文头，形成可传输的数据包。<br>2、在IP层增加IP报头，形成IP报文。<br>3、经过数据网卡驱动程序将IP包再添加 <strong>14字节</strong> 的MAC头，构成frame（暂无CRC),frame（暂无CRC）中含有发送端和接收端的MAC地址。<br>4、驱动程序将frame(暂无)拷贝到⽹卡的缓冲区，由⽹卡处理。<br>5、⽹卡为frame（暂⽆CRC）添加头部同步信息和CRC校验，将其封装为可以发送的packet，然后再发送到⽹线上，这样说就完成了⼀个IP报⽂的发送了，所有连接到这个⽹线上的⽹卡都可以看到该packet。</p>
+<h3 id="接收数据包"><a href="#接收数据包" class="headerlink" title="接收数据包"></a>接收数据包</h3><p><img src="/receive_package" alt="receive_package"></p>
+<p>1.⽹卡收到⽹线上的packet，⾸先检查packet的CRC校验，保证完整性，然后将packet头去掉，得到frame。（⽹卡会检查MAC包内的⽬的MAC地址是否和本⽹卡的MAC地址⼀样，不⼀样则会丢弃。）<br>2.⽹卡将frame拷贝到预分配的ring buffer缓冲。<br>3.⽹卡驱动程序通知内核处理，经过TCP/IP协议栈层层解码处理。<br>4.应⽤程序从socket buffer 中读取数据。</p>
+<h4 id="核心思路"><a href="#核心思路" class="headerlink" title="核心思路"></a>核心思路</h4><p>了解了收发包的原理，可以了解到丢包原因主要会涉及⽹卡设备、⽹卡驱动、内核协议栈三⼤类。以下我们将遵循“从下到上分层分析（各层可能性出现的丢包场景），然后查看关键信息，最终得出分析结果”的原则展开介绍。</p>
+<h4 id="目录网络丢包情形概览"><a href="#目录网络丢包情形概览" class="headerlink" title="目录网络丢包情形概览"></a>目录网络丢包情形概览</h4><p>硬件网卡丢包<br>网卡驱动丢包<br>以太网链路层丢包<br>网络IP层丢包<br>传输层UDP/TCP丢包<br>应用层socket丢包<br>针对以上6种情形，分别作出如下详述</p>
+<p><em>硬件网卡丢包</em></p>
+<p>Ring Buffer溢出 </p>
+<p>![Ring Buffer溢出](Ring Buffer溢出)</p>
+<p>如图所示，物理介质上的数据帧到达后首先由NIC（网络适配器）读取，写入设备内部缓冲区Ring Buffer中，再由中断处理程序触发Softirq从中消费，Ring Buffer的大小因网卡设备而异。当网络数据包到达（生产）的速率快于内核处理（消费）的速率时，Ring Buffer很快会被填满，新来的数据包将被丢弃；<br>查看：<br>通过ethtool或/proc/net/dev可以查看因Ring Buffer满而丢弃的包统计，在统计项中以fifo标识：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ ethtool -S eth0|grep rx_fifo</span><br><span class="line">rx_fifo_errors: 0</span><br><span class="line">$ cat /proc/net/dev</span><br><span class="line">Inter-|Receive | Transmitface |bytes packets errs drop fifo frame compressed </span><br><span class="line">multicast|bytes packets errs drop fifo colls carrier compressed</span><br><span class="line">eth0: 17253386680731 42839525880 0 0 0 0 0 244182022 14879545018057 41657801805 0 0 0 0 0 0</span><br></pre></td></tr></table></figure>
+
+<p>查看eth0网卡Ring Buffer最大值和当前设置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ethtool -g eth0</span><br></pre></td></tr></table></figure>
+
+<p>解决方案：修改网卡eth0接收与发送硬件缓存区大小</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ethtool -G eth0 rx 4096 tx 4096</span><br></pre></td></tr></table></figure>
+
+<h4 id="网卡端口协商丢包"><a href="#网卡端口协商丢包" class="headerlink" title="网卡端口协商丢包"></a>网卡端口协商丢包</h4><ol>
+<li><p>查看网卡丢包统计：ethtool -S eth1/eth0<br><a href="%E7%BD%91%E5%8D%A1%E4%B8%A2%E5%8C%85%E7%BB%9F%E8%AE%A1">网卡丢包统计</a></p>
+</li>
+<li><p>查看网卡配置状态：ethtool eth1/eth0<br><a href="%E6%9F%A5%E7%9C%8B%E7%BD%91%E5%8D%A1%E9%85%8D%E7%BD%AE%E7%8A%B6%E6%80%81">查看网卡配置状态</a></p>
+</li>
+</ol>
+<p>主要查看网卡和上游网络设备协商速率和模式是否符合预期；<br>解决方案：<br>1  重新自协商：  <code>ethtool -r  eth1/eth0;</code><br>2  如果上游不支持自协商，可以强制设置端口速率：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ethtool -s eth1 speed 1000 duplex full autoneg off</span><br></pre></td></tr></table></figure>
+<h4 id="网卡流控丢包"><a href="#网卡流控丢包" class="headerlink" title="网卡流控丢包"></a>网卡流控丢包</h4><ol>
+<li>查看流控统计：<br>ethtool -S eth1 | grep control<br><a href="%E6%9F%A5%E7%9C%8B%E6%B5%81%E6%8E%A7%E7%BB%9F%E8%AE%A1">查看流控统计</a><br>rx_flow_control_xon是在网卡的RX Buffer满或其他网卡内部的资源受限时，给交换机端口发送的开启流控的pause帧计数。对应的，tx_flow_control_xoff是在资源可用之后发送的关闭流控的pause帧计数。</li>
+</ol>
+<p>2 .查看网络流控配置：ethtool -a eth1<br><a href="%E6%9F%A5%E7%9C%8B%E7%BD%91%E7%BB%9C%E6%B5%81%E6%8E%A7%E9%85%8D%E7%BD%AE">查看网络流控配置</a></p>
+<p>解决方案：关闭网卡流控<br>ethtool -A ethx autoneg off //自协商关闭<br>ethtool -A ethx tx off //发送模块关闭<br>ethtool -A ethx rx off //接收模块关闭</p>
+<p><em>报文mac地址丢包</em><br>一般计算机网卡都工作在非混杂模式下，此时网卡只接受来自网络端口的目的地址指向自己的数据，如果报文的目的mac地址不是对端的接口的mac地址，一般都会丢包，一般这种情况很有可能是源端设置静态arp表项或者动态学习的arp表项没有及时更新，但目的端mac地址已发生变化（换了网卡），没有更新通知到源端（比如更新报文被丢失，中间交换机异常等情况）；</p>
+<p>查看：<br>1.目的端抓包，tcpdump可以开启混杂模式，可以抓到对应的报文，然后查看mac地址；<br>2.源端查看arp表或者抓包（上一跳设备），看发送的mac地址是否和下一跳目的端的mac地址一致；<br>解决方案：<br>1.刷新arp表然后发包触发arp重新学习（可能影响其他报文，增加延时，需要小心操作）；<br>2.可以在源端手动设置正确的静态的arp表项</p>
+<p>其他网卡异常丢包<br>这类异常比少见，但如果都不是上面哪些情况，但网卡统计里面任然有丢包计数，可以试着排查一下：<br>网卡firmware版本:<br>排查一下网卡phy芯片firmware是不是有bug，安装的版本是不是符合预期，查看 ethtool -i eth1:</p>
+<p><img src="/%E6%9F%A5%E7%9C%8B%E7%BD%91%E5%8D%A1phy%E8%8A%AF%E7%89%87firmware" alt="查看网卡phy芯片firmware"></p>
+<p>和厂家提case询问是不是已知问题，有没有新版本等；</p>
+<p><em>网线接触不良：</em><br>如果网卡统计里面存在crc error 计数增长，很可能是网线接触不良，可以通知网管排查一下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ethtool -S eth0</span><br></pre></td></tr></table></figure>
+<p>解决方案：一般试着重新插拔一下网线，或者换一根网线，排查插口是否符合端口规格等;</p>
+<h4 id="报文长度丢包"><a href="#报文长度丢包" class="headerlink" title="报文长度丢包"></a>报文长度丢包</h4><p>网卡有接收正确报文长度范围，一般正常以太网报文长度范围：64-1518，发送端正常情况会填充或者分片来适配，偶尔会发生一些异常情况导致发送报文不正常丢包；</p>
+<p>查看：<br><code>ethtool -S eth1|grep length_errors</code><br><img src="/%E6%8A%A5%E6%96%87%E9%95%BF%E5%BA%A6%E4%B8%A2%E5%8C%85" alt="报文长度丢包"></p>
+<p>解决方案：<br>1  调整接口MTU配置，是否开启支持以太网巨帧；<br>2  发送端开启PATH MTU进行合理分片；</p>
+<p><em>简单总结一下网卡丢包：</em><br><img src="/%E7%BD%91%E5%8D%A1%E4%B8%A2%E5%8C%85%E6%80%BB%E7%BB%93" alt="网卡丢包总结"></p>
+<h3 id="网卡驱动丢包"><a href="#网卡驱动丢包" class="headerlink" title="网卡驱动丢包"></a>网卡驱动丢包</h3><p>查看：ifconfig eth1/eth0 等接口<br><img src="/%E6%9F%A5%E7%9C%8B%E9%A9%B1%E5%8A%A8%E4%B8%A2%E5%8C%85" alt="查看驱动丢包"></p>
+<p>1.RX errors: 表示总的收包的错误数量，还包括too-long-frames错误，Ring Buffer 溢出错误，crc 校验错误，帧同步错误，fifo overruns 以及 missed pkg 等等。<br>2.RX dropped: 表示数据包已经进入了 Ring Buffer，但是由于内存不够等系统原因，导致在拷贝到内存的过程中被丢弃。<br>3.RX overruns: 表示了 fifo 的 overruns，这是由于 Ring Buffer(aka Driver Queue) 传输的 IO 大于 kernel 能够处理的 IO 导致的，而 Ring Buffer 则是指在发起 IRQ 请求之前的那块 buffer。很明显，overruns 的增大意味着数据包没到 Ring Buffer 就被网卡物理层给丢弃了，而 CPU 无法即使的处理中断是造成 Ring Buffer 满的原因之一，上面那台有问题的机器就是因为 interruprs 分布的不均匀(都压在 core0)，没有做 affinity 而造成的丢包。<br>4. RX frame: 表示 misaligned 的 frames。<br>5. 对于 TX 的来说，出现上述 counter 增大的原因主要包括 aborted transmission, errors due to carrirer, fifo error, heartbeat erros 以及 windown error，而 collisions 则表示由于 CSMA/CD 造成的传输中断。</p>
+<h4 id="驱动溢出丢包"><a href="#驱动溢出丢包" class="headerlink" title="驱动溢出丢包"></a>驱动溢出丢包</h4><p>netdev_max_backlog是内核从NIC收到包后，交由协议栈（如IP、TCP）处理之前的缓冲队列。每个CPU核都有一个backlog队列，与Ring Buffer同理，当接收包的速率大于内核协议栈处理的速率时，CPU的backlog队列不断增长，当达到设定的netdev_max_backlog值时，数据包将被丢弃。<br>查看:<br>通过查看/proc/net/softnet_stat可以确定是否发生了netdev backlog队列溢出：<br><img src="/2021/05/25/network/lost-package/%E6%9F%A5%E7%9C%8B%E9%A9%B1%E5%8A%A8%E6%BA%A2%E5%87%BA%E4%B8%A2%E5%8C%85.png" alt="查看驱动溢出丢包"></p>
+<p>其中：每一行代表每个CPU核的状态统计，从CPU0依次往下；每一列代表一个CPU核的各项统计：第一列代表中断处理程序收到的包总数；第二列即代表由于netdev_max_backlog队列溢出而被丢弃的包总数。从上面的输出可以看出，这台服务器统计中，并没有因为netdev_max_backlog导致的丢包。<br>解决方案：<br>netdev_max_backlog的默认值是1000，在高速链路上，可能会出现上述第二统计不为0的情况，可以通过修改内核参数net.core.netdev_max_backlog来解决：<br><code>$ sysctl -w net.core.netdev_max_backlog=2000</code></p>
+<h4 id="单核负载高导致丢包"><a href="#单核负载高导致丢包" class="headerlink" title="单核负载高导致丢包"></a>单核负载高导致丢包</h4><p>单核CPU软中断占有高, 导致应用没有机会收发或者收包比较慢，即使调整netdev_max_backlog队列大小仍然会一段时间后丢包，处理速度跟不上网卡接收的速度;<br>查看：mpstat -P ALL 1<br><img src="/2021/05/25/network/lost-package/%E5%8D%95%E6%A0%B8%E8%B4%9F%E8%BD%BD%E9%AB%98%E5%AF%BC%E8%87%B4%E4%B8%A2%E5%8C%85%E6%9F%A5%E7%9C%8B.png" alt="单核负载高导致丢包查看"></p>
+<p>单核软中断占有100%，导致应用没有机会收发或者收包比较慢而丢包；</p>
+<p>解决方案：<br>1.调整网卡RSS队列配置：<br>查看：<code>ethtool -x ethx；</code><br>调整：<code>ethtool -X ethx xxxx；</code><br>2.看一下网卡中断配置是否均衡 <code>cat /proc/interrupts</code><br>调整：<br>1） irqbalance 调整；</p>
+<h1 id="查看当前运行情况"><a href="#查看当前运行情况" class="headerlink" title="查看当前运行情况"></a>查看当前运行情况</h1><p><code>service irqbalance status</code></p>
+<h1 id="终止服务"><a href="#终止服务" class="headerlink" title="终止服务"></a>终止服务</h1><p><code>service irqbalance stop</code><br>2） 中断绑CPU核 echo mask &gt; /proc/irq/xxx/smp_affinity</p>
+<p>3.根据CPU和网卡队列个数调整网卡多队列和RPS配置<br>-CPU大于网卡队列个数：<br>查看网卡队列 ethtool -x ethx；<br>协议栈开启RPS并设置RPS；<br><code>echo $mask（CPU配置）&gt; /sys/class/net/$eth/queues/rx-$i/rps_cpus</code><br><code>echo 4096（网卡buff）&gt; /sys/class/net/$eth/queues/rx-$i/rps_flow_cnt</code><br>2）CPU小于网卡队列个数，绑中断就可以，可以试着关闭RPS看一下效果：<br><code>echo 0 &gt; /sys/class/net/&lt;dev&gt;/queues/rx-&lt;n&gt;/rps_cpus</code><br>4.numa CPU调整，对齐网卡位置，可以提高内核处理速度，从而给更多CPU给应用收包，减缓丢包概率；<br>查看网卡numa位置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ethtool -i eth1|grep bus-info</span><br><span class="line">lspci -s bus-info -vv|grep node</span><br></pre></td></tr></table></figure>
+<p>上面中断和RPS设置里面mask需要重新按numa CPU分配重新设置;</p>
+<p>5.可以试着开启中断聚合（看网卡是否支持）<br>查看 : </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">ethtool -c ethx</span><br><span class="line">Coalesce parameters <span class="keyword">for</span> eth1:</span><br><span class="line">Adaptive RX: on  TX: on</span><br><span class="line">stats-block-usecs: 0</span><br><span class="line">sample-interval: 0</span><br><span class="line">pkt-rate-low: 0</span><br><span class="line">pkt-rate-high: 0</span><br><span class="line"></span><br><span class="line">rx-usecs: 25</span><br><span class="line">rx-frames: 0</span><br><span class="line">rx-usecs-irq: 0</span><br><span class="line">rx-frames-irq: 256</span><br><span class="line"></span><br><span class="line">tx-usecs: 25</span><br><span class="line">tx-frames: 0</span><br><span class="line">tx-usecs-irq: 0</span><br><span class="line">tx-frames-irq: 256</span><br><span class="line"></span><br><span class="line">rx-usecs-low: 0</span><br><span class="line">rx-frame-low: 0</span><br><span class="line">tx-usecs-low: 0</span><br><span class="line">tx-frame-low: 0</span><br><span class="line"></span><br><span class="line">rx-usecs-high: 0</span><br><span class="line">rx-frame-high: 0</span><br><span class="line">tx-usecs-high: 0</span><br><span class="line">tx-frame-high: 0</span><br></pre></td></tr></table></figure>
+
+<p>调整：</p>
+<p><code>ethtool -C ethx adaptive-rx on</code></p>
+<p>简单总结一下网卡驱动丢包处理：<br><img src="/2021/05/25/network/lost-package/%E9%A9%B1%E5%8A%A8%E4%B8%A2%E5%8C%85%E5%A4%84%E7%90%86.png" alt="驱动丢包处理"></p>
+<h3 id="内核协议栈丢包"><a href="#内核协议栈丢包" class="headerlink" title="内核协议栈丢包"></a>内核协议栈丢包</h3><h4 id="以太网链路层丢包"><a href="#以太网链路层丢包" class="headerlink" title="以太网链路层丢包"></a>以太网链路层丢包</h4><p>neighbor系统arp丢包<br>arp_ignore配置丢包<br>arp_ignore参数的作用是控制系统在收到外部的arp请求时，是否要返回arp响应。arp_ignore参数常用的取值主要有0，1，2，3~8较少用到；<br>查看：sysctl -a|grep arp_ignore</p>
+<p><a href="arp_ignore%E9%85%8D%E7%BD%AE%E4%B8%A2%E5%8C%85%E6%9F%A5%E7%9C%8B.png">arp_ignore配置丢包查看</a></p>
+<p>解决方案：根据实际场景设置对应值；<br>0：响应任意网卡上接收到的对本机IP地址的arp请求（包括环回网卡上的地址），而不管该目的IP是否在接收网卡上。<br>1：只响应目的IP地址为接收网卡上的本地地址的arp请求。<br>2：只响应目的IP地址为接收网卡上的本地地址的arp请求，并且arp请求的源IP必须和接收网卡同网段。<br>3：如果ARP请求数据包所请求的IP地址对应的本地地址其作用域（scope）为主机（host），则不回应ARP响应数据包，如果作用域为全局（global）或链路（link），则回应ARP响应数据包。<br><img src="/2021/05/25/network/lost-package/ARP_ignore.png" alt="ARP_ignore"></p>
+<p>arp_filter配置丢包<br>在多接口系统里面（比如腾讯云的弹性网卡场景），这些接口都可以回应arp请求，导致对端有可能学到不同的mac地址，后续报文发送可能由于mac地址和接收报文接口mac地址不一样而导致丢包，arp_filter主要是用来适配这种场景；<br>查看：sysctl -a | grep arp_filter<br><img src="/arp_filter%E6%9F%A5%E7%9C%8B" alt="arp_filter查看"></p>
+<p>解决方案：<br>根据实际场景设置对应的值，一般默认是关掉此过滤规则，特殊情况可以打开；<br>0：默认值，表示回应arp请求的时候不检查接口情况；<br>1：表示回应arp请求时会检查接口是否和接收请求接口一致，不一致就不回应；</p>
+<p>arp表满导致丢包<br>比如下面这种情况，由于突发arp表项很多 超过协议栈默认配置，发送报文的时候部分arp创建失败，导致发送失败，从而丢包：<br><img src="/arp%E8%A1%A8%E6%BB%A1%E4%B8%A2%E5%8C%85.png" alt="arp表满丢包"></p>
+<p>查看：<br><em>查看arp状态：cat /proc/net/stat/arp_cache ，table_fulls统计：</em><br><img src="/ARP%E8%A1%A8%E6%BB%A1%E4%B8%A2%E5%8C%85" alt="ARP表满丢包"></p>
+<p><em>查看dmesg消息（内核打印）：</em><br>dmesg|grep neighbour<br>neighbour: arp_cache: neighbor table overflow!<br><em>查看当前arp表大小：ip n|wc -l</em><br>        查看系统配额：<br>sysctl -a |grep net.ipv4.neigh.default.gc_thresh<br>gc_thresh1：存在于ARP高速缓存中的最少层数，如果少于这个数，垃圾收集器将不会运行。缺省值是128。</p>
+<p>gc_thresh2 ：保存在 ARP 高速缓存中的最多的记录软限制。垃圾收集器在开始收集前，允许记录数超过这个数字 5 秒。缺省值是 512。<br>gc_thresh3 ：保存在 ARP 高速缓存中的最多记录的硬限制，一旦高速缓存中的数目高于此，垃圾收集器将马上运行。缺省值是1024。<br>一般在内存足够情况下，可以认为gc_thresh3 值是arp 表总大小；<br><img src="/gc_thresh%E6%9F%A5%E7%9C%8B.png" alt="gc_thresh查看"></p>
+<p>解决方案：根据实际arp最大值情况（比如访问其他子机最大个数），调整arp表大小</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo sysctl -w net.ipv4.neigh.default.gc_thresh1&#x3D;1024</span><br><span class="line">$ sudo sysctl -w net.ipv4.neigh.default.gc_thresh2&#x3D;2048</span><br><span class="line">$ sudo sysctl -w net.ipv4.neigh.default.gc_thresh3&#x3D;4096</span><br><span class="line">$ sudo sysctl  -p</span><br></pre></td></tr></table></figure>
+
+<p>arp请求缓存队列溢出丢包<br>查看：</p>
+<p><code>cat /proc/net/stat/arp_cache</code> ，unresolved_discards是否有新增计数<br>解决方案：根据客户需求调整缓存队列大小unres_qlen_bytes：<br><img src="/unres_qlen_bytes%E6%9F%A5%E7%9C%8B" alt="unres_qlen_bytes查看"></p>
+<h3 id="网络IP层丢包"><a href="#网络IP层丢包" class="headerlink" title="网络IP层丢包"></a>网络IP层丢包</h3><h4 id="接口ip地址配置丢包"><a href="#接口ip地址配置丢包" class="headerlink" title="接口ip地址配置丢包"></a>接口ip地址配置丢包</h4><ol>
+<li>本机服务不通，检查lo接口有没有配置地址是127.0.0.1；</li>
+<li>本机接收失败， 查看local路由表：ip r show table local|grep 子机ip地址；这种丢包一般会出现在多IP场景，子机底层配置多ip失败，导致对应ip收不到包而丢包；<br><img src="/2021/05/25/network/lost-package/%E6%8E%A5%E5%8F%A3ip%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE%E4%B8%A2%E5%8C%85.webp" alt="接口ip地址配置丢包"><br>解决方案：</li>
+</ol>
+<p>1.配置正确接口ip地址；比如ip a add 1.1.1.1 dev eth0<br>2.如果发现接口有地址还丢包，可能是local路由表没有对应条目，紧急情况下，可以用手工补上：<br>比如ip r add local 本机ip地址 dev eth0 table local </p>
+<h3 id="路由丢包"><a href="#路由丢包" class="headerlink" title="路由丢包"></a>路由丢包</h3><h4 id="路由配置丢包"><a href="#路由配置丢包" class="headerlink" title="路由配置丢包"></a>路由配置丢包</h4><p>查看：<br>1.设置正确 查看路由配置 （路由是否可达），是否配置策略路由（在弹性网卡场景回出现此配置）ip rule:<br><img src="/2021/05/25/network/lost-package/%E6%9F%A5%E7%9C%8B%E6%98%AF%E5%90%A6%E9%85%8D%E7%BD%AE%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1.jpg" alt="查看是否配置策略路由.jpg"><br>然后找到对那个路由表，查看路由表：<br><img src="/2021/05/25/network/lost-package/%E6%9F%A5%E7%9C%8B%E8%B7%AF%E7%94%B1%E8%A1%A8.png" alt="查看路由表.png"><br>或者直接用ip r get x.x.x.x，让系统帮你查找是否存在可达路由，接口是否符合预期。</p>
+<p>2.查看系统统计信息<br>        <code>netstat -s | grep &quot;dropped because of missing route&quot;</code><br>解决方案： 重新配置正确的路由。</p>
+<h4 id="反向路由过滤丢包"><a href="#反向路由过滤丢包" class="headerlink" title="反向路由过滤丢包"></a>反向路由过滤丢包</h4><pre><code>    反向路由过滤机制使Linux通过反向路由查询，检查首都奥的数据包源IP是否可路由（Loose mode)、是否最佳路由（Strict mode），如果没有通过验证，则丢弃数据包，设计的目的使防范IP地址欺骗攻击。</code></pre>
+<p>查看：<br>rp_filter提供三种模式提供配置：<br>0 - 不验证<br>1 - RFC3704定义的严格模式： 对每个收到的数据包，查询反向路由，如果数据包入口和反向路由出口不一致，则不通过<br>2 - RFC3704定义的松散模式： 对每个收到的数据包，查询反向路由；如果任何接口都不可达，则不通过。<br>查看当前rp_filter策略配置：</p>
+<p><code>$cat /proc/sys/net/ipv4/conf/eth0/rp_filter</code><br>如果这里设置为1，就需要查看主机的网络环境和路由策略是否可能会导致客户端的入包无法通过反向路由验证了。<br>从原理来看这个机制工作在网络层，因此，如果客户端能够Ping通服务器，就能够排除这个因素了。<br>解决方案：<br>根据实际网络环境rp_filter设置为0或2：<br><code>$ sysctl -w net.ipv4.conf.all.rp_filter=2</code> 或<br><code>$ sysctl -w net.ipv4.conf.eth0.rp_filter=2</code></p>
+<h3 id="防火墙丢包"><a href="#防火墙丢包" class="headerlink" title="防火墙丢包"></a>防火墙丢包</h3><h4 id="客户设置规则导致丢包"><a href="#客户设置规则导致丢包" class="headerlink" title="客户设置规则导致丢包"></a>客户设置规则导致丢包</h4><p>查看：<br>        <code>iptables -nvL | grep DROP;</code><br>        解决方案： 修改防火墙规则；</p>
+<h4 id="连接追踪导致丢包"><a href="#连接追踪导致丢包" class="headerlink" title="连接追踪导致丢包"></a>连接追踪导致丢包</h4><h5 id="连接跟踪表溢出丢包"><a href="#连接跟踪表溢出丢包" class="headerlink" title="连接跟踪表溢出丢包"></a>连接跟踪表溢出丢包</h5><p>kernel用ip_conntrack模块来记录iptables网络包的状态，并把每条记录保存到table里（这个tables在内存里，可以通过/roc/net/ip_conntrack查看当前已经记录的总数），如果网络状况繁忙，比如高连接，高并发连接等会导致逐步占用这个table可用空间，一般这个table很大不容易沾满并且可以自己清理，table的记录会一直呆在table里占用空间直到源IP发一个RST包，但是如果出现被攻击、错误的网络配置、有问题的路由/路由器、有我呢提的网卡等情况的时候，就会导致源IP发的这个RST包收不到，这样就积累在table里，越积累越多直到沾满。无论，那种情况导致table变慢，满了以后就会丢包，出现外部无法连接服务器的情况。内核会报如下错误信息：kernel:ip_conntrack: table full, dropping packet; 看看当前连接跟踪数。<br>        <code>cat /proc/sys/net/netfilter/nf_conntrack_max</code><br>解决方案：<br>        增大跟踪的最大条数<br>        <code>net.netfilter.nf_conntrack_max = 3276800</code><br>        减少跟踪连接的最大有效时间：<br>        <code>net.netfilter.nf_conntrack_tcp_timeout_established = 1200</code><br>        <code>net.netfilter.nf_conntrack_udp_timeout_stream = 180</code><br>        <code>net.netfilter.nf_conntrack_icmp_timeout = 30</code></p>
+<h4 id="ct创建冲突失导导致丢包"><a href="#ct创建冲突失导导致丢包" class="headerlink" title="ct创建冲突失导导致丢包"></a>ct创建冲突失导导致丢包</h4><p>查看：当前连接跟踪统计： <code>cat /proc/net/stat/nf_conntrack</code>, 可以查各种ct异常丢包统计。<br><img src="/2021/05/25/network/lost-package/%E5%90%84%E7%A7%8Dct%E5%BC%82%E5%B8%B8%E4%B8%A2%E5%8C%85%E7%BB%9F%E8%AE%A1.png" alt="各种ct异常丢包统计.png"><br>解决方案：内核热补丁修复或者更新内核版本（合入补丁修改）；</p>
+<h3 id="传输层UDP-TCP丢包"><a href="#传输层UDP-TCP丢包" class="headerlink" title="传输层UDP/TCP丢包"></a>传输层UDP/TCP丢包</h3><h4 id="TCP连接跟踪安全检查丢包"><a href="#TCP连接跟踪安全检查丢包" class="headerlink" title="TCP连接跟踪安全检查丢包"></a>TCP连接跟踪安全检查丢包</h4><p>丢包原因：由于连接没有断开，但服务端或者client之前出现过发包异常的状况（报文没有经过连接跟踪模块更新窗口计数），没有更新合法的window范围，导致后续报文安全检查被丢包；协议栈用nf_conntrack_tcp_be_liberal来控制这个选项：<br>1： 关闭，只有不再tcp窗口内的rst包被标志位无效；<br>0： 开启，所有不再tcp窗口年内的包都被标志位无效。</p>
+<p>查看：<br>查看配置：<br>        <code>sysctl -a | grep nf_conntrack_tcp_be_liberal</code><br>        <code>net.filter.nf_conntrack_tcp_be_liberal = 1</code><br>查看log：<br>一般情况下netfilter模块默认没有加载log，需要手动加载：<br>        <code>modprobe ipt_LOG11</code><br>        <code>sysctl -w net.filter.nf_log.2 = ipt_LOG</code><br>然后法宝后再查看syslog：<br>解决方案：根据实际抓包分析情况判断是不是刺激值导致的丢包，可以试着关闭一下；</p>
+<h4 id="分片重组丢包"><a href="#分片重组丢包" class="headerlink" title="分片重组丢包"></a>分片重组丢包</h4><p>情况总结：超时<br>查看：<br>        <code>netstat -s | grep timeout</code><br>        <code>601 fragments dropped after timeout</code><br>解决方法：调整超时时间<br>        <code>net.ipv4.ipfrag_time = 30</code><br>        <code>sysctl -w net.ipv4.ipfrag_time=60</code><br>frag_high_thresh,分片的内存超过一定阈值会导致系统安全检查丢包。<br>查看：<br>        <code>entstat -s | grep reassembles</code><br>        <code>8094 packet reassembles failed</code></p>
+<p>解决方案：调整大小<br>        <code>net.ipv4.ipfrag_high_thresh</code><br>        <code>net.ipv4.ipfrag_low_thresh</code></p>
+<h4 id="分派你安全距检查离丢包"><a href="#分派你安全距检查离丢包" class="headerlink" title="分派你安全距检查离丢包"></a>分派你安全距检查离丢包</h4><p>查看：<br>        <code>netstat -s | grep reassembles</code><br>        <code>8094 packet reassembles failed</code><br>解决方案：把ipfrag_max_dist设置位0，就关掉此安全检查<br><img src="/2021/05/25/network/lost-package/ipfrag_max_dist.png" alt="ipfrag_max_dist.png"><br>ipfrag_max_dist特性，再一些场景下其实并不适用：<br>1.有大量的网络报文交互<br>2.发送端的高并发度很高，同时SMP架构，导致很容易造成这种乱序情况；</p>
+<h4 id="分片hash-bucket冲突链太长超过系统默认值128"><a href="#分片hash-bucket冲突链太长超过系统默认值128" class="headerlink" title="分片hash bucket冲突链太长超过系统默认值128"></a>分片hash bucket冲突链太长超过系统默认值128</h4><p>查看：<br>        <code>dmesg | grep &quot;Dropping fragment&quot;</code><br>        <code>inet_frag_find: Fragment hash bucket 128 list length grew over limit. Dropping fragment.</code><br>解决方案：热补丁调整hash大小；</p>
+<h4 id="系统内存不足，创建新分片失败"><a href="#系统内存不足，创建新分片失败" class="headerlink" title="系统内存不足，创建新分片失败"></a>系统内存不足，创建新分片失败</h4><p>查看方法：<br>        <code>netstat -s | grep reassembles</code><br>        <code>8094 packet reassembles failed</code><br>dropwatch查看丢包位置：<br><img src="/2021/05/25/network/lost-package/%E6%9F%A5%E7%9C%8B%E4%B8%A2%E5%8C%85%E4%BD%8D%E7%BD%AE.png" alt="查看丢包位置.png"><br>解决方案：</p>
+<p>a.增大系统网络内存：</p>
+<pre><code>    `net.core.rmem_default `
+    `net.core.rmem_max `
+    `net.core.wmem_default`</code></pre>
+<p>b.系统回收内存：</p>
+<p>紧急情况下，可以用 /proc/sys/vm/drop_caches, 去释放一下虚拟内存；</p>
+<pre><code>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">To free pagecache:</span><br><span class="line"># echo 1 &gt; &#x2F;proc&#x2F;sys&#x2F;vm&#x2F;drop_caches</span><br><span class="line">To free dentries and inodes:</span><br><span class="line"># echo 2 &gt; &#x2F;proc&#x2F;sys&#x2F;vm&#x2F;drop_caches</span><br><span class="line">To free pagecache, dentries and inodes:</span><br><span class="line">echo 3 &gt; &#x2F;proc&#x2F;sys&#x2F;vm&#x2F;drop_caches</span><br></pre></td></tr></table></figure></code></pre>
+<h3 id="MTU丢包"><a href="#MTU丢包" class="headerlink" title="MTU丢包"></a>MTU丢包</h3><p><img src="/2021/05/25/network/lost-package/MTU%E4%B8%A2%E5%8C%85.png" alt="MTU丢包.png"><br>查看：</p>
+<p>1.检查接口MTU配置，ifconfig eth1/eth0，默认是1500；<br>2.进行MTU探测，然后设置接口对应的MTU值；</p>
+<p>解决方案：</p>
+<ol>
+<li>根据实际情况，设置正确MTU值；</li>
+<li>设置合理的tcp mss，启用TCP MTU Probe:<pre><code> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cat &#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;tcp_mtu_probing:</span><br><span class="line">tcp_mtu_probing - INTEGER Controls TCP Packetization-Layer Path MTU Discovery.</span><br><span class="line">Takes three values:</span><br><span class="line">0 - Disabled </span><br><span class="line">1 - Disabled by default, enabled when an ICMP black hole detected</span><br><span class="line">2 - Always enabled, use initial MSS of tcp_base_mss.</span><br></pre></td></tr></table></figure></code></pre>
+<h3 id="tcp层丢包"><a href="#tcp层丢包" class="headerlink" title="tcp层丢包"></a>tcp层丢包</h3><h4 id="TIME-WAIT过多丢包"><a href="#TIME-WAIT过多丢包" class="headerlink" title="TIME_WAIT过多丢包"></a>TIME_WAIT过多丢包</h4></li>
+</ol>
+<p>大量TIMEWAIT出现，并且需要解决的场景，在高并发短连接的TCP服务器上，当服务器处理完请求后立刻按照主动正常关闭连接。。。这个场景下，会出现大量socket处于TIMEWAIT状态。如果客户端的并发量持续很高，此时部分客户端就会显示连接不上；</p>
+<p>查看：<br>查看系统log ：<br>        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dmsg</span><br><span class="line">TCP: time wait bucket table overflow；</span><br></pre></td></tr></table></figure><br>查看系统配置：<br>        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sysctl -a|grep tcp_max_tw_buckets</span><br><span class="line">net.ipv4.tcp_max_tw_buckets &#x3D; 16384</span><br></pre></td></tr></table></figure><br>解决方案：</p>
+<ol>
+<li>tw_reuse，tw_recycle 必须在客户端和服务端timestamps 开启时才管用（默认打开）</li>
+<li>tw_reuse 只对客户端起作用，开启后客户端在1s内回收；</li>
+<li>tw_recycle对客户端和服务器同时起作用，开启后在3.5 * RTO 内回收，RTO 200ms-120s 具体时间视网络状况。内网状况比tw_reuse稍快，公网尤其移动网络大多要比tw_reuse 慢，优点就是能够回收服务端的TIME_WAIT数量；<br>在服务端，如果网络路径会经过NAT节点，不要启用net.ipv4.tcp_tw_recycle，会导致时间戳混乱，引起其他丢包问题；</li>
+<li>调整tcp_max_tw_buckets大小，如果内存足够：<pre><code> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sysctl -w net.ipv4.tcp_max_tw_buckets&#x3D;163840；</span><br><span class="line">时间戳异常丢包</span><br></pre></td></tr></table></figure></code></pre>
+</li>
+</ol>
+<p>当多个客户端处于同一个NAT环境时，同时访问服务器，不同客户端的时间可能不一致，此时服务端接收到同一个NAT发送的请求，就会出现时间戳错乱的现象，于是后面的数据包就被丢弃了，具体的表现通常是是客户端明明发送的SYN，但服务端就是不响应ACK。在服务器借助下面的命令可以来确认数据包是否有不断被丢弃的现象。</p>
+<p>检查：<br>        <code>netstat -s | grep rejects</code><br>解决方案：<br>如果网络路径会经过NAT节点，不要启用<code>net.ipv4.tcp_tw_recycle</code>；</p>
+<h3 id="TCP队列问题导致丢包"><a href="#TCP队列问题导致丢包" class="headerlink" title="TCP队列问题导致丢包"></a>TCP队列问题导致丢包</h3><p>原理：<br>tcp状态机（三次握手）<br><img src="/2021/05/25/network/lost-package/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.png" alt="TCP三次握手.png"><br>协议处理：<br><img src="/2021/05/25/network/lost-package/%E5%8D%8F%E8%AE%AE%E5%A4%84%E7%90%86.webp" alt="协议处理.webp"></p>
+<p><em>一个是半连接队列（syn queue）：</em><br>在三次握手协议中，服务器维护一个半连接队列，该队列为每个客户端的SYN包开设一个条目(服务端在接收到SYN包的时候，就已经创建了request_sock结构，存储在半连接队列中)，该条目表明服务器已收到SYN包，并向客户发出确认，正在等待客户的确认包（会进行第二次握手发送SYN＋ACK的包加以确认）。这些条目所标识的连接在服务器处于Syn_RECV状态，当服务器收到客户的确认包时，删除该条目，服务器进入ESTABLISHED状态。该队列为SYN队列，长度为max(64,/proc/sys/net/ipv4/tcp_max_syn_backlog),  机器的tcp_max_syn_backlog值在/proc/sys/net/ipv4/tcp_max_syn_backlog下配置;</p>
+<p><em>一个是全连接队列（accept queue）：</em><br>第三次握手时，当server接收到ACK 报之后， 会进入一个新的叫 accept 的队列，该队列的长度为 min(backlog, somaxconn)，默认情况下，somaxconn 的值为 128，表示最多有 129 的 ESTAB 的连接等待 accept()，而 backlog 的值则应该是由 int listen(int sockfd, int backlog) 中的第二个参数指定，listen 里面的 backlog 可以有我们的应用程序去定义的;</p>
+<p>查看：<br>连接建立失败,syn丢包：<br>        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">netstat -s |grep -i listen</span><br><span class="line">SYNs to LISTEN sockets dropped</span><br></pre></td></tr></table></figure><br>也会受到连接满丢包影响</p>
+<p>解决方案： 增加大小 <code>tcp_max_syn_backlog</code></p>
+<p>连接满丢包<br>        <code>-xxx times the listen queue of a socket overflowed</code></p>
+<p>查看：<br>查看accept队列大小 ：<code>net.core.somaxconn</code></p>
+<p><code>ss -lnt</code>查询<code>socket</code>队列 ：<code>LISTEN</code> 状态: <code>Recv-Q</code> 表示的当前等待服务端调用 <code>accept</code> 完成三次握手的 <code>listen backlog</code> 数值，也就是说，当客户端通过 <code>connect()</code> 去连接正在 <code>listen()</code> 的服务端时，这些连接会一直处于这个 <code>queue</code> 里面直到被服务端 <code>accept()</code>；<code>Send-Q</code> 表示的则是最大的 <code>listen backlog</code> 数值，这就就是上面提到的 <code>min(backlog, somaxconn)</code> 的值，</p>
+<p>看一下是不是应用程序设置限制， <code>int listen(int sockfd, int backlog)；</code></p>
+<p>解决方案：<br> Linux内核参进行优化，可以缓解压力 <code>tcp_abort_on_overflow=1</code><br> 调整<code>net.core.somaxconn</code>大小;<br> 应用程序设置问题，通知客户程序修改；</p>
+<h4 id="syn-flood攻击丢包"><a href="#syn-flood攻击丢包" class="headerlink" title="syn flood攻击丢包"></a>syn flood攻击丢包</h4><p>  目前，Linux下默认会进行5次重发SYN-ACK包，重试的间隔时间从1s开始，下次的重试间隔时间是前一次的双倍，5次的重试时间间隔为1s, 2s, 4s, 8s, 16s，总共31s，第5次发出后还要等32s都知道第5次也超时了，所以，总共需要 1s + 2s + 4s+ 8s+ 16s + 32s = 63s，TCP才会把断开这个连接。由于，SYN超时需要63秒，那么就给攻击者一个攻击服务器的机会，攻击者在短时间内发送大量的SYN包给Server(俗称 SYN flood 攻击)，用于耗尽Server的SYN队列。对于应对SYN 过多的问题;</p>
+<p>查看：  查看syslog：  kernel: [3649830.269068] TCP: Possible SYN flooding on port xxx. Sending cookies. Check SNMP counters.</p>
+<p>解决方案：<br>增大tcp_max_syn_backlog<br>减少tcp_synack_retries<br>启用tcp_syncookies<br>启用tcp_abort_on_overflow， tcp_abort_on_overflow修改成 1，1表示第三步的时候如果全连接队列满了，server发送一个reset包给client，表示废掉这个握手过程和这个连接（本来在server端这个连接就还没建立起来）；</p>
+<h3 id="PAWS机制丢包"><a href="#PAWS机制丢包" class="headerlink" title="PAWS机制丢包"></a>PAWS机制丢包</h3><p>原理：PAWS(Protect Against Wrapped Sequence numbers)，高带宽下，TCP序列号可能在较短的时间内就被重复使用(recycle/wrapped)<br>就可能导致同一条TCP流在短时间内出现序号一样的两个合法的数据包及其确认包。</p>
+<p>查看：<br>        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$netstat -s |grep -e &quot;passive connections rejected because of time </span><br><span class="line">stamp&quot; -e &quot;packets rejects in established connections because of </span><br><span class="line">timestamp” </span><br><span class="line">387158 passive connections rejected because of time stamp</span><br><span class="line">825313 packets rejects in established connections because of timestamp</span><br></pre></td></tr></table></figure><br>通过sysctl查看是否启用了tcp_tw_recycle及tcp_timestamp:<br>        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sysctl net.ipv4.tcp_tw_recycle</span><br><span class="line">net.ipv4.tcp_tw_recycle &#x3D; 1 </span><br><span class="line">$ sysctl net.ipv4.tcp_timestamps</span><br><span class="line">net.ipv4.tcp_timestamps &#x3D; 1</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>tcp_tw_recycle参数。它用来快速回收TIME_WAIT连接，不过如果在NAT环境下会引发问题;</li>
+<li>当多个客户端通过NAT方式联网并与服务端交互时，服务端看到的是同一个IP，也就是说对服务端而言这些客户端实际上等同于一个，可惜由于这些客户端的时间戳可能存在差异，于是乎从服务端的视角看，便可能出现时间戳错乱的现象，进而直接导致时间戳小的数据包被丢弃。如果发生了此类问题，具体的表现通常是是客户端明明发送的SYN，但服务端就是不响应ACK。</li>
+</ol>
+<p>解决方案： </p>
+<p>在NAT环境下，清除tcp时间戳选项，或者不开启tcp_tw_recycle参数；</p>
+<h3 id="TLP问题丢包"><a href="#TLP问题丢包" class="headerlink" title="TLP问题丢包"></a>TLP问题丢包</h3><p>TLP主要是为了解决尾丢包重传效率的问题，TLP能够有效的避免较长的RTO超时，进而提高TCP性能，详细参考文章：<br><a target="_blank" rel="noopener" href="http://perthcharles.github.io/2015/10/31/wiki-network-tcp-tlp/%EF%BC%9B">http://perthcharles.github.io/2015/10/31/wiki-network-tcp-tlp/；</a></p>
+<p>但在低时延场景下（短连接小包量），TLP与延迟ACK组合可能会造成无效重传，导致客户端感发现大量假重传包，加大了响应延迟；</p>
+<p>查看：<br>查看协议栈统计：<br>        <code>netstat -s |grep TCPLossProbes</code><br>查看系统配置：<br>        <code>sysctl -a | grep tcp_early_retrans</code><br><img src="/2021/05/25/network/lost-package/tcp_early_retrans.png" alt="tcp_early_retrans.png"><br>解决方案：</p>
+<p>1.关掉延迟ack，打开快速ack；<br>2.linux实现nodelay语意不是快速ack，只是关闭nagle算法；<br>3.打开快速ack选项，socket里面有个 TCP_QUICKACK 选项， 需要每次recv后再设置一次。</p>
+<h3 id="内存不足导致丢包"><a href="#内存不足导致丢包" class="headerlink" title="内存不足导致丢包"></a>内存不足导致丢包</h3><p>查看：<br>查看log：<br>        <code>dmesg|grep “out of memory”</code><br>查看系统配置：<br>        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat &#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;tcp_mem</span><br><span class="line">cat &#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;tcp_rmem</span><br><span class="line">cat &#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;tcp_wmem</span><br></pre></td></tr></table></figure><br>解决方案：</p>
+<p>根据TCP业务并发流量，调整系统参数，一般试着增大2倍或者其他倍数来看是否缓解；<br>        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sysclt -w net.ipv4.tcp_mem&#x3D;</span><br><span class="line">sysclt -w net.ipv4.tcp_wmem&#x3D;</span><br><span class="line">sysclt -w net.ipv4.tcp_rmem&#x3D;</span><br><span class="line">sysctl -p</span><br></pre></td></tr></table></figure></p>
+<h3 id="TCP超时丢包"><a href="#TCP超时丢包" class="headerlink" title="TCP超时丢包"></a>TCP超时丢包</h3><p>查看：<br>抓包分析一下网络RTT:<br><img src="/2021/05/25/network/lost-package/%E7%BD%91%E7%BB%9CRTT.webp" alt="网络RTT.webp"><br>用其他工具测试一下当前端到端网络质量（hping等）；<br>        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># hping -S 9.199.10.104 -A</span><br><span class="line">HPING 9.199.10.104 (bond1 9.199.10.104): SA set, 40 headers + 0 data bytes</span><br><span class="line">len&#x3D;46 ip&#x3D;9.199.10.104 ttl&#x3D;53 DF id&#x3D;47617 sport&#x3D;0 flags&#x3D;R seq&#x3D;0 win&#x3D;0 rtt&#x3D;38.3 ms</span><br><span class="line">len&#x3D;46 ip&#x3D;9.199.10.104 ttl&#x3D;53 DF id&#x3D;47658 sport&#x3D;0 flags&#x3D;R seq&#x3D;1 win&#x3D;0 rtt&#x3D;38.3 ms</span><br><span class="line">len&#x3D;46 ip&#x3D;9.199.10.104 ttl&#x3D;53 DF id&#x3D;47739 sport&#x3D;0 flags&#x3D;R seq&#x3D;2 win&#x3D;0 rtt&#x3D;30.4 ms</span><br><span class="line">len&#x3D;46 ip&#x3D;9.199.10.104 ttl&#x3D;53 DF id&#x3D;47842 sport&#x3D;0 flags&#x3D;R seq&#x3D;3 win&#x3D;0 rtt&#x3D;30.4 ms</span><br><span class="line">len&#x3D;46 ip&#x3D;9.199.10.104 ttl&#x3D;53 DF id&#x3D;48485 sport&#x3D;0 flags&#x3D;R seq&#x3D;4 win&#x3D;0 rtt&#x3D;38.7 ms</span><br><span class="line">len&#x3D;46 ip&#x3D;9.199.10.104 ttl&#x3D;53 DF id&#x3D;49274 sport&#x3D;0 flags&#x3D;R seq&#x3D;5 win&#x3D;0 rtt&#x3D;34.1 ms</span><br><span class="line">len&#x3D;46 ip&#x3D;9.199.10.104 ttl&#x3D;53 DF id&#x3D;49491 sport&#x3D;0 flags&#x3D;R seq&#x3D;6 win&#x3D;0 rtt&#x3D;30.3 ms</span><br></pre></td></tr></table></figure><br>解决方案：<br>关闭Nagle算法，减少小包延迟；<br>关闭延迟ack:<br>  <code>sysctl -w net.ipv4.tcp_no_delay_ack=1</code></p>
+<h4 id="TCP乱序丢包"><a href="#TCP乱序丢包" class="headerlink" title="TCP乱序丢包"></a>TCP乱序丢包</h4><p>此时TCP会无法判断是数据包丢失还是乱序，因为丢包和乱序都会导致接收端收到次序混乱的数据包，造成接收端的数据空洞。TCP会将这种情况暂定为数据包的乱序，因为乱序是时间问题（可能是数据包的迟到），而丢包则意味着重传。当TCP意识到包出现乱序的情况时，会立即ACK，该ACK的TSER部分包含的TSEV值会记录当前接收端收到有序报文段的时刻。这会使得数据包的RTT样本值增大，进一步导致RTO时间延长。这对TCP来说无疑是有益的，因为TCP有充分的时间判断数据包到底是失序还是丢了来防止不必要的数据重传。当然严重的乱序则会让发送端以为是丢包一旦重复的ACK超过TCP的阈值，便会触发超时重传机制，以及时解决这种问题；详细请参考博客：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/dog250/article/details/78692585">https://blog.csdn.net/dog250/article/details/78692585</a></p>
+<p>查看：抓包分析是否存在很多乱序报文：<br><img src="/2021/05/25/network/lost-package/%E4%B9%B1%E5%BA%8F%E6%8A%A5%E6%96%87.webp" alt="乱序报文.webp"><br>解决方案：如果在多径传输场景或者网络质量不好，可以通过修改下面值来提供系统对TCP无序传送的容错率：<br><img src="/2021/05/25/network/lost-package/TCP%E6%97%A0%E5%BA%8F%E4%BC%A0%E9%80%81%E7%9A%84%E5%AE%B9%E9%94%99%E7%8E%87.webp" alt="TCP无序传送的容错率.webp"></p>
+<h4 id="拥塞控制丢包"><a href="#拥塞控制丢包" class="headerlink" title="拥塞控制丢包"></a>拥塞控制丢包</h4><p>在互联网发展的过程当中，TCP算法也做出了一定改变，先后演进了</p>
+<p>Reno、NewReno、Cubic和Vegas，这些改进算法大体可以分为基于丢包和基于延时的拥塞控制算法。基于丢包的拥塞控制算法以Reno、NewReno为代表，它的主要问题有Buffer bloat和长肥管道两种，基于丢包的协议拥塞控制机制是被动式的，其依据网络中的丢包事件来做网络拥塞判断。即使网络中的负载很高，只要没有产生拥塞丢包，协议就不会主动降低自己的发送速度。最初路由器转发出口的Buffer 是比较小的，TCP在利用时容易造成全局同步，降低带宽利用率，随后路由器厂家由于硬件成本下降不断地增加Buffer，基于丢包反馈的协议在不丢包的情况下持续占用路由器buffer，虽然提高了网络带宽的利用率，但同时也意味着发生拥塞丢包后，网络抖动性加大。另外对于带宽和RTT都很高的长肥管道问题来说，管道中随机丢包的可能性很大，TCP的默认buffer设置比较小加上随机丢包造成的cwnd经常下折，导致带宽利用率依旧很低；  BBR（Bottleneck Bandwidth and Round-trip propagation time）是一种基于带宽和延迟反馈的拥塞控制算法。目前已经演化到第二版，是一个典型的封闭反馈系统，发送多少报文和用多快的速度发送这些报文都是在每次反馈中不断调节。在BBR提出之前，拥塞控制都是基于事件的算法，需要通过丢包或延时事件驱动；BBR提出之后，拥塞控制是基于反馈的自主自动控制算法，对于速率的控制是由算法决定，而不由网络事件决定，BBR算法的核心是找到最大带宽（Max BW）和最小延时（Min RTT）这两个参数，最大带宽和最小延时的乘积可以得到BDP(Bandwidth Delay Product), 而BDP就是网络链路中可以存放数据的最大容量。BDP驱动Probing State Machine得到Rate quantum和cwnd，分别设置到发送引擎中就可以解决发送速度和数据量的问题。</p>
+<p>Linux 4.9内核首次采用BBR拥塞控制算法第一个版本，BBR抗丢包能力比其他算法要强，但这个版本在某些场景下面有问题（缺点），BBR在实时音视频领域存在的问题，深队列竞争不过Cubic。</p>
+<p>问题现象就是：在深队列场景，BBR的ProbeRTT阶段只发4个包，发送速率下降太多会引发延迟加大和卡顿问题。</p>
+<p>查看：<br>        <code>ss -sti //在源端 ss -sti|grep 10.125.42.49:47699 -A 3 （ 10.125.42.49:47699 是目的端地址和端口号）</code><br><img src="/2021/05/25/network/lost-package/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E4%B8%A2%E5%8C%851.webp" alt="拥塞控制丢包1.webp"><br><img src="/2021/05/25/network/lost-package/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E4%B8%A2%E5%8C%852.webp" alt="拥塞控制丢包2.webp"></p>
+<p>解决方案：<br>ProbeRTT并不适用实时音视频领域，因此可以选择直接去除，或者像BBRV2把probe RTT缩短到2.5s一次，使用0.5xBDP发送；<br>如果没有特殊需求，切换成稳定的cubic算法；</p>
+<h3 id="UDP层丢包"><a href="#UDP层丢包" class="headerlink" title="UDP层丢包"></a>UDP层丢包</h3><p>收发包失败丢包</p>
+<p>查看：netstat 统计<br>如果有持续的 receive buffer errors/send buffer errors 计数；<br><img src="/2021/05/25/network/lost-package/UDP%E5%B1%82%E4%B8%A2%E5%8C%85.png" alt="UDP层丢包.png"></p>
+<p>解决方案：<br>CPU负载（多核绑核配置），网络负载（软中断优化，调整驱动队列netdev_max_backlog），内存配置（协议栈内存）；<br>按峰值在来，增大buffer缓存区大小：<br>        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.udp_mem &#x3D; xxx</span><br><span class="line">net.ipv4.udp_rmem_min &#x3D; xxx</span><br><span class="line">net.ipv4.udp_wmem_min &#x3D; xxx</span><br></pre></td></tr></table></figure><br>3. 调整应用设计：</p>
+<p>UDP本身就是无连接不可靠的协议，适用于报文偶尔丢失也不影响程序状态的场景，比如视频、音频、游戏、监控等。对报文可靠性要求比较高的应用不要使用 UDP，推荐直接使用 TCP。当然，也可以在应用层做重试、去重保证可靠性</p>
+<p>如果发现服务器丢包，首先通过监控查看系统负载是否过高，先想办法把负载降低再看丢包问题是否消失</p>
+<p>如果系统负载过高，UDP丢包是没有有效解决方案的。如果是应用异常导致CPU、memory、IO 过高，请及时定位异常应用并修复；如果是资源不够，监控应该能及时发现并快速扩容</p>
+<p>对于系统大量接收或者发送UDP报文的，可以通过调节系统和程序的 socket buffer size 来降低丢包的概率</p>
+<p>应用程序在处理UDP报文时，要采用异步方式，在两次接收报文之间不要有太多的处理逻辑</p>
+<h4 id="应用层socket丢包"><a href="#应用层socket丢包" class="headerlink" title="应用层socket丢包"></a>应用层socket丢包</h4><p>socket缓存区接收丢包</p>
+<p>查看：  </p>
+<ol>
+<li><p>抓包分析是否存在丢包情况；</p>
+</li>
+<li><p>查看统计：</p>
+<pre><code> `netstat -s|grep &quot;packet receive errors&quot;`</code></pre>
+<p>解决方案：</p>
+<pre><code> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">调整socket缓冲区大小：</span><br><span class="line">socket配置（所有协议socket）：</span><br><span class="line"># Default Socket Receive Buffer</span><br><span class="line">net.core.rmem_default &#x3D; 31457280</span><br><span class="line"># Maximum Socket Receive Buffer</span><br><span class="line">net.core.rmem_max &#x3D; 67108864</span><br></pre></td></tr></table></figure></code></pre>
+<p>具体大小调整原理：</p>
+</li>
+</ol>
+<p>缓冲区大小没有任何设置值是最佳的，因为最佳大小随具体情况而不同</p>
+<p>缓冲区估算原理：在数据通信中，带宽时延乘积（英语：bandwidth-delay product；或称带宽延时乘积、带宽延时积等）指的是一个数据链路的能力（每秒比特）与来回通信延迟（单位秒）的乘积。<code>[1][2]</code>其结果是以比特（或字节）为单位的一个数据总量，等同在任何特定时间该网络线路上的最大数据量——已发送但尚未确认的数据。</p>
+<pre><code>    BDP =  带宽 * RTT</code></pre>
+<p>可以通过计算当面节点带宽和统计平均时延来估算BDP，即缓冲区的大小，可以参考下面常见场景估计：<br><img src="/2021/05/25/network/lost-package/%E4%BC%B0%E7%AE%97BDP.png" alt="估算BDP.png"><br>参考：<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E56344_01/html/E53803/gnkor.html">https://docs.oracle.com/cd/E56344_01/html/E53803/gnkor.html</a></p>
+<p>应用设置tcp连接数大小丢包</p>
+<p>查看：<br>请参考上面TCP连接队列分析；</p>
+<p>解决方案：<br>设置合理的连接队列大小，当第三次握手时，当server接收到ACK 报之后， 会进入一个新的叫 accept 的队列，该队列的长度为 min(backlog, somaxconn)，默认情况下，somaxconn 的值为 128，表示最多有 129 的 ESTAB 的连接等待 accept()，而 backlog 的值则应该是由 int listen(int sockfd, int backlog) 中的第二个参数指定，listen 里面的 backlog 可以有我们的应用程序去定义的；</p>
+<h4 id="应用发送太快导致丢包"><a href="#应用发送太快导致丢包" class="headerlink" title="应用发送太快导致丢包"></a>应用发送太快导致丢包</h4><p>查看统计：<br> netstat -s|grep “send buffer errors<br>解决方案：</p>
+<p>ICMP/UDP没有流控机制，需要应用设计合理发送方式和速度，照顾到底层buff大小和CPU负载以及网络带宽质量；</p>
+<p> 设置合理的sock缓冲区大小：</p>
+<p>   <code>setsockopt(s,SOL_SOCKET,SO_SNDBUF,  i(const char*)&amp;nSendBuf,sizeof(int));</code></p>
+<p>调整系统socket缓冲区大小：</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Default Socket Send Buffer</span><br><span class="line">net.core.wmem_default &#x3D; 31457280</span><br><span class="line"># Maximum Socket Send Buffer</span><br><span class="line">net.core.wmem_max &#x3D; 33554432</span><br></pre></td></tr></table></figure>
+
+<p><strong>附：简单总结一下内核协议栈丢包</strong><br><img src="/2021/05/25/network/lost-package/%E5%86%85%E6%A0%B8%E5%8D%8F%E8%AE%AE%E6%A0%88%E4%B8%A2%E5%8C%85.png" alt="内核协议栈丢包.png"></p>
+<h3 id="相关工具介绍"><a href="#相关工具介绍" class="headerlink" title="相关工具介绍"></a>相关工具介绍</h3><p>1.dropwatch工具</p>
+<p>原理：  监听 kfree_skb（把网络报文丢弃时会调用该函数）函数或者事件吗，然后打印对应调用堆栈；想要详细了解 linux 系统在执行哪个函数时丢包的话，可以使用 dropwatch 工具，它监听系统丢包信息，并打印出丢包发生的函数：<br><img src="/2021/05/25/network/lost-package/dropwatch.png" alt="dropwatch.png"></p>
+<ol start="2">
+<li>tcpdump工具</li>
+</ol>
+<p>原理: tcpdump 是一个Unix下一个功能强大的网络抓包工具，它允许用户拦截和显示发送或收到过网络连接到该计算机的TCP/IP和其他数据包<br><img src="/2021/05/25/network/lost-package/tcpdump.png" alt="tcpdump.png"></p>
+<p>抓包命令参考：</p>
+<p><a target="_blank" rel="noopener" href="https://www.tcpdump.org/manpages/tcpdump.1.html">https://www.tcpdump.org/manpages/tcpdump.1.html</a></p>
+<p>数据包分析：</p>
+<p>1.用wireshark工具分析  参考：Wireshark数据包分析实战.pdf<br>2.可以转化生成CSV数据，用Excel或者shell去分析特定场景报文；<br>3.可以在linux上用tshark命令行工具进行分析:<br><a target="_blank" rel="noopener" href="https://www.wireshark.org/docs/man-pages/tshark.html">https://www.wireshark.org/docs/man-pages/tshark.html</a></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本文只是分析大部分可能会丢包节点，提供了单个节点丢包排查和相关的解决方案, 丢包问题牵扯网络链路各个组件，尤其是在云网络时代，网络拓扑复杂多变，涉及运营商网络，IDC网络，专线等underlay网络，边界网关，VPC网络，CLB负载均衡等云上overlay网络，各种丢包问题排障起来非常复杂且困难，但掌握网络通信基本原理后，可以分解网络拓扑，对通信节点进行逐一排查，也可以找到丢包位置，后续会更加深入介绍云计算时代，云上网络丢包排查方法，网络架构解析等，达到任何丢包问题都可以快速排查和定位解决，帮助客户快速恢复业务。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/network/" rel="tag"># network</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/24/network/IPS-IDS/" rel="prev" title="IPS/IDS">
+                  <i class="fa fa-chevron-left"></i> IPS/IDS
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/06/19/operating-system/Linux/byte-alignment/" rel="next" title="byte_alignment">
+                  byte_alignment <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu liu</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+</body>
+</html>
